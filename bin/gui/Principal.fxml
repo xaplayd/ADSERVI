@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.PrincipalController">
+   <children>
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Cadastros">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Contratos" />
+                  <MenuItem mnemonicParsing="false" text="Clientes" />
+                  <MenuItem mnemonicParsing="false" text="Close" />
+                  <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Ajuda">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Documentação" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <ToolBar layoutX="382.0" layoutY="471.0" prefHeight="31.0" prefWidth="451.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <items>
+            <Label text="Usuário:">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label text="(user)">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Button mnemonicParsing="false" text="Trocar Usuário">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" text="Logout">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+            <MenuButton mnemonicParsing="false" text="Configurações">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Base" />
+                  <MenuItem fx:id="cadastroUsuario" mnemonicParsing="false" onAction="#onMenuItemCadastroUsuarioAction" text="Usuários" />
+               </items>
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </MenuButton>
+            <Label text="Versão APP:">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+            <Label text="(version)">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
+         </items>
+      </ToolBar>
+      <ToolBar layoutY="471.0" prefHeight="31.0" prefWidth="116.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+        <items>
+            <MenuButton mnemonicParsing="false" text="Acesso Rapido">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Pendências" />
+                  <MenuItem mnemonicParsing="false" text="Envio Docs" />
+               </items>
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </MenuButton>
+        </items>
+      </ToolBar>
+      <Separator layoutY="468.0" prefHeight="0.0" prefWidth="800.0" AnchorPane.bottomAnchor="29.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+   </children>
+</AnchorPane>
