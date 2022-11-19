@@ -1,5 +1,6 @@
 package application;
 
+import gui.controller.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,17 +13,10 @@ public class Main extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		try {
-			Parent parent = FXMLLoader.load(getClass().getResource("/gui/Login.fxml"));
-			Scene scene = new Scene(parent);
-			stage.setResizable(false);
-			stage.setTitle("DEMO - Pendências");
-			stage.getIcons().add(new Image("/imgs/logo2.png"));
-			stage.setScene(scene);
-			stage.show();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		LoginController lg = new LoginController();
+
+		lg.novaJanela();
+
 	}
 
 	public static void main(String[] args) {

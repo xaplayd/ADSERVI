@@ -37,17 +37,17 @@
                   <Font size="10.0" />
                </font>
             </Label>
-            <Label text="(user)">
+            <Label fx:id="loggedUser" text="(user)">
                <font>
                   <Font size="10.0" />
                </font>
             </Label>
-            <Button mnemonicParsing="false" text="Trocar Usuário">
+            <Button fx:id="changeUser" mnemonicParsing="false" onAction="#onButtonChangeUserAction" text="Trocar Usuário">
                <font>
                   <Font size="10.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" text="Logout">
+            <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#onButtonLogoutAction" text="Logout">
                <font>
                   <Font size="10.0" />
                </font>

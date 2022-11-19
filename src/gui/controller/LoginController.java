@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -30,6 +31,25 @@ public class LoginController {
 	private PasswordField pass;
 	@FXML
 	private ImageView logo;
+
+	private Parent parent;
+
+	public void novaJanela() {
+
+		Stage stageLogin = new Stage();
+
+		try {
+			Parent parent = FXMLLoader.load(getClass().getResource("/gui/Login.fxml"));
+			Scene scene = new Scene(parent);
+			stageLogin.setResizable(false);
+			stageLogin.setTitle("DEMO - Pendências");
+			stageLogin.getIcons().add(new Image("/imgs/logo2.png"));
+			stageLogin.setScene(scene);
+			stageLogin.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void onButtonCloseAction() {
 		Stage stage = (Stage) close.getScene().getWindow();
@@ -56,24 +76,39 @@ public class LoginController {
 		if (validado == 1) {
 			System.out.println("LOGIN WORKS!!");
 
+			String tpus = user.getText();
+
 			Stage stage = (Stage) close.getScene().getWindow();
+
 			stage.close();
-			
-			Stage stagePrincipal = new Stage();
-			
+
 			try {
-				Parent parent = FXMLLoader.load(getClass().getResource("/gui/Principal.fxml"));
+
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Principal.fxml"));
+
+				parent = loader.load();
+
+				PrincipalController pc = loader.getController();
+				pc.setLoggedUser(tpus);
+
+				Stage stagePrincipal = new Stage();
+
 				Scene scene = new Scene(parent);
-				stagePrincipal.setTitle("DEMO");
+				stagePrincipal.setTitle("DEMO - Pendências");
 				stagePrincipal.getIcons().add(new Image("/imgs/logo2.png"));
 				stagePrincipal.setScene(scene);
 				stagePrincipal.show();
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 		} else {
 			System.out.println("SOMETHING IS WRONG ON LOGIN!");
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Login Error");
+			alert.setHeaderText("User or Password is wrong. Please retry or contact the administrator!");
+			alert.showAndWait();
 		}
 	}
 

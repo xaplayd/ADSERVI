@@ -1,11 +1,6 @@
 package gui.controller;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -82,10 +77,6 @@ public class CadastroUsuarioController {
 	public void setPath(String path) {
 		this.path = path;
 	}
-
-	
-	
-	
 	
 	public void novaJanela() {
 		try {
