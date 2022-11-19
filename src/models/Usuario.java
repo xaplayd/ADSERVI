@@ -6,8 +6,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Usuario {
+import dados.controller.TblUsuariosController;
+
+public class Usuario implements Comparable<Usuario>{
 	
 	private Integer codigo;
 	private String nome;
@@ -118,6 +121,12 @@ public class Usuario {
 		this.filePath = filePath;
 	}
 	
+	public List getListaDeUsuarios() {
+		TblUsuariosController.updateListaUsuarios();
+		return listaDeUsuarios;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "Usuario [codigo=" + codigo + ", nome=" + nome + ", login=" + login + ", senha=" + senha
@@ -125,53 +134,33 @@ public class Usuario {
 				+ setor + "]";
 	}
 	
-	public boolean validaUsuarioLogin(String login, String senha) {
-		int validaLogin = 0;
-		int validaSenha = 0;
-		int validaSituacao = 0;
-		
-		if(getLogin() == login) {
-			validaLogin = 1;
-		}
-		if(getSenha() == senha) {
-			validaSenha = 1;
-		}
-		if(getSituacao() == 1) {
-			validaSituacao = 1;
-		}
-		if (validaLogin == 1 && validaSenha == 1 && validaSituacao == 1) {
-			return true;
-		}
-		
-		return false;
-		
-	}
-	
-	public void updateListaUsuarios() {
-		
-		File arquivoUsuarios = new File(filePath);
 
-		try (BufferedReader tblUsuarios = new BufferedReader(new FileReader(arquivoUsuarios))) {
-			String usuario = tblUsuarios.readLine();
-			while (usuario != null) {
-				String[] fields = usuario.split(";");
-				Integer codigo = Integer.parseInt(fields[0]);
-				String nome = fields[1];
-				String login = fields[2];
-				String senha = fields[3];
-				Integer permissoes = Integer.parseInt(fields[4]);
-				String email = fields[5];
-				String emailGerencia = fields[6];
-				Integer situacao = Integer.parseInt(fields[7]);
-				
-				listaDeUsuarios.add(new Usuario(codigo, nome, login, senha, permissoes, email, emailGerencia, setor, situacao));
-				usuario = tblUsuarios.readLine();
-			}
-		} catch (IOException e) {
-			e.getMessage();
-		}
-		
+	@Override
+	public int hashCode() {
+		return Objects.hash(codigo, login, senha, situacao);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		return Objects.equals(codigo, other.codigo) && Objects.equals(login, other.login)
+				&& Objects.equals(senha, other.senha) && Objects.equals(situacao, other.situacao);
+	}
+
 	
+	public int compareTo(Usuario other) {
+		int validaLogin = login.compareTo(other.getLogin());
+		int validaSenha = senha.compareTo(other.getSenha());
+		if(validaLogin == 0 && validaSenha == 0) {
+			return 0;
+		}
+		return 1;
+	}
 
 }

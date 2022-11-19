@@ -1,10 +1,16 @@
 package gui.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import dados.controller.TblUsuariosController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import models.Usuario;
+import services.UserService;
 
 public class LoginController {
 
@@ -29,6 +35,22 @@ public class LoginController {
 	}
 
 	public void onButtonLoginAction() {
-		
+
+		Usuario tempUser = new Usuario(null, null, user.getText(), pass.getText(), null, null, null, null, null);
+
+		List tempList = TblUsuariosController.updateListaUsuarios();
+
+		Integer validado = 0;
+
+		for (Object x : tempList) {
+
+			validado = UserService.validaLogin(tempList, tempUser);
+		}
+
+		if (validado == 1) {
+			System.out.println("IT WORKS!!");
+		} else {
+			System.out.println("SOMETHING IS WRONG!");
+		}
 	}
 }
