@@ -4,8 +4,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
 
 <AnchorPane maxHeight="120.0" maxWidth="463.0" minHeight="120.0" minWidth="463.0" prefHeight="120.0" prefWidth="463.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.LoginController">
    <children>
@@ -16,6 +17,10 @@
       <Button fx:id="forgotPass" layoutX="286.0" layoutY="82.0" mnemonicParsing="false" text="Esqueci a Senha" />
       <TextField fx:id="user" layoutX="240.0" layoutY="14.0" prefHeight="25.0" prefWidth="148.0" />
       <PasswordField fx:id="pass" layoutX="240.0" layoutY="48.0" prefHeight="25.0" prefWidth="148.0" />
-      <Pane layoutX="24.0" layoutY="3.0" maxHeight="109.0" maxWidth="136.0" minHeight="109.0" minWidth="136.0" prefHeight="109.0" prefWidth="136.0" />
+      <ImageView id="logo" fx:id="logo" fitHeight="86.0" fitWidth="148.0" layoutX="24.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+         <image>
+            <Image url="@../imgs/logo.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

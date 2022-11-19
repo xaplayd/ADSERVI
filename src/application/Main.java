@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -15,7 +16,8 @@ public class Main extends Application {
 			Parent parent = FXMLLoader.load(getClass().getResource("/gui/Login.fxml"));
 			Scene scene = new Scene(parent);
 			stage.setResizable(false);
-			stage.setTitle("Login");
+			stage.setTitle("DEMO - Pendências");
+			stage.getIcons().add(new Image("/imgs/logo2.png"));
 			stage.setScene(scene);
 			stage.show();
 		} catch (Exception e) {
