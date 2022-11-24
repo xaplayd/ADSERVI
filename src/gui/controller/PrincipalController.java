@@ -18,8 +18,6 @@ import services.UserService;
 
 public class PrincipalController {
 
-	private Integer janelaCadastroUsuarioSituacao = 0;
-
 	@FXML
 	private MenuItem cadastroUsuario;
 	@FXML
@@ -29,7 +27,6 @@ public class PrincipalController {
 	@FXML
 	private Button changeUser;
 
-	private Parent parent;
 
 	public PrincipalController() {
 	}
@@ -56,6 +53,8 @@ public class PrincipalController {
 		lg.novaJanela();
 	}
 
+	Stage stageCadastroUser = null;
+	
 	@FXML
 	public void onMenuItemCadastroUsuarioAction() {
 
@@ -64,8 +63,8 @@ public class PrincipalController {
 		List tempList = TblUsuariosController.updateListaUsuarios();
 
 		Integer validado = 0;
+		
 
-		CadastroUsuarioController janela = null;
 
 		for (Object x : tempList) {
 
@@ -73,21 +72,36 @@ public class PrincipalController {
 		}
 
 		if (validado == 1) {
-			System.out.println("PERMISSION WORKS!!");
-			if (janelaCadastroUsuarioSituacao == 0) {
-				janelaCadastroUsuarioSituacao = 1;
-				Stage stageCadastroUsuario = new Stage();
-				janela = new CadastroUsuarioController(stageCadastroUsuario);
-				janela.novaJanela();
+			System.out.println("PERMISSÃO FUNCIONOU!");
+			
+			CadastroUsuarioController cuc = new CadastroUsuarioController();;
+			
+			if(stageCadastroUser == null) {
+				stageCadastroUser = new Stage();
+				
+				try {
+					Parent parent = FXMLLoader.load(getClass().getResource("/gui/CadastroUsuario.fxml"));
+					Scene sceneCadastroUser = new Scene(parent);
+					stageCadastroUser.setTitle("Usuarios");
+					stageCadastroUser.setResizable(false);
+					stageCadastroUser.getIcons().add(new Image("/imgs/logo2.png"));
+					stageCadastroUser.setScene(sceneCadastroUser);
+					stageCadastroUser.setOnHidden(we -> stageCadastroUser = null);
+					stageCadastroUser.show();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}	
 			} else {
-				janela.getStageCadastroUsuario().toFront();
+				stageCadastroUser.toFront();
 			}
+			
 
+		
 		} else {
-			System.out.println("SOMETHING IS WRONG WITH PERMISSION");
+			System.out.println("ALGO ERRADO COM A PERMISSÃO!");
 			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Permission Error");
-			alert.setHeaderText("This user doesn't have permission for this!");
+			alert.setTitle("Usuário sem permissão");
+			alert.setHeaderText("Este usuário não tem permissão para esta rotina!");
 			alert.showAndWait();
 		}
 

@@ -1,17 +1,23 @@
 package gui.controller;
 
-import java.io.IOException;
+import java.util.List;
 
-import javafx.event.ActionEvent;
+import dados.controller.TblUsuariosController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import models.Usuario;
+import services.UserService;
 
 public class CadastroUsuarioController {
 
@@ -48,68 +54,97 @@ public class CadastroUsuarioController {
 	@FXML
 	private Button fechar;
 	@FXML
-	private String path = "/gui/CadastroUsuario.fxml";
-	@FXML
-	private AnchorPane scenePane;
-	@FXML
-	private Stage stageCadastroUsuario;
-	@FXML
-	private Parent parent;
-	@FXML
-	private Scene scene = new Scene(parent);
-	
-	public CadastroUsuarioController(Stage stageCadastroUsuario) {
-			this.stageCadastroUsuario = stageCadastroUsuario;
-	}
+	private Button cancelar;
 
-	public Stage getStageCadastroUsuario() {
-		return this.stageCadastroUsuario;
-	}
+	public void onCodigoTxtFieldKeyPressed(KeyEvent e) {
+		if (e.getCode().equals(KeyCode.ENTER)) {
 
-	public void setStageCadastroUsuario(Stage stageCadastroUsuario) {
-		this.stageCadastroUsuario = stageCadastroUsuario;
-	}
+			Integer cod = Integer.parseInt(codigo.getText());
+			List tempList = TblUsuariosController.updateListaUsuarios();
 
-	public String getPath() {
-		return path;
-	}
+			Usuario puxa = UserService.puxaUser(tempList, cod);
 
-	public void setPath(String path) {
-		this.path = path;
-	}
-	
-	public void novaJanela() {
-		try {
-			getStageCadastroUsuario();
-			parent = FXMLLoader.load(getClass().getResource("/gui/CadastroUsuario.fxml"));
-			scene = new Scene(parent);
-			getStageCadastroUsuario().setResizable(false);
-			getStageCadastroUsuario().show();
-		} catch (IOException e) {
-			e.getMessage();
+			if (puxa != null) {
+				codigo.setDisable(true);
+				procuraUsuario.setDisable(true);
+				novoUsuario.setDisable(true);
+				editarUsuario.setDisable(false);
+				excluirUsuario.setDisable(false);
+				cancelar.setDisable(false);
+
+				nome.setText(puxa.getNome());
+				login.setText(puxa.getLogin());
+				senha.setText(puxa.getSenha());
+				permissoes.setText(puxa.getPermissoes().toString());
+				email.setText(puxa.getEmail());
+				emailGerencia.setText(puxa.getEmailGerencia());
+				setor.setText(puxa.getSetor());
+			} else {
+				System.out.println("NAO ACHOU USUARIO!!");
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Usuário não encontrado");
+				alert.setHeaderText("Não foi possível achar nenhum usuário pelo código informado!");
+				alert.showAndWait();
+			}
+
 		}
-	}
-	
-	public void onButtonFecharAction(ActionEvent event) {
-		stageCadastroUsuario = (Stage) stageCadastroUsuario.getScene().getWindow();
-		stageCadastroUsuario.close();
+
 	}
 
+	public void novoUser() {
+		codigo.setDisable(true);
+		procuraUsuario.setDisable(true);
+		procuraPermissoes.setDisable(false);
+		permissoes.setEditable(false);
+		procuraSetor.setDisable(false);
+		nome.setDisable(false);
+		login.setDisable(false);
+		senha.setDisable(false);
+		permissoes.setDisable(false);
+		email.setDisable(false);
+		emailGerencia.setDisable(false);
+		setor.setDisable(false);
+		setor.setEditable(false);
+		excluirUsuario.setDisable(false);
+		salvarUsuario.setDisable(false);
+		novoUsuario.setDisable(true);
+		excluirUsuario.setDisable(true);
+		cancelar.setDisable(false);
+	}
 
+	public void fechaJanela() {
+		Stage stage = (Stage) fechar.getScene().getWindow();
+		stage.close();
+	}
 
 	public void editaUsuarios() {
 	}
 
 	public void criaUsuarios() {
-
 	}
 
 	public void salvaUsuarios() {
-
 	}
 
 	public void buscaUsuarios() {
-
 	}
-
+	public void cancelaUsuario() {
+		codigo.setDisable(false);
+		procuraUsuario.setDisable(false);
+		procuraPermissoes.setDisable(true);
+		permissoes.setEditable(true);
+		procuraSetor.setDisable(true);
+		nome.setDisable(true);
+		login.setDisable(true);
+		senha.setDisable(true);
+		permissoes.setDisable(true);
+		email.setDisable(true);
+		emailGerencia.setDisable(true);
+		setor.setDisable(true);
+		excluirUsuario.setDisable(true);
+		salvarUsuario.setDisable(true);
+		novoUsuario.setDisable(false);
+		excluirUsuario.setDisable(true);
+	}
+	
 }

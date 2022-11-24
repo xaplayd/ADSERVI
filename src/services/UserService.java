@@ -8,7 +8,7 @@ public class UserService {
 	
 	public static Integer validaLogin(List<Usuario> list, Usuario user) {
 		if (list.isEmpty()) {
-			throw new IllegalStateException("User list is EMPTY!");
+			throw new IllegalStateException("A lista esta VAZIA!");
 		}
 		
 		String loginValida = user.getLogin();
@@ -24,7 +24,7 @@ public class UserService {
 	
 	public static Integer validaPermissao(List<Usuario> list, Usuario user) {
 		if (list.isEmpty()) {
-			throw new IllegalStateException("User list is EMPTY!");
+			throw new IllegalStateException("A lista esta VAZIA!");
 		}
 		
 		String loginValida = user.getLogin();
@@ -37,6 +37,19 @@ public class UserService {
 		return 0;
 	}
 	
+	public static Usuario puxaUser(List<Usuario> list, Integer cod) {
+		if (list.isEmpty()) {
+			throw new IllegalStateException("A lista esta VAZIA!");
+		}
+		
+		for (Usuario y : list) {
+			if (y.getCodigo().compareTo(cod) == 0) {
+			return y;
+			}
+		}
+		return null;
+
+	}
 	
 	
 }

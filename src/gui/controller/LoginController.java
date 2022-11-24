@@ -40,11 +40,11 @@ public class LoginController {
 
 		try {
 			Parent parent = FXMLLoader.load(getClass().getResource("/gui/Login.fxml"));
-			Scene scene = new Scene(parent);
+			Scene scenePrincipal = new Scene(parent);
 			stageLogin.setResizable(false);
 			stageLogin.setTitle("DEMO - Pendências");
 			stageLogin.getIcons().add(new Image("/imgs/logo2.png"));
-			stageLogin.setScene(scene);
+			stageLogin.setScene(scenePrincipal);
 			stageLogin.show();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -74,7 +74,7 @@ public class LoginController {
 		}
 
 		if (validado == 1) {
-			System.out.println("LOGIN WORKS!!");
+			System.out.println("O LOGIN FUNCIONOU!!");
 
 			String tpus = user.getText();
 
@@ -84,7 +84,7 @@ public class LoginController {
 
 			try {
 
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Principal.fxml"));
+			 	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Principal.fxml"));
 
 				parent = loader.load();
 
@@ -94,7 +94,7 @@ public class LoginController {
 				Stage stagePrincipal = new Stage();
 
 				Scene scene = new Scene(parent);
-				stagePrincipal.setTitle("DEMO - Pendências");
+				stagePrincipal.setTitle("GRUPO ADSERVI");
 				stagePrincipal.getIcons().add(new Image("/imgs/logo2.png"));
 				stagePrincipal.setScene(scene);
 				stagePrincipal.show();
@@ -104,10 +104,10 @@ public class LoginController {
 			}
 
 		} else {
-			System.out.println("SOMETHING IS WRONG ON LOGIN!");
+			System.out.println("ALGO ERRADO COM O LOGIN!!");
 			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Login Error");
-			alert.setHeaderText("User or Password is wrong. Please retry or contact the administrator!");
+			alert.setTitle("Erro ao logar");
+			alert.setHeaderText("Usuário ou senha errada! Por favor, tente novamente ou contate o administrador!");
 			alert.showAndWait();
 		}
 	}
