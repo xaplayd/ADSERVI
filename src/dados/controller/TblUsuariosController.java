@@ -27,7 +27,7 @@ public static List<Usuario> updateListaUsuarios() {
 				Integer permissoes = Integer.parseInt(fields[4]);
 				String email = fields[5];
 				String emailGerencia = fields[6];
-				String setor = fields[7];
+				Integer setor = Integer.parseInt(fields[7]);
 				Integer situacao = Integer.parseInt(fields[8]);
 				
 				listaDeUsuarios.add(new Usuario(codigo, nome, login, senha, permissoes, email, emailGerencia, setor, situacao));

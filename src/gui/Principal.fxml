@@ -56,6 +56,7 @@
                <items>
                   <MenuItem mnemonicParsing="false" text="Base" />
                   <MenuItem fx:id="cadastroUsuario" mnemonicParsing="false" onAction="#onMenuItemCadastroUsuarioAction" text="Usuários" />
+                  <MenuItem fx:id="cadastroSetor" mnemonicParsing="false" onAction="#onMenuItemCadastroSetorAction" text="Setores" />
                </items>
                <font>
                   <Font size="10.0" />

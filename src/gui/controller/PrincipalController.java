@@ -21,6 +21,8 @@ public class PrincipalController {
 	@FXML
 	private MenuItem cadastroUsuario;
 	@FXML
+	private MenuItem cadastroSetor;
+	@FXML
 	private Label loggedUser;
 	@FXML
 	private Button logoutBtn;
@@ -93,6 +95,60 @@ public class PrincipalController {
 				}	
 			} else {
 				stageCadastroUser.toFront();
+			}
+			
+
+		
+		} else {
+			System.out.println("ALGO ERRADO COM A PERMISSÃO!");
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Usuário sem permissão");
+			alert.setHeaderText("Este usuário não tem permissão para esta rotina!");
+			alert.showAndWait();
+		}
+
+	}
+	
+	Stage stageCadastroSetor = null;
+	
+	@FXML
+	public void onMenuItemCadastroSetorAction() {
+
+		Usuario tempUser = new Usuario(null, null, getLoggedUser(), null, null, null, null, null, null);
+
+		List tempList = TblUsuariosController.updateListaUsuarios();
+
+		Integer validado = 0;
+		
+
+
+		for (Object x : tempList) {
+
+			validado = UserService.validaPermissao(tempList, tempUser);
+		}
+
+		if (validado == 1) {
+			System.out.println("PERMISSÃO FUNCIONOU!");
+			
+			CadastroUsuarioController cuc = new CadastroUsuarioController();;
+			
+			if(stageCadastroSetor == null) {
+				stageCadastroSetor = new Stage();
+				
+				try {
+					Parent parent = FXMLLoader.load(getClass().getResource("/gui/CadastroSetores.fxml"));
+					Scene sceneCadastroSetor = new Scene(parent);
+					stageCadastroSetor.setTitle("Setores");
+					stageCadastroSetor.setResizable(false);
+					stageCadastroSetor.getIcons().add(new Image("/imgs/logo2.png"));
+					stageCadastroSetor.setScene(sceneCadastroSetor);
+					stageCadastroSetor.setOnHidden(we -> stageCadastroSetor = null);
+					stageCadastroSetor.show();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}	
+			} else {
+				stageCadastroSetor.toFront();
 			}
 			
 

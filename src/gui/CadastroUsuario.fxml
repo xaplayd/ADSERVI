@@ -46,16 +46,19 @@
          </font>
       </Label>
       <Label layoutX="29.0" layoutY="362.0" text="Local:" />
-      <TextField fx:id="setor" disable="true" layoutX="70.0" layoutY="358.0" prefHeight="25.0" prefWidth="211.0" />
-      <Button fx:id="procuraSetor" disable="true" layoutX="289.0" layoutY="358.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="21.0" text="Button" />
+      <TextField fx:id="setor" disable="true" layoutX="70.0" layoutY="358.0" prefHeight="25.0" prefWidth="30.0" />
+      <Button fx:id="procuraSetor" disable="true" layoutX="107.0" layoutY="358.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="21.0" text="Button" />
       <Separator layoutX="8.0" layoutY="402.0" prefHeight="5.0" prefWidth="493.0" />
       <Button fx:id="salvarUsuario" disable="true" layoutX="339.0" layoutY="418.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="69.0" text="Salvar" />
-      <Button fx:id="editarUsuario" disable="true" layoutX="81.0" layoutY="418.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="49.0" text="Editar" />
+      <Button fx:id="editarUsuario" disable="true" layoutX="81.0" layoutY="418.0" mnemonicParsing="false" onAction="#editaUsuarios" prefHeight="25.0" prefWidth="49.0" text="Editar" />
       <Button fx:id="novoUsuario" layoutX="23.0" layoutY="418.0" mnemonicParsing="false" onAction="#novoUser" prefHeight="25.0" prefWidth="49.0" text="Novo" />
       <Button fx:id="excluirUsuario" disable="true" layoutX="162.0" layoutY="418.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Excluir" />
       <Separator layoutX="143.0" layoutY="403.0" orientation="VERTICAL" prefHeight="53.0" prefWidth="14.0" />
       <Separator layoutX="313.0" layoutY="403.0" orientation="VERTICAL" prefHeight="53.0" prefWidth="14.0" />
       <Button fx:id="fechar" layoutX="420.0" layoutY="418.0" mnemonicParsing="false" onAction="#fechaJanela" prefHeight="25.0" prefWidth="69.0" text="Fechar" />
       <Button fx:id="cancelar" disable="true" layoutX="239.0" layoutY="418.0" mnemonicParsing="false" onAction="#cancelaUsuario" prefHeight="25.0" prefWidth="62.0" text="Cancelar" />
+      <Label layoutX="157.0" layoutY="162.0" text="1 - Administrador" />
+      <Label layoutX="157.0" layoutY="179.0" text="2 - Padrão" />
+      <Label fx:id="setorDesc" layoutX="136.0" layoutY="362.0" text="(setor)" />
    </children>
 </AnchorPane>

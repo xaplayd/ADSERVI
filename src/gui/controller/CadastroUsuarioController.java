@@ -57,7 +57,7 @@ public class CadastroUsuarioController {
 	private Button cancelar;
 
 	public void onCodigoTxtFieldKeyPressed(KeyEvent e) {
-		if (e.getCode().equals(KeyCode.ENTER)) {
+		if (e.getCode().equals(KeyCode.ENTER) || e.getCode().equals(KeyCode.TAB)) {
 
 			Integer cod = Integer.parseInt(codigo.getText());
 			List tempList = TblUsuariosController.updateListaUsuarios();
@@ -78,7 +78,7 @@ public class CadastroUsuarioController {
 				permissoes.setText(puxa.getPermissoes().toString());
 				email.setText(puxa.getEmail());
 				emailGerencia.setText(puxa.getEmailGerencia());
-				setor.setText(puxa.getSetor());
+				setor.setText(puxa.getSetor().toString());
 			} else {
 				System.out.println("NAO ACHOU USUARIO!!");
 				Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -118,6 +118,17 @@ public class CadastroUsuarioController {
 	}
 
 	public void editaUsuarios() {
+		nome.setDisable(false);
+		login.setDisable(false);
+		senha.setDisable(false);
+		permissoes.setDisable(false);
+		procuraPermissoes.setDisable(false);
+		email.setDisable(false);
+		emailGerencia.setDisable(false);
+		setor.setDisable(false);
+		procuraSetor.setDisable(false);
+		salvarUsuario.setDisable(false);
+		editarUsuario.setDisable(true);
 	}
 
 	public void criaUsuarios() {
@@ -129,6 +140,8 @@ public class CadastroUsuarioController {
 	public void buscaUsuarios() {
 	}
 	public void cancelaUsuario() {
+		excluirUsuario.setDisable(true);
+		editarUsuario.setDisable(true);
 		codigo.setDisable(false);
 		procuraUsuario.setDisable(false);
 		procuraPermissoes.setDisable(true);
@@ -145,6 +158,15 @@ public class CadastroUsuarioController {
 		salvarUsuario.setDisable(true);
 		novoUsuario.setDisable(false);
 		excluirUsuario.setDisable(true);
+		codigo.setText(null);
+		nome.setText(null);
+		login.setText(null);
+		senha.setText(null);
+		permissoes.setText(null);
+		email.setText(null);
+		emailGerencia.setText(null);
+		setor.setText(null);
+		cancelar.setDisable(true);
 	}
 	
 }

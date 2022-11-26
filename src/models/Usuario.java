@@ -15,7 +15,7 @@ public class Usuario implements Comparable<Usuario>{
 	private Integer permissoes;
 	private String email;
 	private String emailGerencia;
-	private String setor;
+	private Integer setor;
 	private Integer situacao;
 	private List<Usuario> listaDeUsuarios = new ArrayList<Usuario>();
 	private String filePath = "src\\dados\\tblUsuarios.csv";
@@ -25,7 +25,7 @@ public class Usuario implements Comparable<Usuario>{
 	}
 	
 	public Usuario(Integer codigo, String nome, String login, String senha, Integer permissoes, String email,
-			String emailGerencia, String setor, Integer situacao) {
+			String emailGerencia, Integer setor, Integer situacao) {
 		this.codigo = codigo;
 		this.nome = nome;
 		this.login = login;
@@ -93,11 +93,11 @@ public class Usuario implements Comparable<Usuario>{
 		this.emailGerencia = emailGerencia;
 	}
 	
-	public String getSetor() {
+	public Integer getSetor() {
 		return setor;
 	}
 	
-	public void setSetor(String setor) {
+	public void setSetor(Integer setor) {
 		this.setor = setor;
 	}
 	
