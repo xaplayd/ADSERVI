@@ -1,8 +1,10 @@
 package gui.controller;
 
+import java.beans.EventHandler;
 import java.util.List;
 
 import dados.controller.TblUsuariosController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import models.Usuario;
 import services.UserService;
 
@@ -97,6 +100,7 @@ public class LoginController {
 				stagePrincipal.setTitle("GRUPO ADSERVI");
 				stagePrincipal.getIcons().add(new Image("/imgs/logo2.png"));
 				stagePrincipal.setScene(scene);
+				stagePrincipal.setOnHidden(e -> Platform.exit());
 				stagePrincipal.show();
 
 			} catch (Exception e) {

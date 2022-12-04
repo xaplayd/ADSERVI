@@ -73,8 +73,7 @@ public class CadastroSetorController {
 		salvarSetor.setDisable(false);
 		cancelarSetor.setDisable(false);
 		nome.setDisable(false);
-	
-		
+
 	}
 
 	public void editarSetor() {

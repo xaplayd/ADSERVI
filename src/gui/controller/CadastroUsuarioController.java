@@ -2,21 +2,20 @@ package gui.controller;
 
 import java.util.List;
 
+import dados.controller.TblSetoresController;
 import dados.controller.TblUsuariosController;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import models.Setor;
 import models.Usuario;
+import services.SetorService;
 import services.UserService;
 
 public class CadastroUsuarioController {
@@ -55,16 +54,19 @@ public class CadastroUsuarioController {
 	private Button fechar;
 	@FXML
 	private Button cancelar;
+	@FXML
+	private Label setorDesc;
 
 	public void onCodigoTxtFieldKeyPressed(KeyEvent e) {
 		if (e.getCode().equals(KeyCode.ENTER) || e.getCode().equals(KeyCode.TAB)) {
 
-			Integer cod = Integer.parseInt(codigo.getText());
-			List tempList = TblUsuariosController.updateListaUsuarios();
+			Integer codUser = Integer.parseInt(codigo.getText());
+			List tempListUser = TblUsuariosController.updateListaUsuarios();
 
-			Usuario puxa = UserService.puxaUser(tempList, cod);
+			Usuario puxaUser = UserService.puxaUser(tempListUser, codUser);
+			
 
-			if (puxa != null) {
+			if (puxaUser != null) {
 				codigo.setDisable(true);
 				procuraUsuario.setDisable(true);
 				novoUsuario.setDisable(true);
@@ -72,13 +74,21 @@ public class CadastroUsuarioController {
 				excluirUsuario.setDisable(false);
 				cancelar.setDisable(false);
 
-				nome.setText(puxa.getNome());
-				login.setText(puxa.getLogin());
-				senha.setText(puxa.getSenha());
-				permissoes.setText(puxa.getPermissoes().toString());
-				email.setText(puxa.getEmail());
-				emailGerencia.setText(puxa.getEmailGerencia());
-				setor.setText(puxa.getSetor().toString());
+				nome.setText(puxaUser.getNome());
+				login.setText(puxaUser.getLogin());
+				senha.setText(puxaUser.getSenha());
+				permissoes.setText(puxaUser.getPermissoes().toString());
+				email.setText(puxaUser.getEmail());
+				emailGerencia.setText(puxaUser.getEmailGerencia());
+				setor.setText(puxaUser.getSetor().toString());
+				
+				Integer codSetor = Integer.parseInt(setor.getText());
+				List tempListSetor = TblSetoresController.updateListaSetores();
+
+				Setor puxaSetor = SetorService.puxaSetor(tempListSetor, codSetor);
+				
+				setorDesc.setText(puxaSetor.getNome());
+				
 			} else {
 				System.out.println("NAO ACHOU USUARIO!!");
 				Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -110,6 +120,7 @@ public class CadastroUsuarioController {
 		novoUsuario.setDisable(true);
 		excluirUsuario.setDisable(true);
 		cancelar.setDisable(false);
+		setorDesc.setText(null);
 	}
 
 	public void fechaJanela() {
@@ -167,6 +178,7 @@ public class CadastroUsuarioController {
 		emailGerencia.setText(null);
 		setor.setText(null);
 		cancelar.setDisable(true);
+		setorDesc.setText(null);
 	}
 	
 }
