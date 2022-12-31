@@ -8,6 +8,8 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -30,7 +32,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <ToolBar layoutX="382.0" layoutY="471.0" prefHeight="31.0" prefWidth="451.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <ToolBar layoutX="382.0" layoutY="471.0" prefHeight="34.0" prefWidth="509.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <items>
             <Label text="Usuário:">
                <font>
@@ -46,21 +48,63 @@
                <font>
                   <Font size="10.0" />
                </font>
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../imgs/18x18/trocausuario.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </Button>
             <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#onButtonLogoutAction" text="Logout">
                <font>
                   <Font size="10.0" />
                </font>
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../imgs/18x18/erro.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </Button>
             <MenuButton mnemonicParsing="false" text="Configurações">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Base" />
-                  <MenuItem fx:id="cadastroUsuario" mnemonicParsing="false" onAction="#onMenuItemCadastroUsuarioAction" text="Usuários" />
-                  <MenuItem fx:id="cadastroSetor" mnemonicParsing="false" onAction="#onMenuItemCadastroSetorAction" text="Setores" />
+                  <MenuItem mnemonicParsing="false" text="Base">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../imgs/18x18/config.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></MenuItem>
+                  <MenuItem fx:id="cadastroUsuario" mnemonicParsing="false" onAction="#onMenuItemCadastroUsuarioAction" text="Usuários">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../imgs/18x18/usuario.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></MenuItem>
+                  <MenuItem fx:id="cadastroSetor" mnemonicParsing="false" onAction="#onMenuItemCadastroSetorAction" text="Setores">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../imgs/18x18/conferencia.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></MenuItem>
                </items>
                <font>
                   <Font size="10.0" />
                </font>
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../imgs/18x18/config2.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </MenuButton>
             <Label text="Versão APP:">
                <font>
@@ -74,16 +118,30 @@
             </Label>
          </items>
       </ToolBar>
-      <ToolBar layoutY="471.0" prefHeight="31.0" prefWidth="116.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+      <ToolBar layoutY="471.0" prefHeight="34.0" prefWidth="128.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
         <items>
             <MenuButton mnemonicParsing="false" text="Acesso Rapido">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Pendências" />
+                  <MenuItem mnemonicParsing="false" text="Pendências">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../../bin/imgs/18x18/relatorio.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></MenuItem>
                   <MenuItem mnemonicParsing="false" text="Envio Docs" />
                </items>
                <font>
                   <Font size="10.0" />
                </font>
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../imgs/18x18/lista.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </MenuButton>
         </items>
       </ToolBar>

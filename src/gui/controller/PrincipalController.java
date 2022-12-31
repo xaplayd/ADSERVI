@@ -49,10 +49,13 @@ public class PrincipalController {
 
 	@FXML
 	public void onButtonChangeUserAction() {
+
 		Stage stage = (Stage) logoutBtn.getScene().getWindow();
-		stage.close();
+		stage.close(); 
+		
 		LoginController lg = new LoginController();
 		lg.novaJanela();
+ 
 	}
 
 	Stage stageCadastroUser = null;
@@ -86,7 +89,7 @@ public class PrincipalController {
 					Scene sceneCadastroUser = new Scene(parent);
 					stageCadastroUser.setTitle("Usuarios");
 					stageCadastroUser.setResizable(false);
-					stageCadastroUser.getIcons().add(new Image("/imgs/logo2.png"));
+					stageCadastroUser.getIcons().add(new Image("/imgs/18x18/usuario.png"));
 					stageCadastroUser.setScene(sceneCadastroUser);
 					stageCadastroUser.setOnHidden(we -> stageCadastroUser = null);
 					stageCadastroUser.show();
@@ -140,7 +143,7 @@ public class PrincipalController {
 					Scene sceneCadastroSetor = new Scene(parent);
 					stageCadastroSetor.setTitle("Setores");
 					stageCadastroSetor.setResizable(false);
-					stageCadastroSetor.getIcons().add(new Image("/imgs/logo2.png"));
+					stageCadastroSetor.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
 					stageCadastroSetor.setScene(sceneCadastroSetor);
 					stageCadastroSetor.setOnHidden(we -> stageCadastroSetor = null);
 					stageCadastroSetor.show();

@@ -7,15 +7,37 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.Tabela;
 import models.Usuario;
+import services.TblsService;
+
 
 public class TblUsuariosController {
-
+	
 public static List<Usuario> updateListaUsuarios() {
+	/*
+	 * 1 - Atualiza lista de tabelas, conforme tabela  temporaria
+	 * 2 - Atualiza lista de usuarios, conforme caminho da lista da tabela
+	 */
+	
+		Tabela tempTbl = new Tabela(1, null, null);
+		
+		List tempListTab = TblTblsController.updateListaTabela();
+		
+
+		for (Object x : tempListTab) {
+		
+			tempTbl = TblsService.puxaTabela(tempListTab, tempTbl.getCodigo());
+			
+		}
+		
+		String caminho = tempTbl.getCaminho();
 		
 		List<Usuario> listaDeUsuarios = new ArrayList<Usuario>();
-		File arquivoUsuarios = new File("src\\dados\\tblUsuarios.csv");
+		
+		File arquivoUsuarios = new File(caminho);
 
+		
 		try (BufferedReader tblUsuarios = new BufferedReader(new FileReader(arquivoUsuarios))) {
 			String usuario = tblUsuarios.readLine();
 			while (usuario != null) {
