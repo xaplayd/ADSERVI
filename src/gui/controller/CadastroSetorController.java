@@ -1,5 +1,6 @@
 package gui.controller;
 
+import java.io.File;
 import java.util.List;
 
 import dados.controller.TblSetoresController;
@@ -33,6 +34,8 @@ public class CadastroSetorController {
 	private TextField codigo;
 	@FXML
 	private TextField nome;
+	@FXML
+	private Integer modo = 0;  //modo 0 = neutro || modo 1 = em edição || modo 2 = novo//
 
 	@FXML
 	public void onCodigoTxtFieldKeyPressed(KeyEvent e) {
@@ -80,6 +83,9 @@ public class CadastroSetorController {
 		nome.setDisable(false);
 		salvarSetor.setDisable(false);
 		editarSetor.setDisable(true);
+		this.modo = 1;
+		
+		
 	}
 
 	public void excluirSetor() {
@@ -101,6 +107,26 @@ public class CadastroSetorController {
 	}
 
 	public void salvarSetor() {
+		
+		if(this.modo == 1) {
+			String tempCodigo = codigo.getText();
+			String tempNome = nome.getText();
+			
+			TblSetoresController.editaSetorNaLista(tempCodigo, tempNome);
+					
+		}else if(this.modo == 2) {
+			//criar modo de salvar novo//
+		}
+		this.modo = 0;
+		codigo.setDisable(true);
+		procuraSetor.setDisable(true);
+		nome.setDisable(true);
+		novoSetor.setDisable(true);
+		editarSetor.setDisable(false);
+		excluirSetor.setDisable(false);
+		cancelarSetor.setDisable(false);
+		salvarSetor.setDisable(true);
+		
 
 	}
 
