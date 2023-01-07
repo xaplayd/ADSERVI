@@ -1,12 +1,11 @@
 package gui.controller;
 
-import java.io.File;
 import java.util.List;
-
 import dados.controller.TblSetoresController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -35,7 +34,7 @@ public class CadastroSetorController {
 	@FXML
 	private TextField nome;
 	@FXML
-	private Integer modo = 0;  //modo 0 = neutro || modo 1 = em edição || modo 2 = novo//
+	private Integer modo = 0; // modo 0 = neutro || modo 1 = em edição || modo 2 = novo
 
 	@FXML
 	public void onCodigoTxtFieldKeyPressed(KeyEvent e) {
@@ -62,9 +61,7 @@ public class CadastroSetorController {
 				alert.setHeaderText("Não foi possível achar nenhum setor pelo código informado!");
 				alert.showAndWait();
 			}
-
 		}
-
 	}
 
 	public void novoSetor() {
@@ -76,7 +73,7 @@ public class CadastroSetorController {
 		salvarSetor.setDisable(false);
 		cancelarSetor.setDisable(false);
 		nome.setDisable(false);
-
+		this.modo = 2;
 	}
 
 	public void editarSetor() {
@@ -84,11 +81,33 @@ public class CadastroSetorController {
 		salvarSetor.setDisable(false);
 		editarSetor.setDisable(true);
 		this.modo = 1;
-		
-		
 	}
 
 	public void excluirSetor() {
+		String tempCodigo = codigo.getText();
+		System.out.println("EXCLUSÃO DE DADOS ATIVA!!");
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+		alert.setTitle("Confirmação:");
+		alert.setHeaderText("Realmente deseja excluir o setor selecionado?");
+		alert.showAndWait();
+		if (alert.getResult() == ButtonType.YES) {
+			String processa = TblSetoresController.deletaSetorNaLista(tempCodigo);
+
+			if (processa == "sucesso") {
+				procuraSetor.setDisable(false);
+				novoSetor.setDisable(false);
+				editarSetor.setDisable(true);
+				excluirSetor.setDisable(true);
+				salvarSetor.setDisable(true);
+				fecharSetor.setDisable(false);
+				cancelarSetor.setDisable(true);
+				codigo.setDisable(false);
+				codigo.setText("");
+				nome.setDisable(true);
+				nome.setText("");
+				this.modo = 0;
+			}
+		}
 
 	}
 
@@ -103,19 +122,21 @@ public class CadastroSetorController {
 		salvarSetor.setDisable(true);
 		codigo.setText(null);
 		nome.setText(null);
-
+		this.modo = 0;
 	}
 
 	public void salvarSetor() {
-		
-		if(this.modo == 1) {
+
+		if (this.modo == 1) {
 			String tempCodigo = codigo.getText();
 			String tempNome = nome.getText();
-			
 			TblSetoresController.editaSetorNaLista(tempCodigo, tempNome);
-					
-		}else if(this.modo == 2) {
-			//criar modo de salvar novo//
+
+		} else if (this.modo == 2) {
+			String tempNome = nome.getText();
+			String retornoNovaChave = TblSetoresController.insereSetorNaLista(tempNome);
+			codigo.setText(retornoNovaChave);
+
 		}
 		this.modo = 0;
 		codigo.setDisable(true);
@@ -126,7 +147,6 @@ public class CadastroSetorController {
 		excluirSetor.setDisable(false);
 		cancelarSetor.setDisable(false);
 		salvarSetor.setDisable(true);
-		
 
 	}
 
