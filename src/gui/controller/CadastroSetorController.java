@@ -1,12 +1,20 @@
 package gui.controller;
 
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
+
 import dados.controller.TblSetoresController;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -54,13 +62,18 @@ public class CadastroSetorController {
 				excluirSetor.setDisable(false);
 				cancelarSetor.setDisable(false);
 
-			} else {
+			} else if(cod == null){
+			 //cria pro null aqui depois cabçao
+			} else{
+			
+			{
 				System.out.println("NAO ACHOU SETOR!!");
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setTitle("Setor não encontrado");
 				alert.setHeaderText("Não foi possível achar nenhum setor pelo código informado!");
 				alert.showAndWait();
 			}
+		}
 		}
 	}
 
@@ -154,6 +167,38 @@ public class CadastroSetorController {
 
 		Stage stage = (Stage) fecharSetor.getScene().getWindow();
 		stage.close();
+	}
+	
+	
+	Stage stagePesquisaSetor = null;
+	
+	PesquisaSetorController psc = new PesquisaSetorController();
+	
+	@FXML
+	public void onButtonPesquisaSetorAction() {
+		
+		
+		if(stagePesquisaSetor == null) {
+			stagePesquisaSetor = new Stage();
+			
+			try {
+				Parent parent = FXMLLoader.load(getClass().getResource("/gui/PesquisaSetor.fxml"));
+				Scene scenePesquisaSetor = new Scene(parent);
+				stagePesquisaSetor.setTitle("Pesquisa Setores");
+				stagePesquisaSetor.setResizable(true);
+				stagePesquisaSetor.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
+				stagePesquisaSetor.setScene(scenePesquisaSetor);
+				stagePesquisaSetor.setOnHidden(we -> stagePesquisaSetor = null);
+				stagePesquisaSetor.show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
+		} else {
+			stagePesquisaSetor.toFront();	
+		}
+		
+		//System.out.println(psc.onItemSelected());
+		
 	}
 
 }

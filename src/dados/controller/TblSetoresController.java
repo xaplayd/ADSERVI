@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import models.Setor;
 import models.Tabela;
@@ -209,4 +211,31 @@ public class TblSetoresController {
 		}
 	}
 
+	public static ObservableList<Setor> pesquisaDeSetores() {
+
+
+		String tempCaminho = puxaDiretorioTblSetores();
+		
+
+		ObservableList<Setor> observableList = FXCollections.observableArrayList();
+		File arquivoSetores = new File(tempCaminho);
+
+		try (BufferedReader tblSetores = new BufferedReader(new FileReader(arquivoSetores))) {
+			String setor = tblSetores.readLine();
+
+			while (setor != null) {
+				String[] fields = setor.split(";");
+				Integer codigo = Integer.parseInt(fields[0]);
+				String nome = fields[1];
+				observableList.add(new Setor(codigo, nome));
+				setor = tblSetores.readLine();
+			}
+		} catch (IOException e) {
+			e.getMessage();
+		}
+	
+		return observableList;
+	}
+
+	
 }

@@ -79,7 +79,7 @@ public class PrincipalController {
 		if (validado == 1) {
 			System.out.println("PERMISSÃO FUNCIONOU!");
 			
-			CadastroUsuarioController cuc = new CadastroUsuarioController();;
+			CadastroUsuarioController cuc = new CadastroUsuarioController();
 			
 			if(stageCadastroUser == null) {
 				stageCadastroUser = new Stage();

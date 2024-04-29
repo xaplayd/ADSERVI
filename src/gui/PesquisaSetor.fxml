@@ -12,24 +12,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.PesquisaSetorController">
    <children>
       <TabPane prefHeight="157.0" prefWidth="521.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0">
         <tabs>
-          <Tab text="Localizar">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="97.0" prefWidth="458.0">
-                     <children>
-                        <Label layoutX="8.0" layoutY="28.0" text="Campo:" />
-                        <Label layoutX="13.0" layoutY="75.0" text="Valor:" />
-                        <TextField layoutX="57.0" layoutY="71.0" prefHeight="25.0" prefWidth="321.0" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="91.0" AnchorPane.topAnchor="71.0" />
-                        <ComboBox layoutX="57.0" layoutY="24.0" prefHeight="25.0" prefWidth="321.0" AnchorPane.bottomAnchor="79.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="91.0" AnchorPane.topAnchor="24.0" />
-                        <Button layoutX="388.0" layoutY="71.0" mnemonicParsing="false" text="Pesquisar" AnchorPane.rightAnchor="14.0" />
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
           <Tab text="Filtro Simples">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="140.0" prefWidth="466.0">
@@ -82,19 +68,18 @@
       </TabPane>
       <Pane layoutX="465.0" prefHeight="157.0" prefWidth="79.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button layoutX="10.0" layoutY="21.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="61.0" text="Ok" />
+            <Button fx:id="okButton" layoutX="10.0" layoutY="21.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="61.0" text="Ok" />
             <Button layoutX="10.0" layoutY="54.0" mnemonicParsing="false" text="Cancelar" />
          </children>
       </Pane>
       <Separator layoutY="159.0" prefHeight="0.0" prefWidth="601.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <Separator layoutX="519.0" orientation="VERTICAL" prefHeight="157.0" prefWidth="6.0" AnchorPane.rightAnchor="76.0" AnchorPane.topAnchor="0.0" />
-      <TableView layoutY="161.0" prefHeight="213.0" prefWidth="601.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="161.0">
-        <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
-        </columns>
-      </TableView>
+      <TableView id="tabelita" fx:id="tabelita" layoutY="161.0" onMouseClicked="#onItemSelected" prefHeight="213.0" prefWidth="601.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="161.0">
+         <columns>
+            <TableColumn fx:id="colunaCod" editable="false" prefWidth="57.0" text="Cod." />
+            <TableColumn fx:id="colunaNome" editable="false" prefWidth="543.0" text="Nome" />
+         </columns></TableView>
       <Label layoutY="386.0" text="Seleção:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
-      <TextField disable="true" layoutX="44.0" layoutY="374.0" prefHeight="3.0" prefWidth="44.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="44.0" />
+      <TextField fx:id="itemSelected" disable="true" layoutX="44.0" layoutY="374.0" prefHeight="3.0" prefWidth="44.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="44.0" />
    </children>
 </AnchorPane>
