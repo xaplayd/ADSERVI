@@ -59,35 +59,36 @@ public class CadastroUsuarioController {
 
 	public void onCodigoTxtFieldKeyPressed(KeyEvent e) {
 		if (e.getCode().equals(KeyCode.ENTER) || e.getCode().equals(KeyCode.TAB)) {
-
-			Integer codUser = Integer.parseInt(codigo.getText());
-			List tempListUser = TblUsuariosController.updateListaUsuarios();
-
-			Usuario puxaUser = UserService.puxaUser(tempListUser, codUser);
 			
+			if(codigo.getText() == "") {
 
-			if (puxaUser != null) {
-				codigo.setDisable(true);
-				procuraUsuario.setDisable(true);
-				novoUsuario.setDisable(true);
-				editarUsuario.setDisable(false);
-				excluirUsuario.setDisable(false);
-				cancelar.setDisable(false);
-
-				nome.setText(puxaUser.getNome());
-				login.setText(puxaUser.getLogin());
-				senha.setText(puxaUser.getSenha());
-				permissoes.setText(puxaUser.getPermissoes().toString());
-				email.setText(puxaUser.getEmail());
-				emailGerencia.setText(puxaUser.getEmailGerencia());
-				setor.setText(puxaUser.getSetor().toString());
-				
-				Integer codSetor = Integer.parseInt(setor.getText());
-				List tempListSetor = TblSetoresController.updateListaSetores();
-
-				Setor puxaSetor = SetorService.puxaSetor(tempListSetor, codSetor);
-				
-				setorDesc.setText(puxaSetor.getNome());
+			} else {
+			
+			Integer codUser = Integer.parseInt(codigo.getText());
+			List <Usuario>tempListUser = TblUsuariosController.updateListaUsuarios();
+			Usuario puxaUser = UserService.puxaUser(tempListUser, codUser);
+				if (puxaUser != null) {
+					codigo.setDisable(true);
+					procuraUsuario.setDisable(true);
+					novoUsuario.setDisable(true);
+					editarUsuario.setDisable(false);
+					excluirUsuario.setDisable(false);
+					cancelar.setDisable(false);
+	
+					nome.setText(puxaUser.getNome());
+					login.setText(puxaUser.getLogin());
+					senha.setText(puxaUser.getSenha());
+					permissoes.setText(puxaUser.getPermissoes().toString());
+					email.setText(puxaUser.getEmail());
+					emailGerencia.setText(puxaUser.getEmailGerencia());
+					setor.setText(puxaUser.getSetor().toString());
+					
+					Integer codSetor = Integer.parseInt(setor.getText());
+					List<Setor>tempListSetor = TblSetoresController.updateListaSetores();
+	
+					Setor puxaSetor = SetorService.puxaSetor(tempListSetor, codSetor);
+					
+					setorDesc.setText(puxaSetor.getNome());
 				
 			} else {
 				System.out.println("NAO ACHOU USUARIO!!");
@@ -96,7 +97,7 @@ public class CadastroUsuarioController {
 				alert.setHeaderText("Não foi possível achar nenhum usuário pelo código informado!");
 				alert.showAndWait();
 			}
-
+			}
 		}
 
 	}

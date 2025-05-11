@@ -6,13 +6,12 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.PesquisaSetorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.PesquisaSetorController">
    <children>
       <TabPane prefHeight="157.0" prefWidth="521.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -24,12 +23,12 @@
                         <Label layoutX="58.0" layoutY="43.0" text="Condição:" />
                         <Label layoutX="81.0" layoutY="72.0" text="Valor:" />
                         <Label layoutX="32.0" layoutY="100.0" text="Filtro Corrente:" />
-                        <TextField layoutX="120.0" layoutY="96.0" prefHeight="25.0" prefWidth="202.0" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="148.0" AnchorPane.topAnchor="68.0" />
+                        <TextField fx:id="valorParaFiltro" layoutX="120.0" layoutY="96.0" prefHeight="25.0" prefWidth="202.0" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="148.0" AnchorPane.topAnchor="68.0" />
                         <TextField disable="true" layoutX="120.0" layoutY="96.0" prefHeight="25.0" prefWidth="202.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="147.0" AnchorPane.topAnchor="96.0" />
-                        <ComboBox layoutX="119.0" layoutY="10.0" prefHeight="25.0" prefWidth="202.0" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="119.0" AnchorPane.rightAnchor="148.0" AnchorPane.topAnchor="10.0" />
+                        <ComboBox fx:id="campoParaFiltro" layoutX="119.0" layoutY="10.0" prefHeight="25.0" prefWidth="202.0" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="119.0" AnchorPane.rightAnchor="148.0" AnchorPane.topAnchor="10.0" />
                         <ComboBox layoutX="119.0" layoutY="39.0" prefHeight="25.0" prefWidth="201.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="119.0" AnchorPane.rightAnchor="148.0" AnchorPane.topAnchor="39.0" />
-                        <Button layoutX="328.0" layoutY="97.0" mnemonicParsing="false" text="Adicionar" AnchorPane.rightAnchor="74.0" />
-                        <Button disable="true" layoutX="402.0" layoutY="97.0" mnemonicParsing="false" text="Limpar" AnchorPane.rightAnchor="14.0" />
+                        <Button fx:id="adicionar" layoutX="328.0" layoutY="97.0" mnemonicParsing="false" text="Adicionar" AnchorPane.rightAnchor="74.0" />
+                        <Button fx:id="limpar" layoutX="402.0" layoutY="97.0" mnemonicParsing="false" text="Limpar" AnchorPane.rightAnchor="14.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -74,11 +73,7 @@
       </Pane>
       <Separator layoutY="159.0" prefHeight="0.0" prefWidth="601.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <Separator layoutX="519.0" orientation="VERTICAL" prefHeight="157.0" prefWidth="6.0" AnchorPane.rightAnchor="76.0" AnchorPane.topAnchor="0.0" />
-      <TableView id="tabelita" fx:id="tabelita" layoutY="161.0" onMouseClicked="#onItemSelected" prefHeight="213.0" prefWidth="601.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="161.0">
-         <columns>
-            <TableColumn fx:id="colunaCod" editable="false" prefWidth="57.0" text="Cod." />
-            <TableColumn fx:id="colunaNome" editable="false" prefWidth="543.0" text="Nome" />
-         </columns></TableView>
+      <TableView id="tabelita" fx:id="tabelita" layoutY="161.0" prefHeight="213.0" prefWidth="601.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="161.0" />
       <Label layoutY="386.0" text="Seleção:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
       <TextField fx:id="itemSelected" disable="true" layoutX="44.0" layoutY="374.0" prefHeight="3.0" prefWidth="44.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="44.0" />
    </children>

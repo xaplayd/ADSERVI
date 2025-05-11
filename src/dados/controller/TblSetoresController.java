@@ -1,241 +1,225 @@
 package dados.controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
+import config.TabelaConfig;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
+import javafx.util.Callback;
 import models.Setor;
-import models.Tabela;
-import services.TblsService;
 
 public class TblSetoresController {
 
-	private static Integer tabelaNumero = 2;
-
-	public static String puxaDiretorioTblSetores() {
-
-		/* 1 - Atualiza lista de tabelas, conforme tabela temporaria */
-
-		Tabela tempTbl = new Tabela(tabelaNumero, null, null);
-
-		List tempListTab = TblTblsController.updateListaTabela();
-
-		for (Object x : tempListTab) {
-			tempTbl = TblsService.puxaTabela(tempListTab, tempTbl.getCodigo());
+	// Atualiza o nome da tabela de usuarios conforme o dicionário de tabelas, por
+	// padrão, tabela usuário é a 1
+	public static String updateNomeTabela() {
+		Integer idTabela = 2;
+		String nomeTabela = "";
+		List<TabelaConfig> tempListTab = DicTabelasController.updateListaTabela();
+		for (TabelaConfig x : tempListTab) {
+			if (x.getNomeid() == idTabela) {
+				nomeTabela = x.getNomeTabela();
+			}
 		}
-
-		String caminho = tempTbl.getCaminho();
-
-		return caminho;
+		return nomeTabela.toString();
 	}
 
+	// Retorna lista com todos os usuarios do DB
 	public static List<Setor> updateListaSetores() {
-
-		/* 2 - Atualiza lista de setores, conforme caminho da lista da tabela */
-
-		String tempCaminho = puxaDiretorioTblSetores();
-
+		String tbl = TblSetoresController.updateNomeTabela();
+		Setor tempSetor = null;
 		List<Setor> listaDeSetores = new ArrayList<Setor>();
-		File arquivoSetores = new File(tempCaminho);
-
-		try (BufferedReader tblSetores = new BufferedReader(new FileReader(arquivoSetores))) {
-			String setor = tblSetores.readLine();
-
-			while (setor != null) {
-				String[] fields = setor.split(";");
-				Integer codigo = Integer.parseInt(fields[0]);
-				String nome = fields[1];
-				listaDeSetores.add(new Setor(codigo, nome));
-				setor = tblSetores.readLine();
+		Connection con = ConnectionController.getConexaoMySQL();
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM " + tbl);
+			while (rs.next()) {
+				Integer id = rs.getInt("idsetor");
+				String nome = rs.getString("nomesetor");
+				tempSetor = new Setor(id, nome);
+				listaDeSetores.add(tempSetor);
 			}
-		} catch (IOException e) {
+			rs.close();
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
 			e.getMessage();
 		}
 		return listaDeSetores;
 	}
 
-	public static String insereSetorNaLista(String nome) {
+	// Insere um setor na tabela
+	public static Setor insereSetorNaLista(String tempNome) {
+		Setor tempSetor = new Setor();
+		String tbl = TblSetoresController.updateNomeTabela();
+		Connection con = ConnectionController.getConexaoMySQL();
+		try {
+			PreparedStatement stmt = con.prepareStatement("INSERT INTO " + tbl + "(nomesetor) VALUES (?)",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, tempNome);
+			stmt.execute();
+			ResultSet rs = stmt.getGeneratedKeys();
+			Integer id = 0;
 
-		File arquivoOriginal = new File(puxaDiretorioTblSetores());
-		String tempCaminho = arquivoOriginal.getParent();
-		File arquivoNovo = new File(tempCaminho + "\\tempTblSetores.crypt");
-		String codList = "";
-		String nomeList = "";
-		String novaChaveStr = "";
-
-		try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(arquivoNovo, true)))) {
-			Scanner x = new Scanner(new File(puxaDiretorioTblSetores()));
-			x.useDelimiter("[;\n]");
-
-			while (x.hasNext()) {
-				codList = x.next();
-				nomeList = x.next();
-				pw.print(codList + ";" + nomeList + "\n");
+			if (rs.next()) {
+				id = Integer.parseInt(rs.getString(1));
 			}
-
-			Integer ultimaChave = Integer.parseInt(codList);
-			Integer novaChaveInt = ultimaChave + 1;
-			novaChaveStr = String.valueOf(novaChaveInt);
-			pw.print(novaChaveStr + ";" + nome + "\n");
-
-			x.close();
-			pw.flush();
-			pw.close();
-			arquivoOriginal.delete();
-			File dump = new File(puxaDiretorioTblSetores());
-			arquivoNovo.renameTo(dump);
-
-			System.out.println("SALVO COM SUCESSO!!");
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Sucesso!");
-			alert.setHeaderText("Salvo com Sucesso!");
-			alert.showAndWait();
-
-		} catch (IOException e) {
+			tempSetor.setCodigo(id);
+			tempSetor.setNome(tempNome);
+			rs.close();
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
 			e.getMessage();
-			System.out.println("ERRO AO SALVAR!!");
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Erro!");
-			alert.setHeaderText("Processo de salvamento interrompido devido a erro!");
-			alert.showAndWait();
 		}
-		return novaChaveStr;
+		return tempSetor;
 	}
 
-	public static String deletaSetorNaLista(String codigo) {
-		
-		
-		File arquivoOriginal = new File(puxaDiretorioTblSetores());
-		String tempCaminho = arquivoOriginal.getParent();
-		File arquivoNovo = new File(tempCaminho + "\\tempTblSetores.crypt");
-		String codList = "";
-		String nomeList = "";
-
-		try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(arquivoNovo, true)))) {
-			Scanner x = new Scanner(new File(puxaDiretorioTblSetores()));
-			x.useDelimiter("[;\n]");
-
-			while (x.hasNext()) {
-				codList = x.next();
-				nomeList = x.next();
-				if (codList.equals(codigo)) {
-					pw.print("");
-
-				} else {
-					pw.print(codList + ";" + nomeList + "\n");
-				}
-
-			}
-			x.close();
-			pw.flush();
-			pw.close();
-			arquivoOriginal.delete();
-			File dump = new File(puxaDiretorioTblSetores());
-			arquivoNovo.renameTo(dump);
-
-			System.out.println("EXCLUIDO COM SUCESSO!!");
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Sucesso!");
-			alert.setHeaderText("Excluido com Sucesso!");
-			alert.showAndWait();
-			
-			String situacao = "sucesso";
-			return situacao;
-
-		} catch (IOException e) {
+	// Edita setor na tabela
+	public static void editaSetorNaLista(String id, String nome) {
+		String tbl = TblSetoresController.updateNomeTabela();
+		Connection con = ConnectionController.getConexaoMySQL();
+		try {
+			PreparedStatement stmt = con.prepareStatement("UPDATE " + tbl + " SET nomesetor = (?) WHERE idsetor = (?)",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, nome);
+			stmt.setString(2, id);
+			stmt.execute();
+			ResultSet rs = stmt.getGeneratedKeys();
+			rs.close();
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
 			e.getMessage();
-			System.out.println("ERRO AO EXCLUIR!!");
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Erro!");
-			alert.setHeaderText("Processo de exclusão interrompido devido a erro!");
-			alert.showAndWait();
-			String situacao = "erro";
-			return situacao;
-		}
-
-	}
-
-	public static void editaSetorNaLista(String codigo, String nome) {
-
-		File arquivoOriginal = new File(puxaDiretorioTblSetores());
-		String tempCaminho = arquivoOriginal.getParent();
-		File arquivoNovo = new File(tempCaminho + "\\tempTblSetores.crypt");
-		String codList = "";
-		String nomeList = "";
-
-		try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(arquivoNovo, true)))) {
-			Scanner x = new Scanner(new File(puxaDiretorioTblSetores()));
-			x.useDelimiter("[;\n]");
-
-			while (x.hasNext()) {
-				codList = x.next();
-				nomeList = x.next();
-				if (codList.equals(codigo)) {
-					pw.print(codigo + ";" + nome + "\n");
-
-				} else {
-					pw.print(codList + ";" + nomeList + "\n");
-				}
-
-			}
-			x.close();
-			pw.flush();
-			pw.close();
-			arquivoOriginal.delete();
-			File dump = new File(puxaDiretorioTblSetores());
-			arquivoNovo.renameTo(dump);
-
-			System.out.println("SALVO COM SUCESSO!!");
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Sucesso!");
-			alert.setHeaderText("Salvo com Sucesso!");
-			alert.showAndWait();
-
-		} catch (IOException e) {
-			e.getMessage();
-			System.out.println("ERRO AO SALVAR!!");
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Erro!");
-			alert.setHeaderText("Processo de salvamento interrompido devido a erro!");
-			alert.showAndWait();
 		}
 	}
 
+	// Deleta setor na tabela
+	public static String deletaSetorNaLista(String id) {
+		String tbl = TblSetoresController.updateNomeTabela();
+		Connection con = ConnectionController.getConexaoMySQL();
+		try {
+			PreparedStatement stmt = con.prepareStatement("DELETE FROM " + tbl + " WHERE idsetor = (?)",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, id);
+			stmt.execute();
+			ResultSet rs = stmt.getGeneratedKeys();
+			rs.close();
+			stmt.close();
+			con.close();
+			return "sucesso";
+		} catch (SQLException e) {
+			e.getMessage();
+		}
+		return "sem sucesso";
+	}
+
+	// Observable list para pesquisa
 	public static ObservableList<Setor> pesquisaDeSetores() {
-
-
-		String tempCaminho = puxaDiretorioTblSetores();
-		
-
 		ObservableList<Setor> observableList = FXCollections.observableArrayList();
-		File arquivoSetores = new File(tempCaminho);
-
-		try (BufferedReader tblSetores = new BufferedReader(new FileReader(arquivoSetores))) {
-			String setor = tblSetores.readLine();
-
-			while (setor != null) {
-				String[] fields = setor.split(";");
-				Integer codigo = Integer.parseInt(fields[0]);
-				String nome = fields[1];
-				observableList.add(new Setor(codigo, nome));
-				setor = tblSetores.readLine();
+		String tbl = TblSetoresController.updateNomeTabela();
+		Setor tempSetor = null;
+		Connection con = ConnectionController.getConexaoMySQL();
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM " + tbl);
+			while (rs.next()) {
+				Integer id = rs.getInt("idsetor");
+				String nome = rs.getString("nomesetor");
+				tempSetor = new Setor(id, nome);
+				observableList.add(tempSetor);
 			}
-		} catch (IOException e) {
+			rs.close();
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
 			e.getMessage();
 		}
-	
 		return observableList;
 	}
 
+	// Retorna colunas e quantidade
+	public static TableView estruturaTblDeSetores() {
+
+		ObservableList<ObservableList> data = FXCollections.observableArrayList();
+		String tbl = TblSetoresController.updateNomeTabela();
+		Setor tempSetor = null;
+		Connection con = ConnectionController.getConexaoMySQL();
+		TableView tableview = new TableView<>();
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM " + tbl);
+
+			for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+				final int j = i;
+				TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
+
+				col.setCellValueFactory(
+						new Callback<CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
+
+							public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
+								return new SimpleStringProperty(param.getValue().get(j).toString());
+							}
+						});
+
+				tableview.getColumns().addAll(col);
+				System.out.println("Column [" + i + "] ");
+			}
+
+			while (rs.next()) {
+				// Iterate Row
+				ObservableList<String> row = FXCollections.observableArrayList();
+				for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+					// Iterate Column
+					row.add(rs.getString(i));
+				}
+				System.out.println("Row [1] added " + row);
+				data.add(row);
+			}
+			// FINALLY ADDED TO TableView
+			tableview.setItems(data);
+			rs.close();
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			e.getMessage();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error on Building Data");
+		}
+		return tableview;
+	}
+
+	public static ObservableList<String> obterNomesDasColunas() {
+	    ObservableList<String> nomesDasColunas = FXCollections.observableArrayList();
+	    String tbl = TblSetoresController.updateNomeTabela();
+	    
+	    try (
+	        Connection con = ConnectionController.getConexaoMySQL();
+	        Statement stmt = con.createStatement();
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM " + tbl);
+	    ) {
+	        int colCount = rs.getMetaData().getColumnCount();
+	        for (int i = 1; i <= colCount; i++) {
+	            nomesDasColunas.add(rs.getMetaData().getColumnName(i));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        System.out.println("Erro ao obter nomes das colunas.");
+	    }
+
+	    return nomesDasColunas;
+	}
 	
 }

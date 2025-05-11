@@ -1,11 +1,8 @@
 package gui.controller;
 
-import java.net.URL;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import dados.controller.TblSetoresController;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -47,33 +44,27 @@ public class CadastroSetorController {
 	@FXML
 	public void onCodigoTxtFieldKeyPressed(KeyEvent e) {
 		if (e.getCode().equals(KeyCode.ENTER) || e.getCode().equals(KeyCode.TAB)) {
-
-			Integer cod = Integer.parseInt(codigo.getText());
-			List tempList = TblSetoresController.updateListaSetores();
-
-			Setor puxa = SetorService.puxaSetor(tempList, cod);
-
-			if (puxa != null) {
-				nome.setText(puxa.getNome());
-				codigo.setDisable(true);
-				procuraSetor.setDisable(true);
-				novoSetor.setDisable(true);
-				editarSetor.setDisable(false);
-				excluirSetor.setDisable(false);
-				cancelarSetor.setDisable(false);
-
-			} else if(cod == null){
-			 //cria pro null aqui depois cabçao
-			} else{
-			
-			{
-				System.out.println("NAO ACHOU SETOR!!");
-				Alert alert = new Alert(Alert.AlertType.ERROR);
-				alert.setTitle("Setor não encontrado");
-				alert.setHeaderText("Não foi possível achar nenhum setor pelo código informado!");
-				alert.showAndWait();
+			if (codigo.getText() == "") {
+			} else {
+				Integer cod = Integer.parseInt(codigo.getText());
+				List<Setor> tempList = TblSetoresController.updateListaSetores();
+				Setor puxa = SetorService.puxaSetor(tempList, cod);
+				if (puxa != null) {
+					nome.setText(puxa.getNome());
+					codigo.setDisable(true);
+					procuraSetor.setDisable(true);
+					novoSetor.setDisable(true);
+					editarSetor.setDisable(false);
+					excluirSetor.setDisable(false);
+					cancelarSetor.setDisable(false);
+				} else {
+					System.out.println("NAO ACHOU SETOR!!");
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.setTitle("Setor não encontrado");
+					alert.setHeaderText("Não foi possível achar nenhum setor pelo código informado!");
+					alert.showAndWait();
+				}
 			}
-		}
 		}
 	}
 
@@ -97,31 +88,31 @@ public class CadastroSetorController {
 	}
 
 	public void excluirSetor() {
-		String tempCodigo = codigo.getText();
-		System.out.println("EXCLUSÃO DE DADOS ATIVA!!");
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
-		alert.setTitle("Confirmação:");
-		alert.setHeaderText("Realmente deseja excluir o setor selecionado?");
-		alert.showAndWait();
-		if (alert.getResult() == ButtonType.YES) {
-			String processa = TblSetoresController.deletaSetorNaLista(tempCodigo);
-
-			if (processa == "sucesso") {
-				procuraSetor.setDisable(false);
-				novoSetor.setDisable(false);
-				editarSetor.setDisable(true);
-				excluirSetor.setDisable(true);
-				salvarSetor.setDisable(true);
-				fecharSetor.setDisable(false);
-				cancelarSetor.setDisable(true);
-				codigo.setDisable(false);
-				codigo.setText("");
-				nome.setDisable(true);
-				nome.setText("");
-				this.modo = 0;
-			}
-		}
-
+		
+		  String tempCodigo = codigo.getText();
+		  System.out.println("EXCLUSÃO DE DADOS ATIVA!!"); 
+		  Alert alert = new
+		  Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+		  alert.setTitle("Confirmação:");
+		  alert.setHeaderText("Realmente deseja excluir o setor selecionado?");
+		  alert.showAndWait(); 
+		  if (alert.getResult() == ButtonType.YES) { 
+			  String processa = TblSetoresController.deletaSetorNaLista(tempCodigo);
+		  
+		  if (processa == "sucesso") { 
+			  procuraSetor.setDisable(false);
+			  novoSetor.setDisable(false); 
+			  editarSetor.setDisable(true);
+			  excluirSetor.setDisable(true); 
+			  salvarSetor.setDisable(true);
+			  fecharSetor.setDisable(false); 
+			  cancelarSetor.setDisable(true);
+			  codigo.setDisable(false); 
+			  codigo.setText(""); 
+			  nome.setDisable(true);
+			  nome.setText(""); 
+			  this.modo = 0; } }
+		 
 	}
 
 	public void cancelarSetor() {
@@ -139,17 +130,14 @@ public class CadastroSetorController {
 	}
 
 	public void salvarSetor() {
-
-		if (this.modo == 1) {
-			String tempCodigo = codigo.getText();
+		  if (this.modo == 1) { 
+			  String tempCodigo = codigo.getText(); 
+			  String tempNome =nome.getText(); 
+			  TblSetoresController.editaSetorNaLista(tempCodigo, tempNome);
+		  } else if (this.modo == 2) {
 			String tempNome = nome.getText();
-			TblSetoresController.editaSetorNaLista(tempCodigo, tempNome);
-
-		} else if (this.modo == 2) {
-			String tempNome = nome.getText();
-			String retornoNovaChave = TblSetoresController.insereSetorNaLista(tempNome);
-			codigo.setText(retornoNovaChave);
-
+			Setor novoSetor = TblSetoresController.insereSetorNaLista(tempNome);
+			codigo.setText(novoSetor.getCodigo().toString());
 		}
 		this.modo = 0;
 		codigo.setDisable(true);
@@ -160,7 +148,6 @@ public class CadastroSetorController {
 		excluirSetor.setDisable(false);
 		cancelarSetor.setDisable(false);
 		salvarSetor.setDisable(true);
-
 	}
 
 	public void fecharSetor() {
@@ -168,37 +155,73 @@ public class CadastroSetorController {
 		Stage stage = (Stage) fecharSetor.getScene().getWindow();
 		stage.close();
 	}
-	
-	
+
 	Stage stagePesquisaSetor = null;
-	
+
 	PesquisaSetorController psc = new PesquisaSetorController();
-	
+
 	@FXML
 	public void onButtonPesquisaSetorAction() {
-		
-		
-		if(stagePesquisaSetor == null) {
+
+		if (stagePesquisaSetor == null) {
 			stagePesquisaSetor = new Stage();
-			
+
 			try {
-				Parent parent = FXMLLoader.load(getClass().getResource("/gui/PesquisaSetor.fxml"));
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
+	            Parent parent = loader.load();
+
+	            // Obtém o controller da nova janela
+	            psc = loader.getController();
+
+	            // Passa a referência do controller para atualizar a string após a seleção
+	           
+
+	            Scene scenePesquisaSetor = new Scene(parent);
+	            stagePesquisaSetor.setTitle("Pesquisa Setores");
+	            stagePesquisaSetor.setResizable(true);
+	            stagePesquisaSetor.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
+	            stagePesquisaSetor.setScene(scenePesquisaSetor);
+
+	            // Defina o que acontece quando a janela for fechada
+	            stagePesquisaSetor.setOnHidden(event -> {
+	                // Aqui você pega a string da nova janela
+	                String setorSelecionado = psc.getSetorSelecionado();
+	                System.out.println("Setor Selecionado: " + setorSelecionado);
+
+	                // Agora você pode fazer o que quiser com essa string
+	                if (setorSelecionado != null) {
+	                    codigo.setText(setorSelecionado);
+	                }
+	                stagePesquisaSetor = null;
+	                codigo.requestFocus();
+	            });
+	 
+	            stagePesquisaSetor.show();
+				
+				
+				
+				
+				
+				
+				
+				
+				/*Parent parent = FXMLLoader.load(getClass().getResource("/gui/Pesquisa.fxml"));
 				Scene scenePesquisaSetor = new Scene(parent);
 				stagePesquisaSetor.setTitle("Pesquisa Setores");
 				stagePesquisaSetor.setResizable(true);
 				stagePesquisaSetor.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
 				stagePesquisaSetor.setScene(scenePesquisaSetor);
 				stagePesquisaSetor.setOnHidden(we -> stagePesquisaSetor = null);
-				stagePesquisaSetor.show();
+				stagePesquisaSetor.show();*/
 			} catch (Exception e) {
 				e.printStackTrace();
-			}	
+			}
 		} else {
-			stagePesquisaSetor.toFront();	
+			stagePesquisaSetor.toFront();
 		}
-		
-		//System.out.println(psc.onItemSelected());
-		
+
+		// System.out.println(psc.onItemSelected());
+
 	}
 
 }
