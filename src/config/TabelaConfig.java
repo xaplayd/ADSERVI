@@ -6,9 +6,10 @@ public class TabelaConfig {
 
 	private Integer nomeid;
 	private String nomeTabela;
-	
-	public TabelaConfig() {}
-	
+
+	public TabelaConfig() {
+	}
+
 	public TabelaConfig(Integer nomeid, String nomeTabela) {
 		super();
 		this.nomeid = nomeid;
@@ -47,10 +48,5 @@ public class TabelaConfig {
 		TabelaConfig other = (TabelaConfig) obj;
 		return Objects.equals(nomeTabela, other.nomeTabela) && Objects.equals(nomeid, other.nomeid);
 	}
-	
 
-	
-	
-	
-	
 }

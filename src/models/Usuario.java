@@ -18,7 +18,6 @@ public class Usuario implements Comparable<Usuario>{
 	private Integer setor;
 	private Integer situacao;
 	private List<Usuario> listaDeUsuarios = new ArrayList<Usuario>();
-	private String filePath = "src\\dados\\tblUsuarios.csv";
 
 	
 	public Usuario() {
@@ -107,14 +106,6 @@ public class Usuario implements Comparable<Usuario>{
 	
 	public void setSituacao(Integer situacao) {
 		this.situacao = situacao;
-	}
-	
-	public String getFilePath() {
-		return filePath;
-	}
-	
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
 	}
 	
 	public List getListaDeUsuarios() {

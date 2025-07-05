@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="527.0" prefWidth="927.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="27.0" layoutY="28.0" text="Gestor:" />
+      <TextField layoutX="72.0" layoutY="24.0" prefHeight="25.0" prefWidth="45.0" />
+      <Label layoutX="165.0" layoutY="28.0" text="USUARIO" />
+      <Label layoutX="273.0" layoutY="28.0" text="Competência Fatura:" />
+      <TextField layoutX="393.0" layoutY="24.0" prefHeight="25.0" prefWidth="66.0" />
+      <Separator layoutY="59.0" prefHeight="0.0" prefWidth="927.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="59.0" />
+      <ListView layoutX="27.0" layoutY="77.0" prefHeight="374.0" prefWidth="877.0" AnchorPane.bottomAnchor="76.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="77.0" />
+      <Button layoutX="130.0" layoutY="24.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="22.0" text="Button" />
+      <Button layoutX="471.0" layoutY="24.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="22.0" text="Button" />
+   </children>
+</AnchorPane>

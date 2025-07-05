@@ -61,9 +61,9 @@ public class LoginController {
 		// colocar a ação de esquercer senha aqui
 	}
 
-	public void onButtonLoginAction(){
+	public void onButtonLoginAction() {
 		Usuario tempUser = new Usuario(null, null, user.getText(), pass.getText(), null, null, null, null, null);
-		List<Usuario> tempList = TblUsuariosController.updateListaUsuarios(); 
+		List<Usuario> tempList = TblUsuariosController.updateListaUsuarios();
 		Integer validado = 0;
 		for (Usuario x : tempList) {
 			validado = UserService.validaLogin(tempList, tempUser);
@@ -74,7 +74,7 @@ public class LoginController {
 			Stage stage = (Stage) close.getScene().getWindow();
 			stage.close();
 			try {
-			 	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Principal.fxml"));
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Principal.fxml"));
 				parent = loader.load();
 				PrincipalController pc = loader.getController();
 				pc.setLoggedUser(tpus);

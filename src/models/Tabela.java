@@ -3,14 +3,14 @@ package models;
 import java.util.Objects;
 
 public class Tabela {
-	
+
 	private Integer codigo;
 	private String caminho;
 	private String nome;
-	
+
 	public Tabela() {
 	}
-	
+
 	public Tabela(Integer codigo, String caminho, String nome) {
 		this.codigo = codigo;
 		this.caminho = caminho;
@@ -32,7 +32,7 @@ public class Tabela {
 	public void setCaminho(String caminho) {
 		this.caminho = caminho;
 	}
-	
+
 	public String getNome() {
 		return nome;
 	}
@@ -40,7 +40,7 @@ public class Tabela {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(caminho, codigo);
@@ -61,9 +61,9 @@ public class Tabela {
 	public int compareTo(Tabela other) {
 		int validaCodigo = codigo.compareTo(other.getCodigo());
 		int validaCaminho = caminho.compareTo(other.getCaminho());
-		if(validaCodigo == 0 && validaCaminho == 0) {
+		if (validaCodigo == 0 && validaCaminho == 0) {
 			return 0;
 		}
-		return 1;	
+		return 1;
 	}
 }

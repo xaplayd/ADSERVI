@@ -29,7 +29,6 @@ public class PrincipalController {
 	@FXML
 	private Button changeUser;
 
-
 	public PrincipalController() {
 	}
 
@@ -51,15 +50,15 @@ public class PrincipalController {
 	public void onButtonChangeUserAction() {
 
 		Stage stage = (Stage) logoutBtn.getScene().getWindow();
-		stage.close(); 
-		
+		stage.close();
+
 		LoginController lg = new LoginController();
 		lg.novaJanela();
- 
+
 	}
 
 	Stage stageCadastroUser = null;
-	
+
 	@FXML
 	public void onMenuItemCadastroUsuarioAction() {
 
@@ -68,8 +67,6 @@ public class PrincipalController {
 		List tempList = TblUsuariosController.updateListaUsuarios();
 
 		Integer validado = 0;
-		
-
 
 		for (Object x : tempList) {
 
@@ -78,12 +75,12 @@ public class PrincipalController {
 
 		if (validado == 1) {
 			System.out.println("PERMISSÃO FUNCIONOU!");
-			
+
 			CadastroUsuarioController cuc = new CadastroUsuarioController();
-			
-			if(stageCadastroUser == null) {
+
+			if (stageCadastroUser == null) {
 				stageCadastroUser = new Stage();
-				
+
 				try {
 					Parent parent = FXMLLoader.load(getClass().getResource("/gui/CadastroUsuario.fxml"));
 					Scene sceneCadastroUser = new Scene(parent);
@@ -95,13 +92,11 @@ public class PrincipalController {
 					stageCadastroUser.show();
 				} catch (Exception e) {
 					e.printStackTrace();
-				}	
+				}
 			} else {
 				stageCadastroUser.toFront();
 			}
-			
 
-		
 		} else {
 			System.out.println("ALGO ERRADO COM A PERMISSÃO!");
 			Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -111,9 +106,9 @@ public class PrincipalController {
 		}
 
 	}
-	
+
 	Stage stageCadastroSetor = null;
-	
+
 	@FXML
 	public void onMenuItemCadastroSetorAction() {
 
@@ -122,8 +117,6 @@ public class PrincipalController {
 		List tempList = TblUsuariosController.updateListaUsuarios();
 
 		Integer validado = 0;
-		
-
 
 		for (Object x : tempList) {
 
@@ -132,12 +125,13 @@ public class PrincipalController {
 
 		if (validado == 1) {
 			System.out.println("PERMISSÃO FUNCIONOU!");
-			
-			CadastroUsuarioController cuc = new CadastroUsuarioController();;
-			
-			if(stageCadastroSetor == null) {
+
+			CadastroUsuarioController cuc = new CadastroUsuarioController();
+			;
+
+			if (stageCadastroSetor == null) {
 				stageCadastroSetor = new Stage();
-				
+
 				try {
 					Parent parent = FXMLLoader.load(getClass().getResource("/gui/CadastroSetores.fxml"));
 					Scene sceneCadastroSetor = new Scene(parent);
@@ -149,13 +143,11 @@ public class PrincipalController {
 					stageCadastroSetor.show();
 				} catch (Exception e) {
 					e.printStackTrace();
-				}	
+				}
 			} else {
 				stageCadastroSetor.toFront();
 			}
-			
 
-		
 		} else {
 			System.out.println("ALGO ERRADO COM A PERMISSÃO!");
 			Alert alert = new Alert(Alert.AlertType.ERROR);

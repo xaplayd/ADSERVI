@@ -88,31 +88,32 @@ public class CadastroSetorController {
 	}
 
 	public void excluirSetor() {
-		
-		  String tempCodigo = codigo.getText();
-		  System.out.println("EXCLUSÃO DE DADOS ATIVA!!"); 
-		  Alert alert = new
-		  Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
-		  alert.setTitle("Confirmação:");
-		  alert.setHeaderText("Realmente deseja excluir o setor selecionado?");
-		  alert.showAndWait(); 
-		  if (alert.getResult() == ButtonType.YES) { 
-			  String processa = TblSetoresController.deletaSetorNaLista(tempCodigo);
-		  
-		  if (processa == "sucesso") { 
-			  procuraSetor.setDisable(false);
-			  novoSetor.setDisable(false); 
-			  editarSetor.setDisable(true);
-			  excluirSetor.setDisable(true); 
-			  salvarSetor.setDisable(true);
-			  fecharSetor.setDisable(false); 
-			  cancelarSetor.setDisable(true);
-			  codigo.setDisable(false); 
-			  codigo.setText(""); 
-			  nome.setDisable(true);
-			  nome.setText(""); 
-			  this.modo = 0; } }
-		 
+
+		String tempCodigo = codigo.getText();
+		System.out.println("EXCLUSÃO DE DADOS ATIVA!!");
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+		alert.setTitle("Confirmação:");
+		alert.setHeaderText("Realmente deseja excluir o setor selecionado?");
+		alert.showAndWait();
+		if (alert.getResult() == ButtonType.YES) {
+			String processa = TblSetoresController.deletaSetorNaLista(tempCodigo);
+
+			if (processa == "sucesso") {
+				procuraSetor.setDisable(false);
+				novoSetor.setDisable(false);
+				editarSetor.setDisable(true);
+				excluirSetor.setDisable(true);
+				salvarSetor.setDisable(true);
+				fecharSetor.setDisable(false);
+				cancelarSetor.setDisable(true);
+				codigo.setDisable(false);
+				codigo.setText("");
+				nome.setDisable(true);
+				nome.setText("");
+				this.modo = 0;
+			}
+		}
+
 	}
 
 	public void cancelarSetor() {
@@ -130,11 +131,11 @@ public class CadastroSetorController {
 	}
 
 	public void salvarSetor() {
-		  if (this.modo == 1) { 
-			  String tempCodigo = codigo.getText(); 
-			  String tempNome =nome.getText(); 
-			  TblSetoresController.editaSetorNaLista(tempCodigo, tempNome);
-		  } else if (this.modo == 2) {
+		if (this.modo == 1) {
+			String tempCodigo = codigo.getText();
+			String tempNome = nome.getText();
+			TblSetoresController.editaSetorNaLista(tempCodigo, tempNome);
+		} else if (this.modo == 2) {
 			String tempNome = nome.getText();
 			Setor novoSetor = TblSetoresController.insereSetorNaLista(tempNome);
 			codigo.setText(novoSetor.getCodigo().toString());
@@ -168,60 +169,39 @@ public class CadastroSetorController {
 
 			try {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
-	            Parent parent = loader.load();
+				Parent parent = loader.load();
 
-	            // Obtém o controller da nova janela
-	            psc = loader.getController();
+				// Obtém o controller da nova janela
+				psc = loader.getController();
 
-	            // Passa a referência do controller para atualizar a string após a seleção
-	           
-
-	            Scene scenePesquisaSetor = new Scene(parent);
-	            stagePesquisaSetor.setTitle("Pesquisa Setores");
-	            stagePesquisaSetor.setResizable(true);
-	            stagePesquisaSetor.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
-	            stagePesquisaSetor.setScene(scenePesquisaSetor);
-
-	            // Defina o que acontece quando a janela for fechada
-	            stagePesquisaSetor.setOnHidden(event -> {
-	                // Aqui você pega a string da nova janela
-	                String setorSelecionado = psc.getSetorSelecionado();
-	                System.out.println("Setor Selecionado: " + setorSelecionado);
-
-	                // Agora você pode fazer o que quiser com essa string
-	                if (setorSelecionado != null) {
-	                    codigo.setText(setorSelecionado);
-	                }
-	                stagePesquisaSetor = null;
-	                codigo.requestFocus();
-	            });
-	 
-	            stagePesquisaSetor.show();
-				
-				
-				
-				
-				
-				
-				
-				
-				/*Parent parent = FXMLLoader.load(getClass().getResource("/gui/Pesquisa.fxml"));
+				// Passa a referência do controller para atualizar a string após a seleção
 				Scene scenePesquisaSetor = new Scene(parent);
 				stagePesquisaSetor.setTitle("Pesquisa Setores");
 				stagePesquisaSetor.setResizable(true);
 				stagePesquisaSetor.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
 				stagePesquisaSetor.setScene(scenePesquisaSetor);
-				stagePesquisaSetor.setOnHidden(we -> stagePesquisaSetor = null);
-				stagePesquisaSetor.show();*/
+
+				// Defina o que acontece quando a janela for fechada
+				stagePesquisaSetor.setOnHidden(event -> {
+					// Aqui você pega a string da nova janela
+					String setorSelecionado = psc.getSetorSelecionado();
+					System.out.println("Setor Selecionado: " + setorSelecionado);
+
+					// Agora você pode fazer o que quiser com essa string
+					if (setorSelecionado != null) {
+						codigo.setText(setorSelecionado);
+					}
+					stagePesquisaSetor = null;
+					codigo.requestFocus();
+				});
+
+				stagePesquisaSetor.show();
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else {
 			stagePesquisaSetor.toFront();
 		}
-
-		// System.out.println(psc.onItemSelected());
-
 	}
-
 }

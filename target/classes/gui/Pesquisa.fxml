@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="601.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.PesquisaSetorController">
+   <children>
+      <TabPane prefHeight="157.0" prefWidth="521.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab text="Filtro Simples">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="140.0" prefWidth="466.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="14.0" text="Campo para Filtro:" />
+                        <Label layoutX="58.0" layoutY="43.0" text="Condição:" />
+                        <Label layoutX="81.0" layoutY="72.0" text="Valor:" />
+                        <Label layoutX="32.0" layoutY="100.0" text="Filtro Corrente:" />
+                        <TextField fx:id="valorParaFiltro" layoutX="120.0" layoutY="96.0" prefHeight="25.0" prefWidth="202.0" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="148.0" AnchorPane.topAnchor="68.0" />
+                        <TextField fx:id="filtroCorrente" disable="true" layoutX="120.0" layoutY="96.0" prefHeight="25.0" prefWidth="202.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="147.0" AnchorPane.topAnchor="96.0" />
+                        <ComboBox fx:id="campoParaFiltro" layoutX="119.0" layoutY="10.0" prefHeight="25.0" prefWidth="202.0" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="119.0" AnchorPane.rightAnchor="148.0" AnchorPane.topAnchor="10.0" />
+                        <ComboBox fx:id="condicaoFiltro" layoutX="119.0" layoutY="39.0" prefHeight="25.0" prefWidth="201.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="119.0" AnchorPane.rightAnchor="148.0" AnchorPane.topAnchor="39.0" />
+                        <Button fx:id="adicionar" layoutX="328.0" layoutY="97.0" mnemonicParsing="false" text="Adicionar" AnchorPane.rightAnchor="74.0" />
+                        <Button fx:id="limpar" layoutX="402.0" layoutY="97.0" mnemonicParsing="false" text="Limpar" AnchorPane.rightAnchor="14.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Exportação">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="btDiretorioArquivo" layoutX="97.0" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="28.0" text="Button" />
+                        <TextField fx:id="tfNomeArquivo" layoutX="130.0" layoutY="52.0" prefHeight="25.0" prefWidth="240.0" AnchorPane.bottomAnchor="81.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="99.0" AnchorPane.topAnchor="22.0" />
+                        <Label layoutX="42.0" layoutY="56.0" text="Diretório:" />
+                        <Label layoutX="28.0" layoutY="26.0" text="Nome do Arquivo:" />
+                        <TextField fx:id="tfCaminhoArquivo" layoutX="130.0" layoutY="53.0" prefHeight="25.0" prefWidth="240.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="99.0" AnchorPane.topAnchor="53.0" />
+                        <Label layoutX="78.0" layoutY="86.0" text="Formato:" />
+                        <Button fx:id="btExportaCsv" layoutX="131.0" layoutY="82.0" mnemonicParsing="false" text="CSV" />
+                        <Button fx:id="btExportaTxt" layoutX="175.0" layoutY="82.0" mnemonicParsing="false" text="TXT" />
+                        <Button fx:id="btExportaXlsx" layoutX="218.0" layoutY="82.0" mnemonicParsing="false" text="XLSX" />
+                        <Button fx:id="btExportaPdf" layoutX="268.0" layoutY="82.0" mnemonicParsing="false" text="PDF" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Informações">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="28.0" layoutY="14.0" text="Endereço Base:" />
+                        <Label fx:id="lblEnderecoDatabase" layoutX="114.0" layoutY="14.0" text="(aqui vai o caminho do diretório)" />
+                        <Label layoutX="45.0" layoutY="31.0" text="Nome Base:" />
+                        <Label fx:id="lblNomeDatabase" layoutX="114.0" layoutY="31.0" text="(aqui vai o nome da tabela)" />
+                        <Label layoutX="34.0" layoutY="48.0" text="Nome Tabela:" />
+                        <Label fx:id="lblNomeTabela" layoutX="114.0" layoutY="48.0" text="(aqui vai o nome da tabela)" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <Pane layoutX="465.0" prefHeight="157.0" prefWidth="79.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Button fx:id="okButton" layoutX="10.0" layoutY="21.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="61.0" text="Ok" />
+            <Button layoutX="10.0" layoutY="54.0" mnemonicParsing="false" text="Cancelar" />
+         </children>
+      </Pane>
+      <Separator layoutY="159.0" prefHeight="0.0" prefWidth="601.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <Separator layoutX="519.0" orientation="VERTICAL" prefHeight="157.0" prefWidth="6.0" AnchorPane.rightAnchor="76.0" AnchorPane.topAnchor="0.0" />
+      <TableView id="tabelita" fx:id="tabelita" layoutY="161.0" prefHeight="213.0" prefWidth="601.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="161.0" />
+      <Label layoutY="386.0" text="Seleção:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
+      <TextField fx:id="itemSelected" disable="true" layoutX="44.0" layoutY="374.0" prefHeight="3.0" prefWidth="44.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="44.0" />
+   </children>
+</AnchorPane>

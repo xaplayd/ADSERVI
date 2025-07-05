@@ -6,9 +6,10 @@ public class DatabaseConfig {
 
 	private String nome;
 	private String parametro;
-	
-	public DatabaseConfig() {}
-	
+
+	public DatabaseConfig() {
+	}
+
 	public DatabaseConfig(String nome, String parametro) {
 		this.nome = nome;
 		this.parametro = parametro;

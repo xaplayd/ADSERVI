@@ -59,14 +59,14 @@ public class CadastroUsuarioController {
 
 	public void onCodigoTxtFieldKeyPressed(KeyEvent e) {
 		if (e.getCode().equals(KeyCode.ENTER) || e.getCode().equals(KeyCode.TAB)) {
-			
-			if(codigo.getText() == "") {
+
+			if (codigo.getText() == "") {
 
 			} else {
-			
-			Integer codUser = Integer.parseInt(codigo.getText());
-			List <Usuario>tempListUser = TblUsuariosController.updateListaUsuarios();
-			Usuario puxaUser = UserService.puxaUser(tempListUser, codUser);
+
+				Integer codUser = Integer.parseInt(codigo.getText());
+				List<Usuario> tempListUser = TblUsuariosController.updateListaUsuarios();
+				Usuario puxaUser = UserService.puxaUser(tempListUser, codUser);
 				if (puxaUser != null) {
 					codigo.setDisable(true);
 					procuraUsuario.setDisable(true);
@@ -74,7 +74,7 @@ public class CadastroUsuarioController {
 					editarUsuario.setDisable(false);
 					excluirUsuario.setDisable(false);
 					cancelar.setDisable(false);
-	
+
 					nome.setText(puxaUser.getNome());
 					login.setText(puxaUser.getLogin());
 					senha.setText(puxaUser.getSenha());
@@ -82,21 +82,21 @@ public class CadastroUsuarioController {
 					email.setText(puxaUser.getEmail());
 					emailGerencia.setText(puxaUser.getEmailGerencia());
 					setor.setText(puxaUser.getSetor().toString());
-					
+
 					Integer codSetor = Integer.parseInt(setor.getText());
-					List<Setor>tempListSetor = TblSetoresController.updateListaSetores();
-	
+					List<Setor> tempListSetor = TblSetoresController.updateListaSetores();
+
 					Setor puxaSetor = SetorService.puxaSetor(tempListSetor, codSetor);
-					
+
 					setorDesc.setText(puxaSetor.getNome());
-				
-			} else {
-				System.out.println("NAO ACHOU USUARIO!!");
-				Alert alert = new Alert(Alert.AlertType.ERROR);
-				alert.setTitle("Usuário não encontrado");
-				alert.setHeaderText("Não foi possível achar nenhum usuário pelo código informado!");
-				alert.showAndWait();
-			}
+
+				} else {
+					System.out.println("NAO ACHOU USUARIO!!");
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.setTitle("Usuário não encontrado");
+					alert.setHeaderText("Não foi possível achar nenhum usuário pelo código informado!");
+					alert.showAndWait();
+				}
 			}
 		}
 
@@ -151,6 +151,7 @@ public class CadastroUsuarioController {
 
 	public void buscaUsuarios() {
 	}
+
 	public void cancelaUsuario() {
 		excluirUsuario.setDisable(true);
 		editarUsuario.setDisable(true);
@@ -181,5 +182,5 @@ public class CadastroUsuarioController {
 		cancelar.setDisable(true);
 		setorDesc.setText(null);
 	}
-	
+
 }

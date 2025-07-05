@@ -13,10 +13,10 @@ import java.util.List;
 import config.DatabaseConfig;
 
 public class ConnectionController {
-	
+
 	public static String status = "Desconectado..";
-	
-	//CONECTAR
+
+	// CONECTAR
 	public static Connection getConexaoMySQL() {
 		List<DatabaseConfig> listaParametros = new ArrayList<DatabaseConfig>();
 		File arquivoDatabaseConfig = new File("C:\\WS\\data\\ads.cfg");
@@ -40,7 +40,7 @@ public class ConnectionController {
 		String dbname = listaParametros.get(5).getParametro();
 		String user = listaParametros.get(6).getParametro();
 		String pass = listaParametros.get(7).getParametro();
-		String url = driver + ":" + db + ":" + "//" + address + ":" + port + "/" +  dbname;
+		String url = driver + ":" + db + ":" + "//" + address + ":" + port + "/" + dbname;
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection(url, user, pass);
@@ -50,48 +50,48 @@ public class ConnectionController {
 			} else {
 				status = ("STATUS--->Não foi possivel realizar conexão");
 				System.out.println(status);
-			}	
+			}
 			return connection;
 		} catch (SQLException e) {
 			System.out.println("Nao foi possivel conectar ao Banco de Dados.");
 			return null;
 		}
 	}
-	
+
 	public static List<DatabaseConfig> getParametrosDeConexao() {
-	    List<DatabaseConfig> listaParametros = new ArrayList<>();
-	    File arquivoDatabaseConfig = new File("C:\\WS\\data\\ads.cfg");
+		List<DatabaseConfig> listaParametros = new ArrayList<>();
+		File arquivoDatabaseConfig = new File("C:\\WS\\data\\ads.cfg");
 
-	    if (!arquivoDatabaseConfig.exists()) {
-	        System.out.println("Arquivo de configuração não encontrado: " + arquivoDatabaseConfig.getAbsolutePath());
-	        return listaParametros;
-	    }
+		if (!arquivoDatabaseConfig.exists()) {
+			System.out.println("Arquivo de configuração não encontrado: " + arquivoDatabaseConfig.getAbsolutePath());
+			return listaParametros;
+		}
 
-	    try (BufferedReader brDatabaseConfig = new BufferedReader(new FileReader(arquivoDatabaseConfig))) {
-	        String item;
-	        int linha = 1;
-	        while ((item = brDatabaseConfig.readLine()) != null) {
-	            if (item.trim().isEmpty()) {
-	                linha++;
-	                continue;
-	            }
+		try (BufferedReader brDatabaseConfig = new BufferedReader(new FileReader(arquivoDatabaseConfig))) {
+			String item;
+			int linha = 1;
+			while ((item = brDatabaseConfig.readLine()) != null) {
+				if (item.trim().isEmpty()) {
+					linha++;
+					continue;
+				}
 
-	            String[] fields = item.split(";", 2);
-	            if (fields.length != 2) {
-	                System.out.println("Linha " + linha + " mal formatada: " + item);
-	            } else {
-	                String nome = fields[0].trim();
-	                String parametro = fields[1].trim();
-	                listaParametros.add(new DatabaseConfig(nome, parametro));
-	            }
-	            linha++;
-	        }
-	    } catch (IOException e) {
-	        System.out.println("Erro ao ler o arquivo de configuração: " + e.getMessage());
-	        e.printStackTrace();
-	    }
+				String[] fields = item.split(";", 2);
+				if (fields.length != 2) {
+					System.out.println("Linha " + linha + " mal formatada: " + item);
+				} else {
+					String nome = fields[0].trim();
+					String parametro = fields[1].trim();
+					listaParametros.add(new DatabaseConfig(nome, parametro));
+				}
+				linha++;
+			}
+		} catch (IOException e) {
+			System.out.println("Erro ao ler o arquivo de configuração: " + e.getMessage());
+			e.printStackTrace();
+		}
 
-	    return listaParametros;
+		return listaParametros;
 	}
-	
+
 }

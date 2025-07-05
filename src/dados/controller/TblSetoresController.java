@@ -202,24 +202,22 @@ public class TblSetoresController {
 	}
 
 	public static ObservableList<String> obterNomesDasColunas() {
-	    ObservableList<String> nomesDasColunas = FXCollections.observableArrayList();
-	    String tbl = TblSetoresController.updateNomeTabela();
-	    
-	    try (
-	        Connection con = ConnectionController.getConexaoMySQL();
-	        Statement stmt = con.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM " + tbl);
-	    ) {
-	        int colCount = rs.getMetaData().getColumnCount();
-	        for (int i = 1; i <= colCount; i++) {
-	            nomesDasColunas.add(rs.getMetaData().getColumnName(i));
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        System.out.println("Erro ao obter nomes das colunas.");
-	    }
+		ObservableList<String> nomesDasColunas = FXCollections.observableArrayList();
+		String tbl = TblSetoresController.updateNomeTabela();
 
-	    return nomesDasColunas;
+		try (Connection con = ConnectionController.getConexaoMySQL();
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT * FROM " + tbl);) {
+			int colCount = rs.getMetaData().getColumnCount();
+			for (int i = 1; i <= colCount; i++) {
+				nomesDasColunas.add(rs.getMetaData().getColumnName(i));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Erro ao obter nomes das colunas.");
+		}
+
+		return nomesDasColunas;
 	}
-	
+
 }

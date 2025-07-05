@@ -13,7 +13,6 @@ public class DicTabelasController {
 
 	public static List<TabelaConfig> updateListaTabela() {
 
-	
 		List<TabelaConfig> listaDeTabelas = new ArrayList<TabelaConfig>();
 		File dicTabelas = new File("C:\\WS\\data\\dictabelas.cfg");
 

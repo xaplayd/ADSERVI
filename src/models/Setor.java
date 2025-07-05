@@ -3,13 +3,13 @@ package models;
 import java.util.Objects;
 
 public class Setor {
-	
+
 	private Integer codigo;
 	private String nome;
-	
+
 	public Setor() {
 	}
-	
+
 	public Setor(Integer codigo, String nome) {
 		this.codigo = codigo;
 		this.nome = nome;
@@ -47,13 +47,13 @@ public class Setor {
 		Setor other = (Setor) obj;
 		return Objects.equals(codigo, other.codigo) && Objects.equals(nome, other.nome);
 	}
-	
+
 	public int compareTo(Setor other) {
 		int validaCodigo = codigo.compareTo(other.getCodigo());
 		int validaNome = nome.compareTo(other.getNome());
-		if(validaCodigo == 0 && validaNome == 0) {
+		if (validaCodigo == 0 && validaNome == 0) {
 			return 0;
 		}
-		return 1;	
+		return 1;
 	}
 }
