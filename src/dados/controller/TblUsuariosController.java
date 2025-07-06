@@ -68,14 +68,21 @@ public class TblUsuariosController {
 	}
 
 	// insere um usuario na tabela
-	public static Setor insereSetorNaLista(String tempNome) {
-		Setor tempSetor = new Setor();
-		String tbl = TblSetoresController.updateNomeTabela();
+	public static Usuario insereUsuarioNaLista(String tempNome, String tempLogin, String tempSenha, Integer tempNivel, String tempEmail, String tempEmailGerente, Integer tempiIdsetor, Integer tempSituacao) {
+		Usuario tempUsuario = new Usuario();
+		String tbl = TblUsuariosController.updateNomeTabela();
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
-			PreparedStatement stmt = con.prepareStatement("INSERT INTO " + tbl + "(nomesetor) VALUES (?)",
+			PreparedStatement stmt = con.prepareStatement("INSERT INTO " + tbl + "(nome, login, senha, nivel, email, emailgerente, idsetor, situacao) VALUES (?,?,?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, tempNome);
+			stmt.setString(2, tempLogin);
+			stmt.setString(3, tempSenha);
+			stmt.setInt(4, tempNivel);
+			stmt.setString(5, tempEmail);
+			stmt.setString(6, tempEmailGerente);
+			stmt.setInt(7, tempiIdsetor);
+			stmt.setInt(8, tempSituacao);
 			stmt.execute();
 			ResultSet rs = stmt.getGeneratedKeys();
 			Integer id = 0;
@@ -83,26 +90,39 @@ public class TblUsuariosController {
 			if (rs.next()) {
 				id = Integer.parseInt(rs.getString(1));
 			}
-			tempSetor.setCodigo(id);
-			tempSetor.setNome(tempNome);
+			tempUsuario.setCodigo(id);
+			tempUsuario.setNome(tempNome);
+			tempUsuario.setLogin(tempLogin);
+			tempUsuario.setPermissoes(tempNivel);
+			tempUsuario.setEmail(tempEmail);
+			tempUsuario.setEmailGerencia(tempEmailGerente);
+			tempUsuario.setSetor(tempiIdsetor);
+			tempUsuario.setSituacao(tempSituacao);
 			rs.close();
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
 			e.getMessage();
 		}
-		return tempSetor;
+		return tempUsuario;
 	}
 
 	// edita usuario na tabela
-	public static void editaSetorNaLista(String id, String nome) {
-		String tbl = TblSetoresController.updateNomeTabela();
+	public static void editaUsuarioNaLista(Integer idusuario, String nome, String login, String senha, Integer nivel, String email, String emailGerente, Integer idsetor, Integer situacao) {
+		String tbl = TblUsuariosController.updateNomeTabela();
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
-			PreparedStatement stmt = con.prepareStatement("UPDATE " + tbl + " SET nomesetor = (?) WHERE idsetor = (?)",
+			PreparedStatement stmt = con.prepareStatement("UPDATE " + tbl + " SET nome = (?), login = (?), senha = (?), nivel = (?), email = (?), emailgerente = (?), idsetor = (?), situacao = (?) WHERE idusuario = (?)",
 					Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, nome);
-			stmt.setString(2, id);
+			stmt.setString(2, login);
+			stmt.setString(3, senha);
+			stmt.setInt(4, nivel);
+			stmt.setString(5, email);
+			stmt.setString(6, emailGerente);
+			stmt.setInt(7, idsetor);
+			stmt.setInt(8, situacao);
+			stmt.setInt(9, idusuario);
 			stmt.execute();
 			ResultSet rs = stmt.getGeneratedKeys();
 			rs.close();
@@ -114,11 +134,11 @@ public class TblUsuariosController {
 	}
 
 	// deleta usuario na tabela
-	public static String deletaSetorNaLista(String id) {
-		String tbl = TblSetoresController.updateNomeTabela();
+	public static String deletaUsuarioNaLista(String id) {
+		String tbl = TblUsuariosController.updateNomeTabela();
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
-			PreparedStatement stmt = con.prepareStatement("DELETE FROM " + tbl + " WHERE idsetor = (?)",
+			PreparedStatement stmt = con.prepareStatement("DELETE FROM " + tbl + " WHERE idusuario = (?)",
 					Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, id);
 			stmt.execute();

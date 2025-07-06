@@ -70,6 +70,7 @@ public class CadastroSetorController {
 
 	public void novoSetor() {
 		codigo.setDisable(true);
+		codigo.setText(null);
 		procuraSetor.setDisable(true);
 		novoSetor.setDisable(true);
 		editarSetor.setDisable(true);
@@ -99,17 +100,14 @@ public class CadastroSetorController {
 			String processa = TblSetoresController.deletaSetorNaLista(tempCodigo);
 
 			if (processa == "sucesso") {
-				procuraSetor.setDisable(false);
-				novoSetor.setDisable(false);
-				editarSetor.setDisable(true);
-				excluirSetor.setDisable(true);
-				salvarSetor.setDisable(true);
-				fecharSetor.setDisable(false);
-				cancelarSetor.setDisable(true);
-				codigo.setDisable(false);
-				codigo.setText("");
-				nome.setDisable(true);
-				nome.setText("");
+				/*
+				 * procuraSetor.setDisable(false); novoSetor.setDisable(false);
+				 * editarSetor.setDisable(true); excluirSetor.setDisable(true);
+				 * salvarSetor.setDisable(true); fecharSetor.setDisable(false);
+				 * cancelarSetor.setDisable(true); codigo.setDisable(false); codigo.setText("");
+				 * nome.setDisable(true); nome.setText("");
+				 */
+				cancelarSetor();
 				this.modo = 0;
 			}
 		}
@@ -159,20 +157,18 @@ public class CadastroSetorController {
 
 	Stage stagePesquisaSetor = null;
 
-	PesquisaSetorController psc = new PesquisaSetorController();
-
 	@FXML
 	public void onButtonPesquisaSetorAction() {
-
+		
 		if (stagePesquisaSetor == null) {
 			stagePesquisaSetor = new Stage();
 
 			try {
+				PesquisaSetorController psc = new PesquisaSetorController();
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
+				loader.setController(psc);
+				
 				Parent parent = loader.load();
-
-				// Obtém o controller da nova janela
-				psc = loader.getController();
 
 				// Passa a referência do controller para atualizar a string após a seleção
 				Scene scenePesquisaSetor = new Scene(parent);

@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="457.0" prefWidth="584.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.CadastroUsuarioController">
+<AnchorPane prefHeight="457.0" prefWidth="584.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.CadastroUsuarioController">
    <children>
       <Label layoutX="19.0" layoutY="24.0" text="Código:" />
       <TextField fx:id="codigo" layoutX="70.0" layoutY="20.0" onKeyPressed="#onCodigoTxtFieldKeyPressed" prefHeight="25.0" prefWidth="60.0" />
-      <Button fx:id="procuraUsuario" layoutX="136.0" layoutY="20.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="21.0">
+      <Button fx:id="procuraUsuario" layoutX="136.0" layoutY="20.0" mnemonicParsing="false" onAction="#onButtonPesquisaUsuarioAction" prefHeight="25.0" prefWidth="21.0">
          <graphic>
             <ImageView>
                <image>
@@ -92,7 +92,7 @@
             </ImageView>
          </graphic></Button>
       <Separator layoutX="176.0" layoutY="403.0" orientation="VERTICAL" prefHeight="53.0" prefWidth="14.0" />
-      <Button fx:id="excluirUsuario" disable="true" layoutX="191.0" layoutY="418.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="80.0" text="Excluir">
+      <Button fx:id="excluirUsuario" disable="true" layoutX="191.0" layoutY="418.0" mnemonicParsing="false" onAction="#excluirUsuario" prefHeight="26.0" prefWidth="80.0" text="Excluir">
          <graphic>
             <ImageView>
                <image>
@@ -109,7 +109,7 @@
             </ImageView>
          </graphic></Button>
       <Separator layoutX="382.0" layoutY="403.0" orientation="VERTICAL" prefHeight="53.0" prefWidth="14.0" />
-      <Button fx:id="salvarUsuario" disable="true" layoutX="400.0" layoutY="418.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="80.0" text="Salvar">
+      <Button fx:id="salvarUsuario" disable="true" layoutX="400.0" layoutY="418.0" mnemonicParsing="false" onAction="#salvaUsuario" prefHeight="26.0" prefWidth="80.0" text="Salvar">
          <graphic>
             <ImageView>
                <image>
@@ -125,5 +125,18 @@
                </image>
             </ImageView>
          </graphic></Button>
+      <Label layoutX="298.0" layoutY="170.0" text="Situação:" />
+      <TextField fx:id="situacao" disable="true" layoutX="350.0" layoutY="166.0" prefHeight="25.0" prefWidth="33.0" />
+      <Button fx:id="procuraSituacao" disable="true" layoutX="390.0" layoutY="166.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="21.0">
+         <graphic>
+            <ImageView>
+               <image>
+                  <Image url="@../imgs/18x18/lupa.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Label layoutX="431.0" layoutY="162.0" text="1 - Ativo" />
+      <Label layoutX="431.0" layoutY="179.0" text="2 - Inativo" />
    </children>
 </AnchorPane>
