@@ -16,15 +16,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
-import models.Setor;
+import models.Nivel;
 import models.Tabela;
 
-public class TblSetoresController {
-
-	private static Integer idTabela = 2;
+public class TblNiveisController {
+	private static Integer idTabela = 3;
 	
 	// Atualiza o nome da tabela de usuarios conforme o dicionário de tabelas, por
-	// padrão, tabela setores é a 2
+	// padrão, tabela niveis é a 3
 	public static String updateNomeTabela() {
 
 		String nomeTabela = "";
@@ -37,20 +36,20 @@ public class TblSetoresController {
 		return nomeTabela.toString();
 	}
 
-	// Retorna lista com todos os usuarios do DB
-	public static List<Setor> updateListaSetores() {
-		String tbl = TblSetoresController.updateNomeTabela();
-		Setor tempSetor = null;
-		List<Setor> listaDeSetores = new ArrayList<Setor>();
+	// Retorna lista com todos os niveis do DB
+	public static List<Nivel> updateListaNivel() {
+		String tbl = TblNiveisController.updateNomeTabela();
+		Nivel tempNivel = null;
+		List<Nivel> listaDeNivel = new ArrayList<Nivel>();
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM " + tbl);
 			while (rs.next()) {
-				Integer id = rs.getInt("idsetor");
-				String nome = rs.getString("nomesetor");
-				tempSetor = new Setor(id, nome);
-				listaDeSetores.add(tempSetor);
+				Integer id = rs.getInt("idnivel");
+				String nome = rs.getString("nomenivel");
+				tempNivel = new Nivel(id, nome);
+				listaDeNivel.add(tempNivel);
 			}
 			rs.close();
 			stmt.close();
@@ -58,16 +57,16 @@ public class TblSetoresController {
 		} catch (SQLException e) {
 			e.getMessage();
 		}
-		return listaDeSetores;
+		return listaDeNivel;
 	}
 
-	// Insere um setor na tabela
-	public static Setor insereSetorNaLista(String tempNome) {
-		Setor tempSetor = new Setor();
-		String tbl = TblSetoresController.updateNomeTabela();
+	// Insere um nivel na tabela
+	public static Nivel insereNivelNaLista(String tempNome) {
+		Nivel tempNivel = new Nivel();
+		String tbl = TblNiveisController.updateNomeTabela();
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
-			PreparedStatement stmt = con.prepareStatement("INSERT INTO " + tbl + "(nomesetor) VALUES (?)",
+			PreparedStatement stmt = con.prepareStatement("INSERT INTO " + tbl + "(nomenivel) VALUES (?)",
 					Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, tempNome);
 			stmt.execute();
@@ -77,23 +76,23 @@ public class TblSetoresController {
 			if (rs.next()) {
 				id = Integer.parseInt(rs.getString(1));
 			}
-			tempSetor.setCodigo(id);
-			tempSetor.setNome(tempNome);
+			tempNivel.setCodigo(id);
+			tempNivel.setNome(tempNome);
 			rs.close();
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
 			e.getMessage();
 		}
-		return tempSetor;
+		return tempNivel;
 	}
 
-	// Edita setor na tabela
-	public static void editaSetorNaLista(String id, String nome) {
-		String tbl = TblSetoresController.updateNomeTabela();
+	// Edita nivel na tabela
+	public static void editaNivelNaLista(String id, String nome) {
+		String tbl = TblNiveisController.updateNomeTabela();
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
-			PreparedStatement stmt = con.prepareStatement("UPDATE " + tbl + " SET nomesetor = (?) WHERE idsetor = (?)",
+			PreparedStatement stmt = con.prepareStatement("UPDATE " + tbl + " SET nomenivel = (?) WHERE idnivel = (?)",
 					Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, nome);
 			stmt.setString(2, id);
@@ -107,12 +106,12 @@ public class TblSetoresController {
 		}
 	}
 
-	// Deleta setor na tabela
-	public static String deletaSetorNaLista(String id) {
-		String tbl = TblSetoresController.updateNomeTabela();
+	// Deleta nivel na tabela
+	public static String deletaNivelNaLista(String id) {
+		String tbl = TblNiveisController.updateNomeTabela();
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
-			PreparedStatement stmt = con.prepareStatement("DELETE FROM " + tbl + " WHERE idsetor = (?)",
+			PreparedStatement stmt = con.prepareStatement("DELETE FROM " + tbl + " WHERE idnivel = (?)",
 					Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, id);
 			stmt.execute();
@@ -128,19 +127,19 @@ public class TblSetoresController {
 	}
 
 	// Observable list para pesquisa
-	public static ObservableList<Setor> pesquisaDeSetores() {
-		ObservableList<Setor> observableList = FXCollections.observableArrayList();
-		String tbl = TblSetoresController.updateNomeTabela();
-		Setor tempSetor = null;
+	public static ObservableList<Nivel> pesquisaDeNivel() {
+		ObservableList<Nivel> observableList = FXCollections.observableArrayList();
+		String tbl = TblNiveisController.updateNomeTabela();
+		Nivel tempNivel = null;
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM " + tbl);
 			while (rs.next()) {
-				Integer id = rs.getInt("idsetor");
-				String nome = rs.getString("nomesetor");
-				tempSetor = new Setor(id, nome);
-				observableList.add(tempSetor);
+				Integer id = rs.getInt("idnivel");
+				String nome = rs.getString("nomenivel");
+				tempNivel = new Nivel(id, nome);
+				observableList.add(tempNivel);
 			}
 			rs.close();
 			stmt.close();
@@ -152,11 +151,11 @@ public class TblSetoresController {
 	}
 
 	// Retorna colunas e quantidade
-	public static TableView estruturaTblDeSetores() {
+	public static TableView estruturaTblDeNivel() {
 
 		ObservableList<ObservableList> data = FXCollections.observableArrayList();
-		String tbl = TblSetoresController.updateNomeTabela();
-		Setor tempSetor = null;
+		String tbl = TblNiveisController.updateNomeTabela();
+		Nivel tempNivel = null;
 		Connection con = ConnectionController.getConexaoMySQL();
 		TableView tableview = new TableView<>();
 		try {
@@ -205,7 +204,7 @@ public class TblSetoresController {
 
 	public static ObservableList<String> obterNomesDasColunas() {
 		ObservableList<String> nomesDasColunas = FXCollections.observableArrayList();
-		String tbl = TblSetoresController.updateNomeTabela();
+		String tbl = TblNiveisController.updateNomeTabela();
 
 		try (Connection con = ConnectionController.getConexaoMySQL();
 				Statement stmt = con.createStatement();

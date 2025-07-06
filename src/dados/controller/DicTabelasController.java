@@ -1,34 +1,36 @@
 package dados.controller;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.TabelaConfig;
+import models.Tabela;
 
 public class DicTabelasController {
 
-	public static List<TabelaConfig> updateListaTabela() {
-
-		List<TabelaConfig> listaDeTabelas = new ArrayList<TabelaConfig>();
-		File dicTabelas = new File("C:\\WS\\data\\dictabelas.cfg");
-
-		try (BufferedReader brDicTabelas = new BufferedReader(new FileReader(dicTabelas))) {
-			String item = brDicTabelas.readLine();
-			while (item != null) {
-				String[] fields = item.split(";");
-				Integer id = Integer.parseInt(fields[0]);
-				String nomeTabela = fields[1];
-				listaDeTabelas.add(new TabelaConfig(id, nomeTabela));
-				item = brDicTabelas.readLine();
+	public static List<Tabela> updateListaTabela() {
+		Tabela tempTabela = null;
+		List<Tabela> listaDeTbl = new ArrayList<Tabela>();
+		Connection con = ConnectionController.getConexaoMySQL();
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM tbls");
+			while (rs.next()) {
+				Integer id = rs.getInt("idtbl");
+				String nome = rs.getString("nometbl");
+				tempTabela = new Tabela(id, nome);
+				listaDeTbl.add(tempTabela);
 			}
-		} catch (IOException e) {
+			rs.close();
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
 			e.getMessage();
 		}
-		return listaDeTabelas;
+		return listaDeTbl;
 	}
 
 }

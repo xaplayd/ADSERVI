@@ -32,6 +32,23 @@ public class PrincipalController {
 	public PrincipalController() {
 	}
 
+	public void novaJanela(PrincipalController pc, String loggedUser) {
+		try {
+			Stage stagePrincipal = new Stage();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Principal.fxml"));
+			loader.setController(pc);
+			Parent parent = loader.load();
+			pc.setLoggedUser(loggedUser);
+			Scene scene = new Scene(parent);
+			stagePrincipal.setTitle("GRUPO ADSERVI");
+			stagePrincipal.getIcons().add(new Image("/imgs/logo2.png"));
+			stagePrincipal.setScene(scene);
+			stagePrincipal.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void setLoggedUser(String loggedUserTxt) {
 		this.loggedUser.setText(loggedUserTxt);
 	}
@@ -50,10 +67,10 @@ public class PrincipalController {
 	public void onButtonChangeUserAction() {
 
 		Stage stage = (Stage) logoutBtn.getScene().getWindow();
-		stage.close();
+		stage.hide();
 
 		LoginController lg = new LoginController();
-		lg.novaJanela();
+		lg.novaJanela(lg);
 
 	}
 

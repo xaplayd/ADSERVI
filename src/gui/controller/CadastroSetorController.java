@@ -159,7 +159,7 @@ public class CadastroSetorController {
 
 	@FXML
 	public void onButtonPesquisaSetorAction() {
-		
+
 		if (stagePesquisaSetor == null) {
 			stagePesquisaSetor = new Stage();
 
@@ -167,7 +167,7 @@ public class CadastroSetorController {
 				PesquisaSetorController psc = new PesquisaSetorController();
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
 				loader.setController(psc);
-				
+
 				Parent parent = loader.load();
 
 				// Passa a referência do controller para atualizar a string após a seleção

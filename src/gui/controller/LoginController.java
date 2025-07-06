@@ -3,7 +3,6 @@ package gui.controller;
 import java.util.List;
 
 import dados.controller.TblUsuariosController;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,17 +34,18 @@ public class LoginController {
 
 	private Parent parent;
 
-	public void novaJanela() {
-
-		Stage stageLogin = new Stage();
+	public void novaJanela(LoginController lg) {
 
 		try {
-			Parent parent = FXMLLoader.load(getClass().getResource("/gui/Login.fxml"));
-			Scene scenePrincipal = new Scene(parent);
+			Stage stageLogin = new Stage();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Login.fxml"));
+			loader.setController(lg);
+			Parent parent = loader.load();
+			Scene sceneLogin = new Scene(parent);
+			stageLogin.setTitle("Demo - Pendências");
 			stageLogin.setResizable(false);
-			stageLogin.setTitle("DEMO - Pendências");
 			stageLogin.getIcons().add(new Image("/imgs/logo2.png"));
-			stageLogin.setScene(scenePrincipal);
+			stageLogin.setScene(sceneLogin);
 			stageLogin.show();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,26 +65,15 @@ public class LoginController {
 		Usuario tempUser = new Usuario(null, null, user.getText(), pass.getText(), null, null, null, null, null);
 		List<Usuario> tempList = TblUsuariosController.updateListaUsuarios();
 		Integer validado = 0;
-		for (Usuario x : tempList) {
-			validado = UserService.validaLogin(tempList, tempUser);
-		}
+		validado = UserService.validaLogin(tempList, tempUser);
+		
 		if (validado == 1) {
 			System.out.println("O LOGIN FUNCIONOU!!");
-			String tpus = user.getText();
+			PrincipalController pc = new PrincipalController();
 			Stage stage = (Stage) close.getScene().getWindow();
 			stage.close();
 			try {
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Principal.fxml"));
-				parent = loader.load();
-				PrincipalController pc = loader.getController();
-				pc.setLoggedUser(tpus);
-				Stage stagePrincipal = new Stage();
-				Scene scene = new Scene(parent);
-				stagePrincipal.setTitle("GRUPO ADSERVI");
-				stagePrincipal.getIcons().add(new Image("/imgs/logo2.png"));
-				stagePrincipal.setScene(scene);
-				stagePrincipal.setOnHidden(e -> Platform.exit());
-				stagePrincipal.show();
+				pc.novaJanela(pc, user.getText());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

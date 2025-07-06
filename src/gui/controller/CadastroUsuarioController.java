@@ -268,10 +268,10 @@ public class CadastroUsuarioController {
 	}
 
 	Stage stagePesquisaUsuario = null;
-	
+
 	@FXML
 	public void onButtonPesquisaUsuarioAction() {
-		
+
 		if (stagePesquisaUsuario == null) {
 			stagePesquisaUsuario = new Stage();
 
@@ -279,7 +279,7 @@ public class CadastroUsuarioController {
 				PesquisaUsuarioController psu = new PesquisaUsuarioController();
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
 				loader.setController(psu);
-				
+
 				Parent parent = loader.load();
 
 				// Passa a referência do controller para atualizar a string após a seleção
@@ -310,6 +310,165 @@ public class CadastroUsuarioController {
 			}
 		} else {
 			stagePesquisaUsuario.toFront();
+		}
+	}
+
+	Stage stagePesquisaNivel = null;
+
+	@FXML
+	public void onButtonPesquisaNivelAction() {
+
+		if (stagePesquisaNivel == null) {
+			stagePesquisaNivel = new Stage();
+
+			try {
+				PesquisaNivelController pnc = new PesquisaNivelController();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
+				loader.setController(pnc);
+
+				Parent parent = loader.load();
+
+				// Passa a referência do controller para atualizar a string após a seleção
+				Scene scenePesquisaNivel = new Scene(parent);
+				stagePesquisaNivel.setTitle("Pesquisa Nivel");
+				stagePesquisaNivel.setResizable(true);
+				stagePesquisaNivel.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
+				stagePesquisaNivel.setScene(scenePesquisaNivel);
+
+				// Defina o que acontece quando a janela for fechada
+				stagePesquisaNivel.setOnHidden(event -> {
+					// Aqui você pega a string da nova janela
+					String nivelSelecionado = pnc.getNivelSelecionado();
+					System.out.println("Usuario Selecionado: " + nivelSelecionado);
+
+					// Agora você pode fazer o que quiser com essa string
+					if (nivelSelecionado != null) {
+						permissoes.setText(nivelSelecionado);
+					}
+					stagePesquisaNivel = null;
+					permissoes.requestFocus();
+				});
+
+				stagePesquisaNivel.show();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			stagePesquisaNivel.toFront();
+		}
+	}
+
+	Stage stagePesquisaSituacao = null;
+
+	@FXML
+	public void onButtonPesquisaSituacaoAction() {
+
+		if (stagePesquisaSituacao == null) {
+			stagePesquisaSituacao = new Stage();
+
+			try {
+				PesquisaSituacaoController psc = new PesquisaSituacaoController();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
+				loader.setController(psc);
+
+				Parent parent = loader.load();
+
+				// Passa a referência do controller para atualizar a string após a seleção
+				Scene scenePesquisaSituacao = new Scene(parent);
+				stagePesquisaSituacao.setTitle("Pesquisa Situação");
+				stagePesquisaSituacao.setResizable(true);
+				stagePesquisaSituacao.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
+				stagePesquisaSituacao.setScene(scenePesquisaSituacao);
+
+				// Defina o que acontece quando a janela for fechada
+				stagePesquisaSituacao.setOnHidden(event -> {
+					// Aqui você pega a string da nova janela
+					String situacaoSelecionado = psc.getSituacaoSelecionado();
+					System.out.println("Usuario Selecionado: " + situacaoSelecionado);
+
+					// Agora você pode fazer o que quiser com essa string
+					if (situacaoSelecionado != null) {
+						situacao.setText(situacaoSelecionado);
+					}
+					stagePesquisaSituacao = null;
+					situacao.requestFocus();
+				});
+
+				stagePesquisaSituacao.show();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			stagePesquisaSituacao.toFront();
+		}
+	}
+
+	Stage stagePesquisaSetor = null;
+
+	@FXML
+	public void onButtonPesquisaSetorAction() {
+
+		if (stagePesquisaSetor == null) {
+			stagePesquisaSetor = new Stage();
+
+			try {
+				PesquisaSetorController psc = new PesquisaSetorController();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
+				loader.setController(psc);
+
+				Parent parent = loader.load();
+
+				// Passa a referência do controller para atualizar a string após a seleção
+				Scene scenePesquisaSetor = new Scene(parent);
+				stagePesquisaSetor.setTitle("Pesquisa Setores");
+				stagePesquisaSetor.setResizable(true);
+				stagePesquisaSetor.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
+				stagePesquisaSetor.setScene(scenePesquisaSetor);
+
+				// Defina o que acontece quando a janela for fechada
+				stagePesquisaSetor.setOnHidden(event -> {
+					// Aqui você pega a string da nova janela
+					String setorSelecionado = psc.getSetorSelecionado();
+					System.out.println("Setor Selecionado: " + setorSelecionado);
+
+					// Agora você pode fazer o que quiser com essa string
+					if (setorSelecionado != null) {
+						setor.setText(setorSelecionado);
+
+					}
+					stagePesquisaSetor = null;
+					setor.requestFocus();
+				});
+
+				stagePesquisaSetor.show();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			stagePesquisaSetor.toFront();
+		}
+	}
+
+	public void onSetorTxtFieldKeyPressed(KeyEvent e) {
+		if (e.getCode().equals(KeyCode.ENTER) || e.getCode().equals(KeyCode.TAB)) {
+			if (setor.getText() == "") {
+			} else {
+				Integer cod = Integer.parseInt(setor.getText());
+				List<Setor> tempList = TblSetoresController.updateListaSetores();
+				Setor puxa = SetorService.puxaSetor(tempList, cod);
+				if (puxa != null) {
+					setorDesc.setText(puxa.getNome());
+				} else {
+					System.out.println("NAO ACHOU SETOR!!");
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.setTitle("Setor não encontrado");
+					alert.setHeaderText("Não foi possível achar nenhum setor pelo código informado!");
+					alert.showAndWait();
+				}
+			}
 		}
 	}
 }

@@ -8,29 +8,29 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.TabelaConfig;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
 import javafx.util.Callback;
-import models.Setor;
+import models.Tabela;
 import models.Usuario;
 
 public class TblUsuariosController {
+	
+	private static Integer idTabela = 1;
 
 	// Atualiza o nome da tabela de setores conforme o dicionário de tabelas, por
-	// padrão, tabela setores é a 2
+	// padrão, tabela usuarios é a 1
 	public static String updateNomeTabela() {
-		Integer idTabela = 1;
 		String nomeTabela = "";
-		List<TabelaConfig> tempListTab = DicTabelasController.updateListaTabela();
-		for (TabelaConfig x : tempListTab) {
-			if (x.getNomeid() == idTabela) {
-				nomeTabela = x.getNomeTabela();
+		List<Tabela> tempListTab = DicTabelasController.updateListaTabela();
+		for (Tabela x : tempListTab) {
+			if (x.getCodigo() == (idTabela)) {
+				nomeTabela = x.getNome();
 			}
 		}
 		return nomeTabela.toString();

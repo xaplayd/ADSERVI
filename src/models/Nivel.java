@@ -2,16 +2,15 @@ package models;
 
 import java.util.Objects;
 
-public class Tabela {
+public class Nivel {
 
 	private Integer codigo;
-
 	private String nome;
 
-	public Tabela() {
+	public Nivel() {
 	}
 
-	public Tabela(Integer codigo, String nome) {
+	public Nivel(Integer codigo, String nome) {
 		this.codigo = codigo;
 		this.nome = nome;
 	}
@@ -45,13 +44,17 @@ public class Tabela {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Tabela other = (Tabela) obj;
+		Nivel other = (Nivel) obj;
 		return Objects.equals(codigo, other.codigo) && Objects.equals(nome, other.nome);
 	}
 
 	@Override
 	public String toString() {
-		return "Tabela [codigo=" + codigo + ", nome=" + nome + "]";
+		return "Nivel [codigo=" + codigo + ", nome=" + nome + "]";
 	}
-
+	
+	
+	
+	
 }
+	
