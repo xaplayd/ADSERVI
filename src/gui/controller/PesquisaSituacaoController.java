@@ -7,8 +7,6 @@ import java.util.ResourceBundle;
 
 import config.DatabaseConfig;
 import dados.controller.ConnectionController;
-import dados.controller.TblNiveisController;
-import dados.controller.TblSetoresController;
 import dados.controller.TblSituacaoController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -128,7 +126,7 @@ public class PesquisaSituacaoController implements Initializable {
 	public void onLimparFiltrosAction() {
 		filtrosAtivos.clear();
 		filtroCorrente.clear();
-		tabelita.setItems(TblNiveisController.estruturaTblDeNivel().getItems());
+		tabelita.setItems(TblSituacaoController.estruturaTblDeSituacao().getItems());
 		valorParaFiltro.clear();
 	}
 
@@ -145,7 +143,7 @@ public class PesquisaSituacaoController implements Initializable {
 
 		filtrosAtivos.add(new Filtro(colunaSelecionada, valorFiltro, condicaoSelecionada));
 
-		ObservableList<ObservableList<String>> dadosOriginais = TblNiveisController.estruturaTblDeNivel().getItems();
+		ObservableList<ObservableList<String>> dadosOriginais = TblSituacaoController.estruturaTblDeSituacao().getItems();
 		ObservableList<ObservableList<String>> dadosFiltrados = FXCollections.observableArrayList();
 
 		for (ObservableList<String> linha : dadosOriginais) {
@@ -202,7 +200,7 @@ public class PesquisaSituacaoController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		TableView<ObservableList<String>> tbl = TblSituacaoController.estruturaTblDeNivel();
+		TableView<ObservableList<String>> tbl = TblSituacaoController.estruturaTblDeSituacao();
 		tabelita.getColumns().setAll(tbl.getColumns());
 		tabelita.setItems(tbl.getItems());
 

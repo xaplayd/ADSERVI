@@ -164,9 +164,6 @@ public class CadastroUsuarioController {
 		this.modo = 1;
 	}
 
-	public void criaUsuarios() {
-	}
-
 	public void salvaUsuario() {
 		if (this.modo == 1) {
 			Integer tempCodigo = Integer.parseInt(codigo.getText());

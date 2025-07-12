@@ -23,8 +23,8 @@ public class TblSituacaoController {
 	
 	private static Integer idTabela = 4;
 
-	// Atualiza o nome da tabela de usuarios conforme o dicionário de tabelas, por
-	// padrão, tabela niveis é a 4
+	// Atualiza o nome da tabela de situacoes conforme o dicionário de tabelas, por
+	// padrão, tabela situacoes é a 4
 	public static String updateNomeTabela() {
 		String nomeTabela = "";
 		List<Tabela> tempListTab = DicTabelasController.updateListaTabela();
@@ -37,7 +37,7 @@ public class TblSituacaoController {
 	}
 
 	// Retorna lista com todos as situacoes do DB
-	public static List<Situacao> updateListaNivel() {
+	public static List<Situacao> updateListaSituacao() {
 		String tbl = TblSituacaoController.updateNomeTabela();
 		Situacao tempSituacao = null;
 		List<Situacao> listaDeSituacao = new ArrayList<Situacao>();
@@ -46,8 +46,8 @@ public class TblSituacaoController {
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM " + tbl);
 			while (rs.next()) {
-				Integer id = rs.getInt("idnivel");
-				String nome = rs.getString("nomenivel");
+				Integer id = rs.getInt("idsituacao");
+				String nome = rs.getString("nomesituacao");
 				tempSituacao = new Situacao(id, nome);
 				listaDeSituacao.add(tempSituacao);
 			}
@@ -127,7 +127,7 @@ public class TblSituacaoController {
 	}
 
 	// Observable list para pesquisa
-	public static ObservableList<Situacao> pesquisaDeNivel() {
+	public static ObservableList<Situacao> pesquisaDeSituacao() {
 		ObservableList<Situacao> observableList = FXCollections.observableArrayList();
 		String tbl = TblSituacaoController.updateNomeTabela();
 		Situacao tempSituacao = null;
@@ -151,7 +151,7 @@ public class TblSituacaoController {
 	}
 
 	// Retorna colunas e quantidade
-	public static TableView estruturaTblDeNivel() {
+	public static TableView estruturaTblDeSituacao() {
 
 		ObservableList<ObservableList> data = FXCollections.observableArrayList();
 		String tbl = TblSituacaoController.updateNomeTabela();

@@ -63,9 +63,9 @@ public class LoginController {
 
 	public void onButtonLoginAction() {
 		Usuario tempUser = new Usuario(null, null, user.getText(), pass.getText(), null, null, null, null, null);
-		List<Usuario> tempList = TblUsuariosController.updateListaUsuarios();
+		
 		Integer validado = 0;
-		validado = UserService.validaLogin(tempList, tempUser);
+		validado = UserService.validaLogin(tempUser);
 		
 		if (validado == 1) {
 			System.out.println("O LOGIN FUNCIONOU!!");

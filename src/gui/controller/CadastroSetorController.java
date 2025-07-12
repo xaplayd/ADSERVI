@@ -1,8 +1,9 @@
 package gui.controller;
 
-import java.util.List;
+import java.sql.SQLException;
 
-import dados.controller.TblSetoresController;
+import dao.TblSetoresDAO;
+import dao.TblSetoresDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,7 +17,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import models.Setor;
-import services.SetorService;
 
 public class CadastroSetorController {
 
@@ -47,22 +47,26 @@ public class CadastroSetorController {
 			if (codigo.getText() == "") {
 			} else {
 				Integer cod = Integer.parseInt(codigo.getText());
-				List<Setor> tempList = TblSetoresController.updateListaSetores();
-				Setor puxa = SetorService.puxaSetor(tempList, cod);
-				if (puxa != null) {
-					nome.setText(puxa.getNome());
-					codigo.setDisable(true);
-					procuraSetor.setDisable(true);
-					novoSetor.setDisable(true);
-					editarSetor.setDisable(false);
-					excluirSetor.setDisable(false);
-					cancelarSetor.setDisable(false);
-				} else {
-					System.out.println("NAO ACHOU SETOR!!");
-					Alert alert = new Alert(Alert.AlertType.ERROR);
-					alert.setTitle("Setor não encontrado");
-					alert.setHeaderText("Não foi possível achar nenhum setor pelo código informado!");
-					alert.showAndWait();
+				TblSetoresDAO setordao = new TblSetoresDAOImpl();
+				try {
+					Setor tempSetor = setordao.getById(cod);
+					if (tempSetor != null) {
+						nome.setText(tempSetor.getNome());
+						codigo.setDisable(true);
+						procuraSetor.setDisable(true);
+						novoSetor.setDisable(true);
+						editarSetor.setDisable(false);
+						excluirSetor.setDisable(false);
+						cancelarSetor.setDisable(false);
+					} else {
+						System.out.println("NAO ACHOU SETOR!!");
+						Alert alert = new Alert(Alert.AlertType.ERROR);
+						alert.setTitle("Setor não encontrado");
+						alert.setHeaderText("Não foi possível achar nenhum setor pelo código informado!");
+						alert.showAndWait();
+					}
+				} catch (SQLException exception) {
+					exception.getMessage();
 				}
 			}
 		}
@@ -89,29 +93,24 @@ public class CadastroSetorController {
 	}
 
 	public void excluirSetor() {
-
-		String tempCodigo = codigo.getText();
-		System.out.println("EXCLUSÃO DE DADOS ATIVA!!");
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
-		alert.setTitle("Confirmação:");
-		alert.setHeaderText("Realmente deseja excluir o setor selecionado?");
-		alert.showAndWait();
-		if (alert.getResult() == ButtonType.YES) {
-			String processa = TblSetoresController.deletaSetorNaLista(tempCodigo);
-
-			if (processa == "sucesso") {
-				/*
-				 * procuraSetor.setDisable(false); novoSetor.setDisable(false);
-				 * editarSetor.setDisable(true); excluirSetor.setDisable(true);
-				 * salvarSetor.setDisable(true); fecharSetor.setDisable(false);
-				 * cancelarSetor.setDisable(true); codigo.setDisable(false); codigo.setText("");
-				 * nome.setDisable(true); nome.setText("");
-				 */
-				cancelarSetor();
-				this.modo = 0;
+		TblSetoresDAO setordao = new TblSetoresDAOImpl();
+		Integer result = 0;
+		try {
+			System.out.println("EXCLUSÃO DE DADOS ATIVA!!");
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+			alert.setTitle("Confirmação:");
+			alert.setHeaderText("Realmente deseja excluir o setor selecionado?");
+			alert.showAndWait();
+			if (alert.getResult() == ButtonType.YES) {
+				result = setordao.deleteById(new Setor(Integer.parseInt(codigo.getText()),null));
 			}
-		}
-
+			if (result > 0) {
+					cancelarSetor();
+					this.modo = 0;
+				}
+			} catch (SQLException exception) {
+				exception.getMessage();
+			}
 	}
 
 	public void cancelarSetor() {
@@ -129,14 +128,22 @@ public class CadastroSetorController {
 	}
 
 	public void salvarSetor() {
-		if (this.modo == 1) {
-			String tempCodigo = codigo.getText();
-			String tempNome = nome.getText();
-			TblSetoresController.editaSetorNaLista(tempCodigo, tempNome);
-		} else if (this.modo == 2) {
-			String tempNome = nome.getText();
-			Setor novoSetor = TblSetoresController.insereSetorNaLista(tempNome);
-			codigo.setText(novoSetor.getCodigo().toString());
+		try {
+			TblSetoresDAO setordao = new TblSetoresDAOImpl();
+			if (this.modo == 1) {
+				Integer tempCodigo = Integer.parseInt(codigo.getText());
+				String tempNome = nome.getText();
+				Setor tempSetor = new Setor(tempCodigo, tempNome);
+				setordao.updateById(tempSetor);
+			} else if (this.modo == 2) {
+				String tempNome = nome.getText();
+				Setor tempSetor = new Setor(null, tempNome);
+				setordao.insert(tempSetor);
+				tempSetor = setordao.getByName(tempNome);
+				codigo.setText(tempSetor.getCodigo().toString());
+			}
+		} catch (SQLException exception) {
+			exception.getMessage();
 		}
 		this.modo = 0;
 		codigo.setDisable(true);

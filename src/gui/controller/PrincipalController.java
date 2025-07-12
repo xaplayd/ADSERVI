@@ -81,14 +81,7 @@ public class PrincipalController {
 
 		Usuario tempUser = new Usuario(null, null, getLoggedUser(), null, null, null, null, null, null);
 
-		List tempList = TblUsuariosController.updateListaUsuarios();
-
-		Integer validado = 0;
-
-		for (Object x : tempList) {
-
-			validado = UserService.validaPermissao(tempList, tempUser);
-		}
+		Integer validado = UserService.validaPermissao(tempUser);
 
 		if (validado == 1) {
 			System.out.println("PERMISSÃO FUNCIONOU!");
@@ -131,14 +124,7 @@ public class PrincipalController {
 
 		Usuario tempUser = new Usuario(null, null, getLoggedUser(), null, null, null, null, null, null);
 
-		List tempList = TblUsuariosController.updateListaUsuarios();
-
-		Integer validado = 0;
-
-		for (Object x : tempList) {
-
-			validado = UserService.validaPermissao(tempList, tempUser);
-		}
+		Integer validado = UserService.validaPermissao(tempUser);
 
 		if (validado == 1) {
 			System.out.println("PERMISSÃO FUNCIONOU!");
