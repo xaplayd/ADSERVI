@@ -1,8 +1,5 @@
 package gui.controller;
 
-import java.util.List;
-
-import dados.controller.TblUsuariosController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

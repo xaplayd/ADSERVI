@@ -2,13 +2,14 @@ package gui.controller;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import config.DatabaseConfig;
-import dados.controller.ConnectionController;
-import dados.controller.TblSetoresController;
-import dados.controller.TblUsuariosController;
+import connection.controller.ConnectionController;
+import dao.TblUsuariosDAO;
+import dao.TblUsuariosDAOImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -125,10 +126,15 @@ public class PesquisaUsuarioController implements Initializable {
 
 	@FXML
 	public void onLimparFiltrosAction() {
-		filtrosAtivos.clear();
-		filtroCorrente.clear();
-		tabelita.setItems(TblUsuariosController.estruturaTblDeUsuarios().getItems());
-		valorParaFiltro.clear();
+		try {
+			TblUsuariosDAO usuariosdao = new TblUsuariosDAOImpl();
+			filtrosAtivos.clear();
+			filtroCorrente.clear();
+			tabelita.setItems(usuariosdao.estruturaTbl().getItems());
+			valorParaFiltro.clear();
+			} catch (SQLException exception) {
+				exception.getMessage();
+		}
 	}
 
 	@FXML
@@ -143,54 +149,58 @@ public class PesquisaUsuarioController implements Initializable {
 		}
 
 		filtrosAtivos.add(new Filtro(colunaSelecionada, valorFiltro, condicaoSelecionada));
-
-		ObservableList<ObservableList<String>> dadosOriginais = TblUsuariosController.estruturaTblDeUsuarios()
-				.getItems();
+		
 		ObservableList<ObservableList<String>> dadosFiltrados = FXCollections.observableArrayList();
 
-		for (ObservableList<String> linha : dadosOriginais) {
-			boolean correspondeTodos = true;
-
-			for (Filtro filtro : filtrosAtivos) {
-				int colIndex = -1;
-				for (int i = 0; i < tabelita.getColumns().size(); i++) {
-					TableColumn<ObservableList<String>, ?> coluna = tabelita.getColumns().get(i);
-					if (coluna.getText().equals(filtro.getColuna())) {
-						colIndex = i;
+		try {
+			TblUsuariosDAO usuariosdao = new TblUsuariosDAOImpl();
+			ObservableList<ObservableList<String>> dadosOriginais = usuariosdao.estruturaTbl().getItems();
+			
+			for (ObservableList<String> linha : dadosOriginais) {
+				boolean correspondeTodos = true;
+	
+				for (Filtro filtro : filtrosAtivos) {
+					int colIndex = -1;
+					for (int i = 0; i < tabelita.getColumns().size(); i++) {
+						TableColumn<ObservableList<String>, ?> coluna = tabelita.getColumns().get(i);
+						if (coluna.getText().equals(filtro.getColuna())) {
+							colIndex = i;
+							break;
+						}
+					}
+	
+					if (colIndex == -1)
+						continue;
+	
+					String valorCelula = linha.get(colIndex).toLowerCase();
+					String valorFiltroLower = filtro.getValor().toLowerCase();
+	
+					switch (filtro.getCondicao()) {
+					case "Contém":
+						if (!valorCelula.contains(valorFiltroLower))
+							correspondeTodos = false;
+						break;
+					case "Igual":
+						if (!valorCelula.equals(valorFiltroLower))
+							correspondeTodos = false;
+						break;
+					case "Diferente":
+						if (valorCelula.contains(valorFiltroLower))
+							correspondeTodos = false;
 						break;
 					}
+	
+					if (!correspondeTodos)
+						break;
 				}
-
-				if (colIndex == -1)
-					continue;
-
-				String valorCelula = linha.get(colIndex).toLowerCase();
-				String valorFiltroLower = filtro.getValor().toLowerCase();
-
-				switch (filtro.getCondicao()) {
-				case "Contém":
-					if (!valorCelula.contains(valorFiltroLower))
-						correspondeTodos = false;
-					break;
-				case "Igual":
-					if (!valorCelula.equals(valorFiltroLower))
-						correspondeTodos = false;
-					break;
-				case "Diferente":
-					if (valorCelula.contains(valorFiltroLower))
-						correspondeTodos = false;
-					break;
+	
+				if (correspondeTodos) {
+					dadosFiltrados.add(linha);
 				}
-
-				if (!correspondeTodos)
-					break;
 			}
-
-			if (correspondeTodos) {
-				dadosFiltrados.add(linha);
-			}
+		}catch(SQLException exception) {
+			exception.getMessage();
 		}
-
 		tabelita.setItems(dadosFiltrados);
 
 		StringBuilder sb = new StringBuilder();
@@ -202,15 +212,22 @@ public class PesquisaUsuarioController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		TableView<ObservableList<String>> tbl = TblUsuariosController.estruturaTblDeUsuarios();
-		tabelita.getColumns().setAll(tbl.getColumns());
-		tabelita.setItems(tbl.getItems());
-
-		campoParaFiltro.setItems(TblUsuariosController.obterNomesDasColunas());
-		campoParaFiltro.setValue(TblUsuariosController.obterNomesDasColunas().get(0));
-		condicaoFiltro.setItems(FXCollections.observableArrayList("Contém", "Igual", "Diferente"));
-		condicaoFiltro.setValue("Contém");
-
+		TblUsuariosDAO usuariosdao = new TblUsuariosDAOImpl();
+		try {
+			TableView<ObservableList<String>> tbl = usuariosdao.estruturaTbl();
+			tabelita.getColumns().setAll(tbl.getColumns());
+			tabelita.setItems(tbl.getItems());
+		}catch(SQLException exception) {
+			exception.getMessage();
+		}
+		try {
+			campoParaFiltro.setItems(usuariosdao.obterNomesDasColunas());
+			campoParaFiltro.setValue(usuariosdao.obterNomesDasColunas().get(0));
+			condicaoFiltro.setItems(FXCollections.observableArrayList("Contém", "Igual", "Diferente"));
+			condicaoFiltro.setValue("Contém");
+		}catch(SQLException exception) {
+			exception.getMessage();
+		}
 		adicionar.setOnAction(e -> onAdicionarAction());
 		limpar.setOnAction(e -> onLimparFiltrosAction());
 		okButton.setOnAction(e -> onOkButtonAction());
@@ -226,7 +243,11 @@ public class PesquisaUsuarioController implements Initializable {
 		List<DatabaseConfig> parametros = ConnectionController.getParametrosDeConexao();
 		lblEnderecoDatabase.setText(parametros.get(3).getParametro());
 		lblNomeDatabase.setText(parametros.get(5).getParametro());
-		lblNomeTabela.setText(TblSetoresController.updateNomeTabela());
+		try {
+			lblNomeTabela.setText(usuariosdao.getTblName());
+			}catch(SQLException exception) {
+				exception.getMessage();
+			}
 
 		btDiretorioArquivo.setOnAction(e -> onDiretorioArquivoAction());
 		btExportaCsv.setOnAction(e -> onExportarCsvAction());

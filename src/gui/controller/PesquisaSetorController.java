@@ -2,12 +2,14 @@ package gui.controller;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import config.DatabaseConfig;
-import dados.controller.ConnectionController;
-import dados.controller.TblSetoresController;
+import connection.controller.ConnectionController;
+import dao.TblSetoresDAO;
+import dao.TblSetoresDAOImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -124,10 +126,15 @@ public class PesquisaSetorController implements Initializable {
 
 	@FXML
 	public void onLimparFiltrosAction() {
-		filtrosAtivos.clear();
-		filtroCorrente.clear();
-		tabelita.setItems(TblSetoresController.estruturaTblDeSetores().getItems());
-		valorParaFiltro.clear();
+		try {
+			TblSetoresDAO setoresdao = new TblSetoresDAOImpl();
+			filtrosAtivos.clear();
+			filtroCorrente.clear();
+			tabelita.setItems(setoresdao.estruturaTbl().getItems());
+			valorParaFiltro.clear();
+		}catch (SQLException exception) {
+			exception.getMessage();
+		}
 	}
 
 	@FXML
@@ -143,52 +150,55 @@ public class PesquisaSetorController implements Initializable {
 
 		filtrosAtivos.add(new Filtro(colunaSelecionada, valorFiltro, condicaoSelecionada));
 
-		ObservableList<ObservableList<String>> dadosOriginais = TblSetoresController.estruturaTblDeSetores().getItems();
 		ObservableList<ObservableList<String>> dadosFiltrados = FXCollections.observableArrayList();
-
-		for (ObservableList<String> linha : dadosOriginais) {
-			boolean correspondeTodos = true;
-
-			for (Filtro filtro : filtrosAtivos) {
-				int colIndex = -1;
-				for (int i = 0; i < tabelita.getColumns().size(); i++) {
-					TableColumn<ObservableList<String>, ?> coluna = tabelita.getColumns().get(i);
-					if (coluna.getText().equals(filtro.getColuna())) {
-						colIndex = i;
+		try {
+			TblSetoresDAO setoresdao = new TblSetoresDAOImpl();
+			ObservableList<ObservableList<String>> dadosOriginais = setoresdao.estruturaTbl().getItems();
+			for (ObservableList<String> linha : dadosOriginais) {
+				boolean correspondeTodos = true;
+	
+				for (Filtro filtro : filtrosAtivos) {
+					int colIndex = -1;
+					for (int i = 0; i < tabelita.getColumns().size(); i++) {
+						TableColumn<ObservableList<String>, ?> coluna = tabelita.getColumns().get(i);
+						if (coluna.getText().equals(filtro.getColuna())) {
+							colIndex = i;
+							break;
+						}
+					}
+	
+					if (colIndex == -1)
+						continue;
+	
+					String valorCelula = linha.get(colIndex).toLowerCase();
+					String valorFiltroLower = filtro.getValor().toLowerCase();
+	
+					switch (filtro.getCondicao()) {
+					case "Contém":
+						if (!valorCelula.contains(valorFiltroLower))
+							correspondeTodos = false;
+						break;
+					case "Igual":
+						if (!valorCelula.equals(valorFiltroLower))
+							correspondeTodos = false;
+						break;
+					case "Diferente":
+						if (valorCelula.contains(valorFiltroLower))
+							correspondeTodos = false;
 						break;
 					}
+	
+					if (!correspondeTodos)
+						break;
 				}
-
-				if (colIndex == -1)
-					continue;
-
-				String valorCelula = linha.get(colIndex).toLowerCase();
-				String valorFiltroLower = filtro.getValor().toLowerCase();
-
-				switch (filtro.getCondicao()) {
-				case "Contém":
-					if (!valorCelula.contains(valorFiltroLower))
-						correspondeTodos = false;
-					break;
-				case "Igual":
-					if (!valorCelula.equals(valorFiltroLower))
-						correspondeTodos = false;
-					break;
-				case "Diferente":
-					if (valorCelula.contains(valorFiltroLower))
-						correspondeTodos = false;
-					break;
+	
+				if (correspondeTodos) {
+					dadosFiltrados.add(linha);
 				}
-
-				if (!correspondeTodos)
-					break;
 			}
-
-			if (correspondeTodos) {
-				dadosFiltrados.add(linha);
-			}
+		}catch(SQLException exception) {
+			exception.getMessage();
 		}
-
 		tabelita.setItems(dadosFiltrados);
 
 		StringBuilder sb = new StringBuilder();
@@ -200,15 +210,24 @@ public class PesquisaSetorController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		TableView<ObservableList<String>> tbl = TblSetoresController.estruturaTblDeSetores();
-		tabelita.getColumns().setAll(tbl.getColumns());
-		tabelita.setItems(tbl.getItems());
-
-		campoParaFiltro.setItems(TblSetoresController.obterNomesDasColunas());
-		campoParaFiltro.setValue(TblSetoresController.obterNomesDasColunas().get(0));
-		condicaoFiltro.setItems(FXCollections.observableArrayList("Contém", "Igual", "Diferente"));
-		condicaoFiltro.setValue("Contém");
-
+		TblSetoresDAO setoresdao = new TblSetoresDAOImpl();
+		try {
+			TableView<ObservableList<String>> tbl = setoresdao.estruturaTbl();
+			tabelita.getColumns().setAll(tbl.getColumns());
+			tabelita.setItems(tbl.getItems());
+			} catch(SQLException exception) {
+				exception.getMessage();
+		}
+		
+		try {
+			campoParaFiltro.setItems(setoresdao.obterNomesDasColunas());
+			campoParaFiltro.setValue(setoresdao.obterNomesDasColunas().get(0));
+			condicaoFiltro.setItems(FXCollections.observableArrayList("Contém", "Igual", "Diferente"));
+			condicaoFiltro.setValue("Contém");
+			} catch(SQLException exception) {
+				exception.getMessage();
+		}
+		
 		adicionar.setOnAction(e -> onAdicionarAction());
 		limpar.setOnAction(e -> onLimparFiltrosAction());
 		okButton.setOnAction(e -> onOkButtonAction());
@@ -224,8 +243,12 @@ public class PesquisaSetorController implements Initializable {
 		List<DatabaseConfig> parametros = ConnectionController.getParametrosDeConexao();
 		lblEnderecoDatabase.setText(parametros.get(3).getParametro());
 		lblNomeDatabase.setText(parametros.get(5).getParametro());
-		lblNomeTabela.setText(TblSetoresController.updateNomeTabela());
-
+		
+		try {
+			lblNomeTabela.setText(setoresdao.getTblName());
+			}catch(SQLException exception) {
+				exception.getMessage();
+			}
 		btDiretorioArquivo.setOnAction(e -> onDiretorioArquivoAction());
 		btExportaCsv.setOnAction(e -> onExportarCsvAction());
 		btExportaTxt.setOnAction(e -> onExportarTxtAction());

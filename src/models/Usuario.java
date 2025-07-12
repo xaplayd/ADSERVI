@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import dados.controller.TblUsuariosController;
-
 public class Usuario implements Comparable<Usuario>{
 	
 	private Integer codigo;
@@ -107,12 +105,6 @@ public class Usuario implements Comparable<Usuario>{
 	public void setSituacao(Integer situacao) {
 		this.situacao = situacao;
 	}
-	
-	public List getListaDeUsuarios() {
-		TblUsuariosController.updateListaUsuarios();
-		return listaDeUsuarios;
-	}
-	
 	
 	@Override
 	public String toString() {

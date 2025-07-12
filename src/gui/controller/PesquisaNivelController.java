@@ -2,13 +2,14 @@ package gui.controller;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import config.DatabaseConfig;
-import dados.controller.ConnectionController;
-import dados.controller.TblNiveisController;
-import dados.controller.TblSetoresController;
+import connection.controller.ConnectionController;
+import dao.TblNiveisDAO;
+import dao.TblNiveisDAOImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -125,10 +126,15 @@ public class PesquisaNivelController implements Initializable {
 
 	@FXML
 	public void onLimparFiltrosAction() {
+		try {
+		TblNiveisDAO niveisdao = new TblNiveisDAOImpl();
+		tabelita.setItems(niveisdao.estruturaTbl().getItems());
 		filtrosAtivos.clear();
 		filtroCorrente.clear();
-		tabelita.setItems(TblNiveisController.estruturaTblDeNivel().getItems());
 		valorParaFiltro.clear();
+		} catch (SQLException exception) {
+			exception.getMessage();
+		}
 	}
 
 	@FXML
@@ -143,51 +149,58 @@ public class PesquisaNivelController implements Initializable {
 		}
 
 		filtrosAtivos.add(new Filtro(colunaSelecionada, valorFiltro, condicaoSelecionada));
-
-		ObservableList<ObservableList<String>> dadosOriginais = TblNiveisController.estruturaTblDeNivel().getItems();
 		ObservableList<ObservableList<String>> dadosFiltrados = FXCollections.observableArrayList();
+		
+		try {
+			TblNiveisDAO niveisdao = new TblNiveisDAOImpl();
+			ObservableList<ObservableList<String>> dadosOriginais = niveisdao.estruturaTbl().getItems();
+			
 
-		for (ObservableList<String> linha : dadosOriginais) {
-			boolean correspondeTodos = true;
+			for (ObservableList<String> linha : dadosOriginais) {
+				boolean correspondeTodos = true;
 
-			for (Filtro filtro : filtrosAtivos) {
-				int colIndex = -1;
-				for (int i = 0; i < tabelita.getColumns().size(); i++) {
-					TableColumn<ObservableList<String>, ?> coluna = tabelita.getColumns().get(i);
-					if (coluna.getText().equals(filtro.getColuna())) {
-						colIndex = i;
+				for (Filtro filtro : filtrosAtivos) {
+					int colIndex = -1;
+					for (int i = 0; i < tabelita.getColumns().size(); i++) {
+						TableColumn<ObservableList<String>, ?> coluna = tabelita.getColumns().get(i);
+						if (coluna.getText().equals(filtro.getColuna())) {
+							colIndex = i;
+							break;
+						}
+					}
+
+					if (colIndex == -1)
+						continue;
+
+					String valorCelula = linha.get(colIndex).toLowerCase();
+					String valorFiltroLower = filtro.getValor().toLowerCase();
+
+					switch (filtro.getCondicao()) {
+					case "Contém":
+						if (!valorCelula.contains(valorFiltroLower))
+							correspondeTodos = false;
+						break;
+					case "Igual":
+						if (!valorCelula.equals(valorFiltroLower))
+							correspondeTodos = false;
+						break;
+					case "Diferente":
+						if (valorCelula.contains(valorFiltroLower))
+							correspondeTodos = false;
 						break;
 					}
+
+					if (!correspondeTodos)
+						break;
 				}
 
-				if (colIndex == -1)
-					continue;
-
-				String valorCelula = linha.get(colIndex).toLowerCase();
-				String valorFiltroLower = filtro.getValor().toLowerCase();
-
-				switch (filtro.getCondicao()) {
-				case "Contém":
-					if (!valorCelula.contains(valorFiltroLower))
-						correspondeTodos = false;
-					break;
-				case "Igual":
-					if (!valorCelula.equals(valorFiltroLower))
-						correspondeTodos = false;
-					break;
-				case "Diferente":
-					if (valorCelula.contains(valorFiltroLower))
-						correspondeTodos = false;
-					break;
+				if (correspondeTodos) {
+					dadosFiltrados.add(linha);
 				}
-
-				if (!correspondeTodos)
-					break;
 			}
-
-			if (correspondeTodos) {
-				dadosFiltrados.add(linha);
-			}
+			
+		}catch(SQLException exception) {
+			exception.getMessage();
 		}
 
 		tabelita.setItems(dadosFiltrados);
@@ -201,14 +214,24 @@ public class PesquisaNivelController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		TableView<ObservableList<String>> tbl = TblNiveisController.estruturaTblDeNivel();
-		tabelita.getColumns().setAll(tbl.getColumns());
-		tabelita.setItems(tbl.getItems());
-
-		campoParaFiltro.setItems(TblNiveisController.obterNomesDasColunas());
-		campoParaFiltro.setValue(TblNiveisController.obterNomesDasColunas().get(0));
-		condicaoFiltro.setItems(FXCollections.observableArrayList("Contém", "Igual", "Diferente"));
-		condicaoFiltro.setValue("Contém");
+		TblNiveisDAO niveisdao = new TblNiveisDAOImpl();
+		try {
+			niveisdao = new TblNiveisDAOImpl();
+			TableView<ObservableList<String>> tbl = niveisdao.estruturaTbl();
+			tabelita.getColumns().setAll(tbl.getColumns());
+			tabelita.setItems(tbl.getItems());
+		}catch (SQLException exception) {
+			exception.getMessage();
+		}
+		
+		try {
+			campoParaFiltro.setItems(niveisdao.obterNomesDasColunas());
+			campoParaFiltro.setValue(niveisdao.obterNomesDasColunas().get(0));
+			condicaoFiltro.setItems(FXCollections.observableArrayList("Contém", "Igual", "Diferente"));
+			condicaoFiltro.setValue("Contém");
+		}catch (SQLException exception) {
+			exception.getMessage();
+		}
 
 		adicionar.setOnAction(e -> onAdicionarAction());
 		limpar.setOnAction(e -> onLimparFiltrosAction());
@@ -225,8 +248,12 @@ public class PesquisaNivelController implements Initializable {
 		List<DatabaseConfig> parametros = ConnectionController.getParametrosDeConexao();
 		lblEnderecoDatabase.setText(parametros.get(3).getParametro());
 		lblNomeDatabase.setText(parametros.get(5).getParametro());
-		lblNomeTabela.setText(TblNiveisController.updateNomeTabela());
-
+		
+		try {
+		lblNomeTabela.setText(niveisdao.getTblName());
+		}catch(SQLException exception) {
+			exception.getMessage();
+		}
 		btDiretorioArquivo.setOnAction(e -> onDiretorioArquivoAction());
 		btExportaCsv.setOnAction(e -> onExportarCsvAction());
 		btExportaTxt.setOnAction(e -> onExportarTxtAction());

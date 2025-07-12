@@ -1,4 +1,4 @@
-package dados.controller;
+package connection.controller;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -1,9 +1,11 @@
 package gui.controller;
 
-import java.util.List;
+import java.sql.SQLException;
 
-import dados.controller.TblSetoresController;
-import dados.controller.TblUsuariosController;
+import dao.TblSetoresDAO;
+import dao.TblSetoresDAOImpl;
+import dao.TblUsuariosDAO;
+import dao.TblUsuariosDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,8 +22,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import models.Setor;
 import models.Usuario;
-import services.SetorService;
-import services.UserService;
 
 public class CadastroUsuarioController {
 
@@ -70,47 +70,44 @@ public class CadastroUsuarioController {
 
 	public void onCodigoTxtFieldKeyPressed(KeyEvent e) {
 		if (e.getCode().equals(KeyCode.ENTER) || e.getCode().equals(KeyCode.TAB)) {
-
 			if (codigo.getText() == "") {
-
 			} else {
-
 				Integer codUser = Integer.parseInt(codigo.getText());
-				List<Usuario> tempListUser = TblUsuariosController.updateListaUsuarios();
-				Usuario puxaUser = UserService.puxaUser(tempListUser, codUser);
-				if (puxaUser != null) {
-					codigo.setDisable(true);
-					procuraUsuario.setDisable(true);
-					novoUsuario.setDisable(true);
-					editarUsuario.setDisable(false);
-					excluirUsuario.setDisable(false);
-					cancelar.setDisable(false);
+				TblUsuariosDAO usuariodao = new TblUsuariosDAOImpl();
+				try {
+					Usuario tempUser = usuariodao.getById(codUser);
+					if (tempUser != null) {
+						codigo.setDisable(true);
+						procuraUsuario.setDisable(true);
+						novoUsuario.setDisable(true);
+						editarUsuario.setDisable(false);
+						excluirUsuario.setDisable(false);
+						cancelar.setDisable(false);
 
-					nome.setText(puxaUser.getNome());
-					login.setText(puxaUser.getLogin());
-					senha.setText(puxaUser.getSenha());
-					permissoes.setText(puxaUser.getPermissoes().toString());
-					email.setText(puxaUser.getEmail());
-					emailGerencia.setText(puxaUser.getEmailGerencia());
-					setor.setText(puxaUser.getSetor().toString());
-					situacao.setText(puxaUser.getSituacao().toString());
-					Integer codSetor = Integer.parseInt(setor.getText());
-					List<Setor> tempListSetor = TblSetoresController.updateListaSetores();
+						nome.setText(tempUser.getNome());
+						login.setText(tempUser.getLogin());
+						senha.setText(tempUser.getSenha());
+						permissoes.setText(tempUser.getPermissoes().toString());
+						email.setText(tempUser.getEmail());
+						emailGerencia.setText(tempUser.getEmailGerencia());
+						setor.setText(tempUser.getSetor().toString());
+						situacao.setText(tempUser.getSituacao().toString());
+						TblSetoresDAO setordao = new TblSetoresDAOImpl();
+						Setor setor = setordao.getById(tempUser.getSetor());
+						setorDesc.setText(setor.getNome());
 
-					Setor puxaSetor = SetorService.puxaSetor(tempListSetor, codSetor);
-
-					setorDesc.setText(puxaSetor.getNome());
-
-				} else {
-					System.out.println("NAO ACHOU USUARIO!!");
-					Alert alert = new Alert(Alert.AlertType.ERROR);
-					alert.setTitle("Usuário não encontrado");
-					alert.setHeaderText("Não foi possível achar nenhum usuário pelo código informado!");
-					alert.showAndWait();
+					} else {
+						System.out.println("NAO ACHOU USUARIO!!");
+						Alert alert = new Alert(Alert.AlertType.ERROR);
+						alert.setTitle("Usuário não encontrado");
+						alert.setHeaderText("Não foi possível achar nenhum usuário pelo código informado!");
+						alert.showAndWait();
+					}
+				} catch (SQLException exception) {
+					exception.getMessage();
 				}
 			}
 		}
-
 	}
 
 	public void novoUser() {
@@ -165,6 +162,7 @@ public class CadastroUsuarioController {
 	}
 
 	public void salvaUsuario() {
+		TblUsuariosDAOImpl usuariodao = new TblUsuariosDAOImpl();
 		if (this.modo == 1) {
 			Integer tempCodigo = Integer.parseInt(codigo.getText());
 			String tempNome = nome.getText();
@@ -175,43 +173,74 @@ public class CadastroUsuarioController {
 			String tempEmailGerencia = emailGerencia.getText();
 			Integer tempSetor = Integer.parseInt(setor.getText());
 			Integer tempSituacao = Integer.parseInt(situacao.getText());
-			TblUsuariosController.editaUsuarioNaLista(tempCodigo, tempNome, tempLogin, tempSenha, tempPermissoes,
-					tempEmail, tempEmailGerencia, tempSetor, tempSituacao);
+			Usuario tempUser = new Usuario(tempCodigo, tempNome, tempLogin, tempSenha, tempPermissoes, tempEmail,
+					tempEmailGerencia, tempSetor, tempSituacao);
+			usuariodao.updateById(tempUser);
+			this.modo = 0;
+			excluirUsuario.setDisable(false);
+			editarUsuario.setDisable(false);
+			codigo.setDisable(true);
+			procuraUsuario.setDisable(true);
+			procuraPermissoes.setDisable(true);
+			permissoes.setEditable(true);
+			procuraSetor.setDisable(true);
+			nome.setDisable(true);
+			login.setDisable(true);
+			senha.setDisable(true);
+			permissoes.setDisable(true);
+			email.setDisable(true);
+			emailGerencia.setDisable(true);
+			setor.setDisable(true);
+			salvarUsuario.setDisable(true);
+			novoUsuario.setDisable(true);
+			excluirUsuario.setDisable(false);
+			cancelar.setDisable(false);
+			situacao.setDisable(true);
+			procuraSituacao.setDisable(true);
 		} else if (this.modo == 2) {
-			String tempNome = nome.getText();
 			String tempLogin = login.getText();
-			String tempSenha = senha.getText();
-			Integer tempPermissoes = Integer.parseInt(permissoes.getText());
-			String tempEmail = email.getText();
-			String tempEmailGerencia = emailGerencia.getText();
-			Integer tempSetor = Integer.parseInt(setor.getText());
-			Integer tempSituacao = Integer.parseInt(situacao.getText());
-			Usuario novoUsuario = TblUsuariosController.insereUsuarioNaLista(tempNome, tempLogin, tempSenha,
-					tempPermissoes, tempEmail, tempEmailGerencia, tempSetor, tempSituacao);
-			codigo.setText(novoUsuario.getCodigo().toString());
+			Usuario usuarioTest = usuariodao.getByLogin(tempLogin);
+			if (usuarioTest == null) {
+				String tempNome = nome.getText();
+				String tempSenha = senha.getText();
+				Integer tempPermissoes = Integer.parseInt(permissoes.getText());
+				String tempEmail = email.getText();
+				String tempEmailGerencia = emailGerencia.getText();
+				Integer tempSetor = Integer.parseInt(setor.getText());
+				Integer tempSituacao = Integer.parseInt(situacao.getText());
+				Usuario tempUser = new Usuario(null, tempNome, tempLogin, tempSenha, tempPermissoes, tempEmail,
+						tempEmailGerencia, tempSetor, tempSituacao);
+				usuariodao.insert(tempUser);
+				tempUser = usuariodao.getByName(tempNome);
+				codigo.setText(tempUser.getCodigo().toString());
+				this.modo = 0;
+				excluirUsuario.setDisable(false);
+				editarUsuario.setDisable(false);
+				codigo.setDisable(true);
+				procuraUsuario.setDisable(true);
+				procuraPermissoes.setDisable(true);
+				permissoes.setEditable(true);
+				procuraSetor.setDisable(true);
+				nome.setDisable(true);
+				login.setDisable(true);
+				senha.setDisable(true);
+				permissoes.setDisable(true);
+				email.setDisable(true);
+				emailGerencia.setDisable(true);
+				setor.setDisable(true);
+				salvarUsuario.setDisable(true);
+				novoUsuario.setDisable(true);
+				excluirUsuario.setDisable(false);
+				cancelar.setDisable(false);
+				situacao.setDisable(true);
+				procuraSituacao.setDisable(true);
+			} else {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Usuário já cadastrado!");
+				alert.setHeaderText("Já existe um usuário com este login cadastrado!");
+				alert.showAndWait();
+			}
 		}
-		this.modo = 0;
-		excluirUsuario.setDisable(false);
-		editarUsuario.setDisable(false);
-		codigo.setDisable(true);
-		procuraUsuario.setDisable(true);
-		procuraPermissoes.setDisable(true);
-		permissoes.setEditable(true);
-		procuraSetor.setDisable(true);
-		nome.setDisable(true);
-		login.setDisable(true);
-		senha.setDisable(true);
-		permissoes.setDisable(true);
-		email.setDisable(true);
-		emailGerencia.setDisable(true);
-		setor.setDisable(true);
-		salvarUsuario.setDisable(true);
-		novoUsuario.setDisable(true);
-		excluirUsuario.setDisable(false);
-		cancelar.setDisable(false);
-		situacao.setDisable(true);
-		procuraSituacao.setDisable(true);
-
 	}
 
 	public void cancelaUsuario() {
@@ -248,19 +277,24 @@ public class CadastroUsuarioController {
 	}
 
 	public void excluirUsuario() {
-		String tempCodigo = codigo.getText();
-		System.out.println("EXCLUSÃO DE DADOS ATIVA!!");
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
-		alert.setTitle("Confirmação:");
-		alert.setHeaderText("Realmente deseja excluir o usuário selecionado?");
-		alert.showAndWait();
-		if (alert.getResult() == ButtonType.YES) {
-			String processa = TblUsuariosController.deletaUsuarioNaLista(tempCodigo);
-
-			if (processa == "sucesso") {
-				cancelaUsuario();
-				this.modo = 0;
+		TblUsuariosDAO usuariodao = new TblUsuariosDAOImpl();
+		Integer result = 0;
+		try {
+			System.out.println("EXCLUSÃO DE DADOS ATIVA!!");
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+			alert.setTitle("Confirmação:");
+			alert.setHeaderText("Realmente deseja excluir o usuário selecionado?");
+			alert.showAndWait();
+			if (alert.getResult() == ButtonType.YES) {
+				result = usuariodao.deleteById(new Usuario(Integer.parseInt(codigo.getText()), null, null, null, null,
+						null, null, null, null));
+				if (result > 0) {
+					cancelaUsuario();
+					this.modo = 0;
+				}
 			}
+		} catch (SQLException exception) {
+			exception.getMessage();
 		}
 	}
 
@@ -454,16 +488,20 @@ public class CadastroUsuarioController {
 			if (setor.getText() == "") {
 			} else {
 				Integer cod = Integer.parseInt(setor.getText());
-				List<Setor> tempList = TblSetoresController.updateListaSetores();
-				Setor puxa = SetorService.puxaSetor(tempList, cod);
-				if (puxa != null) {
-					setorDesc.setText(puxa.getNome());
-				} else {
-					System.out.println("NAO ACHOU SETOR!!");
-					Alert alert = new Alert(Alert.AlertType.ERROR);
-					alert.setTitle("Setor não encontrado");
-					alert.setHeaderText("Não foi possível achar nenhum setor pelo código informado!");
-					alert.showAndWait();
+				TblSetoresDAO setordao = new TblSetoresDAOImpl();
+				try {
+					Setor tempSetor = setordao.getById(cod);
+					if (tempSetor != null) {
+						setorDesc.setText(tempSetor.getNome());
+					} else {
+						System.out.println("NAO ACHOU SETOR!!");
+						Alert alert = new Alert(Alert.AlertType.ERROR);
+						alert.setTitle("Setor não encontrado");
+						alert.setHeaderText("Não foi possível achar nenhum setor pelo código informado!");
+						alert.showAndWait();
+					}
+				} catch (SQLException exception) {
+					exception.getMessage();
 				}
 			}
 		}

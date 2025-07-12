@@ -102,15 +102,16 @@ public class CadastroSetorController {
 			alert.setHeaderText("Realmente deseja excluir o setor selecionado?");
 			alert.showAndWait();
 			if (alert.getResult() == ButtonType.YES) {
-				result = setordao.deleteById(new Setor(Integer.parseInt(codigo.getText()),null));
-			}
-			if (result > 0) {
+				result = setordao.deleteById(new Setor(Integer.parseInt(codigo.getText()), null));
+
+				if (result > 0) {
 					cancelarSetor();
 					this.modo = 0;
 				}
-			} catch (SQLException exception) {
-				exception.getMessage();
 			}
+		} catch (SQLException exception) {
+			exception.getMessage();
+		}
 	}
 
 	public void cancelarSetor() {
@@ -135,25 +136,45 @@ public class CadastroSetorController {
 				String tempNome = nome.getText();
 				Setor tempSetor = new Setor(tempCodigo, tempNome);
 				setordao.updateById(tempSetor);
+				this.modo = 0;
+				codigo.setDisable(true);
+				procuraSetor.setDisable(true);
+				nome.setDisable(true);
+				novoSetor.setDisable(true);
+				editarSetor.setDisable(false);
+				excluirSetor.setDisable(false);
+				cancelarSetor.setDisable(false);
+				salvarSetor.setDisable(true);
+
 			} else if (this.modo == 2) {
 				String tempNome = nome.getText();
-				Setor tempSetor = new Setor(null, tempNome);
-				setordao.insert(tempSetor);
-				tempSetor = setordao.getByName(tempNome);
-				codigo.setText(tempSetor.getCodigo().toString());
+				Setor setorTest = setordao.getByName(tempNome);
+
+				if (setorTest == null) {
+					Setor tempSetor = new Setor(null, tempNome);
+					setordao.insert(tempSetor);
+					tempSetor = setordao.getByName(tempNome);
+					codigo.setText(tempSetor.getCodigo().toString());
+					this.modo = 0;
+					codigo.setDisable(true);
+					procuraSetor.setDisable(true);
+					nome.setDisable(true);
+					novoSetor.setDisable(true);
+					editarSetor.setDisable(false);
+					excluirSetor.setDisable(false);
+					cancelarSetor.setDisable(false);
+					salvarSetor.setDisable(true);
+
+				} else {
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.setTitle("Setor já cadastrado!");
+					alert.setHeaderText("Já existe um setor com este nome cadastrado!");
+					alert.showAndWait();
+				}
 			}
 		} catch (SQLException exception) {
 			exception.getMessage();
 		}
-		this.modo = 0;
-		codigo.setDisable(true);
-		procuraSetor.setDisable(true);
-		nome.setDisable(true);
-		novoSetor.setDisable(true);
-		editarSetor.setDisable(false);
-		excluirSetor.setDisable(false);
-		cancelarSetor.setDisable(false);
-		salvarSetor.setDisable(true);
 	}
 
 	public void fecharSetor() {

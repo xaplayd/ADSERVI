@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import dados.controller.ConnectionController;
+import connection.controller.ConnectionController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -281,6 +281,35 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 			String sql = "SELECT idusuario, nome, login, senha, nivel, email, emailgerente, idsetor, idsituacao FROM " + tbl + " WHERE nome = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				Integer iduser = rs.getInt("idusuario");
+				String nome = rs.getString("nome");
+				String login = rs.getString("login");
+				String senha = rs.getString("senha");
+				Integer nivel = rs.getInt("nivel");
+				String email = rs.getString("email");
+				String idemailgerente = rs.getString("emailgerente");
+				Integer idsetor = rs.getInt("idsetor");
+				Integer situacao = rs.getInt("idsituacao");
+				tempUsuario = new Usuario(iduser, nome, login, senha, nivel, email, idemailgerente, idsetor, situacao);
+			}
+			rs.close();
+			ps.close();
+			con.close();
+		} catch (SQLException e) {
+			e.getMessage();
+		}
+		return tempUsuario;
+	}
+	public Usuario getByLogin(String tempLogin){
+		Usuario tempUsuario = null;
+		Connection con = ConnectionController.getConexaoMySQL();
+		try {
+			String tbl = getTblName();
+			String sql = "SELECT idusuario, nome, login, senha, nivel, email, emailgerente, idsetor, idsituacao FROM " + tbl + " WHERE login = ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, tempLogin);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				Integer iduser = rs.getInt("idusuario");
