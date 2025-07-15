@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -17,6 +18,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
+import models.Nivel;
+import models.Setor;
+import models.Situacao;
+import models.TabelaColuna;
 import models.Usuario;
 
 public class TblUsuariosDAOImpl implements TblUsuariosDAO {
@@ -29,20 +34,20 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			String tbl = getTblName();
-			String sql = "SELECT idusuario, nome, login, senha, nivel, email, emailgerente, idsetor, idsituacao FROM " + tbl + " WHERE idusuario = ?";
+			String sql = "SELECT id_usuario, nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao FROM " + tbl + " WHERE id_usuario = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				Integer iduser = rs.getInt("idusuario");
+				Integer iduser = rs.getInt("id_usuario");
 				String nome = rs.getString("nome");
 				String login = rs.getString("login");
 				String senha = rs.getString("senha");
-				Integer nivel = rs.getInt("nivel");
+				Integer nivel = rs.getInt("id_nivel");
 				String email = rs.getString("email");
-				String idemailgerente = rs.getString("emailgerente");
-				Integer idsetor = rs.getInt("idsetor");
-				Integer situacao = rs.getInt("idsituacao");
+				String idemailgerente = rs.getString("email_gerente");
+				Integer idsetor = rs.getInt("id_setor");
+				Integer situacao = rs.getInt("id_situacao");
 				tempUsuario = new Usuario(iduser, nome, login, senha, nivel, email, idemailgerente, idsetor, situacao);
 			}
 			rs.close();
@@ -59,12 +64,12 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			String tbl = getTblName();
-			String sql = "SELECT login, nivel FROM " + tbl + " WHERE login = ?";
+			String sql = "SELECT login, id_nivel FROM " + tbl + " WHERE login = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, login);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				nivel = rs.getInt("nivel");
+				nivel = rs.getInt("id_nivel");
 			}
 			rs.close();
 			ps.close();
@@ -86,15 +91,15 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				Integer iduser = rs.getInt("idusuario");
+				Integer iduser = rs.getInt("id_usuario");
 				String nome = rs.getString("nome");
 				String login = rs.getString("login");
 				String senha = rs.getString("senha");
-				Integer nivel = rs.getInt("nivel");
+				Integer nivel = rs.getInt("id_nivel");
 				String email = rs.getString("email");
-				String idemailgerente = rs.getString("emailgerente");
-				Integer idsetor = rs.getInt("idsetor");
-				Integer situacao = rs.getInt("idsituacao");
+				String idemailgerente = rs.getString("email_gerente");
+				Integer idsetor = rs.getInt("id_setor");
+				Integer situacao = rs.getInt("id_situacao");
 				tempUsuario = new Usuario(iduser, nome, login, senha, nivel, email, idemailgerente, idsetor, situacao);
 				listaUsuarios.add(tempUsuario);
 			}
@@ -113,7 +118,7 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		Integer result = 0;
 		try {
 			String tbl = getTblName();
-			String sql = "INSERT INTO " + tbl + " (nome, login, senha, nivel, email, emailgerente, idsetor, situacao) VALUES (?,?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO " + tbl + " (nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao) VALUES (?,?,?,?,?,?,?,?)";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, usuario.getNome());
 			ps.setString(2, usuario.getLogin());
@@ -139,7 +144,7 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		Integer result = 0;
 		try {
 			String tbl = getTblName();
-			String sql = "UPDATE " + tbl + " SET nome = (?), login = (?), senha = (?), nivel = (?), email = (?), emailgerente = (?), idsetor = (?), situacao = (?) WHERE idusuario = (?)";
+			String sql = "UPDATE " + tbl + " SET nome = (?), login = (?), senha = (?), id_nivel = (?), email = (?), email_gerente = (?), id_setor = (?), id_situacao = (?) WHERE id_usuario = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, usuario.getNome());
 			ps.setString(2, usuario.getLogin());
@@ -166,7 +171,7 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		Integer result = 0;
 		try {
 			String tbl = getTblName();
-			String sql = "DELETE from " + tbl + " WHERE idusuario = (?)";
+			String sql = "DELETE from " + tbl + " WHERE id_usuario = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, usuario.getCodigo());
 			
@@ -256,12 +261,12 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 			String tbls = "";
 			DicTabelasDAO tblsdao = new DicTabelasDAOImpl();
 			tbls = tblsdao.getTblName();
-			String sql = "SELECT nometbl FROM " + tbls + " WHERE idtbl = ?";
+			String sql = "SELECT nome_tbl FROM " + tbls + " WHERE id_tbl = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, this.idTabela);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				nameCurrentTbl = rs.getString("nometbl");
+				nameCurrentTbl = rs.getString("nome_tbl");
 			}
 			rs.close();
 			ps.close();
@@ -278,20 +283,20 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			String tbl = getTblName();
-			String sql = "SELECT idusuario, nome, login, senha, nivel, email, emailgerente, idsetor, idsituacao FROM " + tbl + " WHERE nome = ?";
+			String sql = "SELECT id_usuario, nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao FROM " + tbl + " WHERE nome = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				Integer iduser = rs.getInt("idusuario");
+				Integer iduser = rs.getInt("id_usuario");
 				String nome = rs.getString("nome");
 				String login = rs.getString("login");
 				String senha = rs.getString("senha");
-				Integer nivel = rs.getInt("nivel");
+				Integer nivel = rs.getInt("id_nivel");
 				String email = rs.getString("email");
-				String idemailgerente = rs.getString("emailgerente");
-				Integer idsetor = rs.getInt("idsetor");
-				Integer situacao = rs.getInt("idsituacao");
+				String idemailgerente = rs.getString("email_gerente");
+				Integer idsetor = rs.getInt("id_setor");
+				Integer situacao = rs.getInt("id_situacao");
 				tempUsuario = new Usuario(iduser, nome, login, senha, nivel, email, idemailgerente, idsetor, situacao);
 			}
 			rs.close();
@@ -307,20 +312,20 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			String tbl = getTblName();
-			String sql = "SELECT idusuario, nome, login, senha, nivel, email, emailgerente, idsetor, idsituacao FROM " + tbl + " WHERE login = ?";
+			String sql = "SELECT id_usuario, nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao FROM " + tbl + " WHERE login = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, tempLogin);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				Integer iduser = rs.getInt("idusuario");
+				Integer iduser = rs.getInt("id_usuario");
 				String nome = rs.getString("nome");
 				String login = rs.getString("login");
 				String senha = rs.getString("senha");
-				Integer nivel = rs.getInt("nivel");
+				Integer nivel = rs.getInt("id_nivel");
 				String email = rs.getString("email");
-				String idemailgerente = rs.getString("emailgerente");
-				Integer idsetor = rs.getInt("idsetor");
-				Integer situacao = rs.getInt("idsituacao");
+				String idemailgerente = rs.getString("email_gerente");
+				Integer idsetor = rs.getInt("id_setor");
+				Integer situacao = rs.getInt("id_situacao");
 				tempUsuario = new Usuario(iduser, nome, login, senha, nivel, email, idemailgerente, idsetor, situacao);
 			}
 			rs.close();
@@ -330,5 +335,63 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 			e.getMessage();
 		}
 		return tempUsuario;
+	}
+	
+	public Nivel getNivelByUserId(Integer user) {
+		Nivel nivel = null;
+		try {
+			TblNiveisDAO niveldao = new TblNiveisDAOImpl();
+			Usuario tempUser = getById(user);
+			Integer idNivel = tempUser.getPermissoes();
+			nivel = niveldao.getById(idNivel);
+		}catch (SQLException exception) {
+			exception.getMessage();
+		}
+		return nivel;
+	}
+	
+	public Situacao getSituacaoByUserId(Integer user) {
+		Situacao situacao = null;
+		try {
+			TblSituacaoDAO situacaodao = new TblSituacaoDAOImpl();
+			Usuario tempUser = getById(user);
+			Integer idSituacao = tempUser.getSituacao();
+			situacao = situacaodao.getById(idSituacao);
+		}catch (SQLException exception) {
+			exception.getMessage();
+		}
+		return situacao;
+	}
+	
+	public Setor getSetorByUserId(Integer user) {
+		Setor setor = null;
+		try {
+			TblSetoresDAO situacaodao = new TblSetoresDAOImpl();
+			Usuario tempUser = getById(user);
+			Integer idSetor = tempUser.getSituacao();
+			setor = situacaodao.getById(idSetor);
+		}catch (SQLException exception) {
+			exception.getMessage();
+		}
+		return setor;
+	}
+	@Override
+	public List getColunasDaTabela(){
+		List<TabelaColuna> colunas = new ArrayList<>();
+		Connection con = ConnectionController.getConexaoMySQL();
+		try {
+			String sql = "SELECT * FROM " + getTblName() + " LIMIT 0";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			ResultSetMetaData meta = rs.getMetaData();
+			for (int i = 1; i <= meta.getColumnCount(); i++) {
+				String nome = meta.getColumnName(i);
+				int tipo = meta.getColumnType(i);
+				colunas.add(new TabelaColuna(nome, null, tipo));
+			}
+		}catch (SQLException exception) {
+			exception.getMessage();
+		}
+		return colunas;
 	}
 }

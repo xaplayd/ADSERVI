@@ -1,5 +1,9 @@
 package gui.controller;
 
+import dao.TblSetoresDAO;
+import dao.TblSetoresDAOImpl;
+import dao.TblUsuariosDAO;
+import dao.TblUsuariosDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +29,8 @@ public class PrincipalController {
 	private Button logoutBtn;
 	@FXML
 	private Button changeUser;
+	@FXML
+	private MenuItem teste;
 
 	public PrincipalController() {
 	}
@@ -83,8 +89,6 @@ public class PrincipalController {
 		if (validado == 1) {
 			System.out.println("PERMISSÃO FUNCIONOU!");
 
-			CadastroUsuarioController cuc = new CadastroUsuarioController();
-
 			if (stageCadastroUser == null) {
 				stageCadastroUser = new Stage();
 
@@ -126,9 +130,6 @@ public class PrincipalController {
 		if (validado == 1) {
 			System.out.println("PERMISSÃO FUNCIONOU!");
 
-			CadastroUsuarioController cuc = new CadastroUsuarioController();
-			;
-
 			if (stageCadastroSetor == null) {
 				stageCadastroSetor = new Stage();
 
@@ -157,4 +158,35 @@ public class PrincipalController {
 		}
 
 	}
+	
+	Stage stageTest = null;
+	
+	@FXML
+	public void onMenuItemTeste() {
+
+			if (stageTest == null) {
+				stageTest = new Stage();
+
+			    try {
+			    	//TblSetoresDAO setoresdao = new TblSetoresDAOImpl();
+			    	TblUsuariosDAO usuariosdao = new TblUsuariosDAOImpl();
+			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Form.fxml"));
+			        Parent root = loader.load();
+
+			        FormController controller = loader.getController();
+			        controller.initData(usuariosdao.getTblName(), 1, usuariosdao); // passando a tabela e o id
+			        //controller.initData(setoresdao.getTblName(), 1, setoresdao); // passando a tabela e o id
+			        
+			        Stage stage = new Stage();
+			        stage.setTitle("Cadastro de Usuários");
+			        stage.setScene(new Scene(root));
+			        stage.show();
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			} else {
+				stageTest.toFront();
+			}
+	}
+	
 }

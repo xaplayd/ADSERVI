@@ -1,7 +1,5 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Usuario implements Comparable<Usuario>{
@@ -15,7 +13,6 @@ public class Usuario implements Comparable<Usuario>{
 	private String emailGerencia;
 	private Integer setor;
 	private Integer situacao;
-	private List<Usuario> listaDeUsuarios = new ArrayList<Usuario>();
 
 	
 	public Usuario() {

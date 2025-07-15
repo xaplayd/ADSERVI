@@ -1,12 +1,17 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
 
 public class Tabela {
 
 	private Integer codigo;
 
 	private String nome;
+	
+	private List<TabelaColuna> listaColunas = new ArrayList<>();
 
 	public Tabela() {
 	}
@@ -30,6 +35,14 @@ public class Tabela {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	
+	public void addListaColunas(TabelaColuna tc) {
+		listaColunas.add(tc);
+	}
+	
+	public List<TabelaColuna> getListaColunas() {
+		return this.listaColunas;
 	}
 
 	@Override

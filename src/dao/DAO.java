@@ -5,6 +5,7 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
+import models.TabelaColuna;
 
 public interface DAO<T> {
 	
@@ -25,5 +26,7 @@ public interface DAO<T> {
 	ObservableList<String> obterNomesDasColunas() throws SQLException;
 	
 	String getTblName() throws SQLException;
+	
+	List<TabelaColuna> getColunasDaTabela() throws SQLException;
 		
 }

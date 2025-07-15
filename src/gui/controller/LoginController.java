@@ -29,8 +29,6 @@ public class LoginController {
 	@FXML
 	private ImageView logo;
 
-	private Parent parent;
-
 	public void novaJanela(LoginController lg) {
 
 		try {

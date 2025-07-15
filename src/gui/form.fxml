@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="gui.controller.FormController"
+            prefWidth="600" prefHeight="400">
+
+    <!-- Conteúdo principal central -->
+    <center>
+        <VBox fx:id="formContainer" spacing="10" prefWidth="560" prefHeight="360" />
+    </center>
+
+    <!-- Rodapé com os botões -->
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 10;" alignment="CENTER_RIGHT">
+            <Button text="Novo" fx:id="btnNovo"/>
+            <Button text="Editar" fx:id="btnEditar"/>
+            <Button text="Excluir" fx:id="btnExcluir"/>
+            <Button text="Cancelar" fx:id="btnCancelar"/>
+            <Button text="Salvar" fx:id="btnSalvar"/>
+            <Button text="Fechar" fx:id="btnFechar"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

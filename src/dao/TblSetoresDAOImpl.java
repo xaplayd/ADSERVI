@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
 import models.Setor;
+import models.TabelaColuna;
 
 public class TblSetoresDAOImpl implements TblSetoresDAO {
 
@@ -29,13 +31,13 @@ public class TblSetoresDAOImpl implements TblSetoresDAO {
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			String tbl = getTblName();
-			String sql = "SELECT idsetor, nomesetor FROM " + tbl + " WHERE idsetor = ?";
+			String sql = "SELECT id_setor, nome_setor FROM " + tbl + " WHERE id_setor = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				Integer tempId = rs.getInt("idsetor");
-				String tempName = rs.getString("nomesetor");
+				Integer tempId = rs.getInt("id_setor");
+				String tempName = rs.getString("nome_setor");
 				tempSetor = new Setor(tempId, tempName);
 			}
 			rs.close();
@@ -58,8 +60,8 @@ public class TblSetoresDAOImpl implements TblSetoresDAO {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				Integer tempId = rs.getInt("idsetor");
-				String tempName = rs.getString("nomesetor");
+				Integer tempId = rs.getInt("id_setor");
+				String tempName = rs.getString("nome_setor");
 				tempSetor = new Setor(tempId, tempName);
 				listaSetores.add(tempSetor);
 			}
@@ -78,7 +80,7 @@ public class TblSetoresDAOImpl implements TblSetoresDAO {
 		Integer result = 0;
 		try {
 			String tbl = getTblName();
-			String sql = "INSERT INTO " + tbl + " (nomesetor) VALUES (?)";
+			String sql = "INSERT INTO " + tbl + " (nome_setor) VALUES (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, setor.getNome());
 			
@@ -97,7 +99,7 @@ public class TblSetoresDAOImpl implements TblSetoresDAO {
 		Integer result = 0;
 		try {
 			String tbl = getTblName();
-			String sql = "UPDATE " + tbl + " SET nomesetor = (?) WHERE idsetor = (?)";
+			String sql = "UPDATE " + tbl + " SET nome_setor = (?) WHERE id_setor = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, setor.getNome());
 			ps.setInt(2, setor.getCodigo());
@@ -117,7 +119,7 @@ public class TblSetoresDAOImpl implements TblSetoresDAO {
 		Integer result = 0;
 		try {
 			String tbl = getTblName();
-			String sql = "DELETE from " + tbl + " WHERE idsetor = (?)";
+			String sql = "DELETE from " + tbl + " WHERE id_setor = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, setor.getCodigo());
 			
@@ -207,12 +209,12 @@ public class TblSetoresDAOImpl implements TblSetoresDAO {
 			String tbls = "";
 			DicTabelasDAO tblsdao = new DicTabelasDAOImpl();
 			tbls = tblsdao.getTblName();
-			String sql = "SELECT nometbl FROM " + tbls + " WHERE idtbl = ?";
+			String sql = "SELECT nome_tbl FROM " + tbls + " WHERE id_tbl = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, this.idTabela);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				nameCurrentTbl = rs.getString("nometbl");
+				nameCurrentTbl = rs.getString("nome_tbl");
 			}
 			rs.close();
 			ps.close();
@@ -229,13 +231,13 @@ public class TblSetoresDAOImpl implements TblSetoresDAO {
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			String tbl = getTblName();
-			String sql = "SELECT idsetor, nomesetor FROM " + tbl + " WHERE nomesetor = ?";
+			String sql = "SELECT id_setor, nome_setor FROM " + tbl + " WHERE nome_setor = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				Integer tempId = rs.getInt("idsetor");
-				String tempName = rs.getString("nomesetor");
+				Integer tempId = rs.getInt("id_setor");
+				String tempName = rs.getString("nome_setor");
 				tempSetor = new Setor(tempId, tempName);
 			}
 			rs.close();
@@ -246,5 +248,23 @@ public class TblSetoresDAOImpl implements TblSetoresDAO {
 		}
 		return tempSetor;
 	}
-	
+	@Override
+	public List getColunasDaTabela(){
+		List<TabelaColuna> colunas = new ArrayList<>();
+		Connection con = ConnectionController.getConexaoMySQL();
+		try {
+			String sql = "SELECT * FROM " + getTblName() + " LIMIT 0";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			ResultSetMetaData meta = rs.getMetaData();
+			for (int i = 1; i <= meta.getColumnCount(); i++) {
+				String nome = meta.getColumnName(i);
+				int tipo = meta.getColumnType(i);
+				colunas.add(new TabelaColuna(nome, null, tipo));
+			}
+		}catch (SQLException exception) {
+			exception.getMessage();
+		}
+		return colunas;
+	}
 }

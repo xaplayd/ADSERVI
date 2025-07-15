@@ -96,6 +96,15 @@
                            </image>
                         </ImageView>
                      </graphic></MenuItem>
+                  <MenuItem fx:id="teste" mnemonicParsing="false" onAction="#onMenuItemTeste" text="TESTE">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../imgs/18x18/conferencia.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
                </items>
                <font>
                   <Font size="10.0" />

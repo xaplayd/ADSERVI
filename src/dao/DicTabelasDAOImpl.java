@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 import models.Tabela;
+import models.TabelaColuna;
+import utils.TableColumnFormatter;
 
 public class DicTabelasDAOImpl implements DicTabelasDAO {
 
@@ -24,13 +27,13 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 		String tbl = "tbls";
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
-			String sql = "SELECT idtbl, nometbl FROM " + tbl + " WHERE idtbl = ?";
+			String sql = "SELECT id_tbl, nome_tbl FROM " + tbl + " WHERE id_tbl = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				Integer tempId = rs.getInt("idtbl");
-				String tempName = rs.getString("nometbl");
+				Integer tempId = rs.getInt("id_tbl");
+				String tempName = rs.getString("nome_tbl");
 				tempTabela = new Tabela(tempId, tempName);
 			}
 			rs.close();
@@ -53,8 +56,8 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				Integer tempId = rs.getInt("idtbl");
-				String tempName = rs.getString("nometbl");
+				Integer tempId = rs.getInt("id_tbl");
+				String tempName = rs.getString("nome_tbl");
 				tempTabela = new Tabela(tempId, tempName);
 				listaTabelas.add(tempTabela);
 			}
@@ -71,7 +74,7 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 	public Integer insert(Tabela tabela){
 		Connection con = ConnectionController.getConexaoMySQL();
 		String tbl = "tbls";
-		String sql = "INSERT INTO " + tbl + " (nometbl) VALUES (?)";
+		String sql = "INSERT INTO " + tbl + " (nome_tbl) VALUES (?)";
 		Integer result = 0;
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
@@ -90,7 +93,7 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 	public Integer updateById(Tabela tabela){
 		Connection con = ConnectionController.getConexaoMySQL();
 		String tbl = "tbls";
-		String sql = "UPDATE " + tbl + " SET nometbl = (?) WHERE idtbl = (?)";
+		String sql = "UPDATE " + tbl + " SET nome_tbl = (?) WHERE id_tbl = (?)";
 		Integer result = 0;
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
@@ -110,7 +113,7 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 	public Integer deleteById(Tabela tabela){
 		Connection con = ConnectionController.getConexaoMySQL();
 		String tbl = "tbls";
-		String sql = "DELETE from " + tbl + " WHERE idtbl = (?)";
+		String sql = "DELETE from " + tbl + " WHERE id_tbl = (?)";
 		Integer result = 0;
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
@@ -161,13 +164,13 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 		String tbl = "tbls";
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
-			String sql = "SELECT idtbl, nometbl FROM " + tbl + " WHERE nometbl = ?";
+			String sql = "SELECT id_tbl, nome_tbl FROM " + tbl + " WHERE nome_tbl = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				Integer tempId = rs.getInt("idtbl");
-				String tempName = rs.getString("nometbl");
+				Integer tempId = rs.getInt("id_tbl");
+				String tempName = rs.getString("nome_tbl");
 				tempTabela = new Tabela(tempId, tempName);
 			}
 			rs.close();
@@ -177,5 +180,25 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 			e.getMessage();
 		}
 		return tempTabela;
+	}
+
+	@Override
+	public List getColunasDaTabela(){
+		List<TabelaColuna> colunas = new ArrayList<>();
+		Connection con = ConnectionController.getConexaoMySQL();
+		try {
+			String sql = "SELECT * FROM " + getTblName() + " LIMIT 0";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			ResultSetMetaData meta = rs.getMetaData();
+			for (int i = 1; i <= meta.getColumnCount(); i++) {
+				String nome = meta.getColumnName(i);
+				int tipo = meta.getColumnType(i);
+				colunas.add(new TabelaColuna(nome, null, tipo));
+			}
+		}catch (SQLException exception) {
+			exception.getMessage();
+		}
+		return colunas;
 	}
 }
