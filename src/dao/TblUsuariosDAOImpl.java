@@ -1,11 +1,13 @@
 package dao;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,13 +30,16 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 
 	private Integer idTabela = 1;
 
+	private String chavePrimaria = "id_usuario";
+
 	@Override
-	public Usuario getById(Integer id){
+	public Usuario getById(Integer id) {
 		Usuario tempUsuario = null;
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			String tbl = getTblName();
-			String sql = "SELECT id_usuario, nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao FROM " + tbl + " WHERE id_usuario = ?";
+			String sql = "SELECT id_usuario, nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao FROM "
+					+ tbl + " WHERE id_usuario = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -59,7 +64,7 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		return tempUsuario;
 	}
 
-	public Integer getNivelByLogin(String login){
+	public Integer getNivelByLogin(String login) {
 		Integer nivel = null;
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
@@ -79,9 +84,9 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		}
 		return nivel;
 	}
-	
+
 	@Override
-	public List<Usuario> getAll(){
+	public List<Usuario> getAll() {
 		Usuario tempUsuario = null;
 		Connection con = ConnectionController.getConexaoMySQL();
 		List<Usuario> listaUsuarios = new ArrayList<Usuario>();
@@ -113,12 +118,13 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 	}
 
 	@Override
-	public Integer insert(Usuario usuario){
+	public Integer insert(Usuario usuario) {
 		Connection con = ConnectionController.getConexaoMySQL();
 		Integer result = 0;
 		try {
 			String tbl = getTblName();
-			String sql = "INSERT INTO " + tbl + " (nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao) VALUES (?,?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO " + tbl
+					+ " (nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao) VALUES (?,?,?,?,?,?,?,?)";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, usuario.getNome());
 			ps.setString(2, usuario.getLogin());
@@ -128,23 +134,24 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 			ps.setString(6, usuario.getEmailGerencia());
 			ps.setInt(7, usuario.getSetor());
 			ps.setInt(8, usuario.getSituacao());
-			
+
 			result = ps.executeUpdate();
 			ps.close();
 			con.close();
 		} catch (SQLException e) {
 			e.getMessage();
 		}
-		return result; //retorna a quantidade de linhas afetadas, nao o novo ID
+		return result; // retorna a quantidade de linhas afetadas, nao o novo ID
 	}
 
 	@Override
-	public Integer updateById(Usuario usuario){
+	public Integer updateById(Usuario usuario) {
 		Connection con = ConnectionController.getConexaoMySQL();
 		Integer result = 0;
 		try {
 			String tbl = getTblName();
-			String sql = "UPDATE " + tbl + " SET nome = (?), login = (?), senha = (?), id_nivel = (?), email = (?), email_gerente = (?), id_setor = (?), id_situacao = (?) WHERE id_usuario = (?)";
+			String sql = "UPDATE " + tbl
+					+ " SET nome = (?), login = (?), senha = (?), id_nivel = (?), email = (?), email_gerente = (?), id_setor = (?), id_situacao = (?) WHERE id_usuario = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, usuario.getNome());
 			ps.setString(2, usuario.getLogin());
@@ -155,18 +162,18 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 			ps.setInt(7, usuario.getSetor());
 			ps.setInt(8, usuario.getSituacao());
 			ps.setInt(9, usuario.getCodigo());
-			
+
 			result = ps.executeUpdate();
 			ps.close();
 			con.close();
 		} catch (SQLException e) {
 			e.getMessage();
 		}
-		return result; //retorna a quantidade de linhas afetadas, nao o ID
+		return result; // retorna a quantidade de linhas afetadas, nao o ID
 	}
 
 	@Override
-	public Integer deleteById(Usuario usuario){
+	public Integer deleteById(Usuario usuario) {
 		Connection con = ConnectionController.getConexaoMySQL();
 		Integer result = 0;
 		try {
@@ -174,18 +181,18 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 			String sql = "DELETE from " + tbl + " WHERE id_usuario = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, usuario.getCodigo());
-			
+
 			result = ps.executeUpdate();
 			ps.close();
 			con.close();
 		} catch (SQLException e) {
 			e.getMessage();
 		}
-		return result; //retorna a quantidade de linhas afetadas, nao o ID
+		return result; // retorna a quantidade de linhas afetadas, nao o ID
 	}
 
 	@Override
-	public TableView estruturaTbl() throws SQLException {
+	public TableView estruturaTbl() {
 		ObservableList<ObservableList> data = FXCollections.observableArrayList();
 		Connection con = ConnectionController.getConexaoMySQL();
 		TableView tableview = new TableView<>();
@@ -235,10 +242,10 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 	}
 
 	@Override
-	public ObservableList<String> obterNomesDasColunas() throws SQLException {
+	public ObservableList<String> obterNomesDasColunas() {
 		ObservableList<String> nomesDasColunas = FXCollections.observableArrayList();
 
-		try (Connection con = ConnectionController.getConexaoMySQL();Statement stmt = con.createStatement();) {
+		try (Connection con = ConnectionController.getConexaoMySQL(); Statement stmt = con.createStatement();) {
 			String tbl = getTblName();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM " + tbl);
 			int colCount = rs.getMetaData().getColumnCount();
@@ -254,7 +261,7 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 	}
 
 	@Override
-	public String getTblName(){
+	public String getTblName() {
 		Connection con = ConnectionController.getConexaoMySQL();
 		String nameCurrentTbl = "";
 		try {
@@ -278,12 +285,13 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 	}
 
 	@Override
-	public Usuario getByName(String name){
+	public Usuario getByName(String name) {
 		Usuario tempUsuario = null;
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			String tbl = getTblName();
-			String sql = "SELECT id_usuario, nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao FROM " + tbl + " WHERE nome = ?";
+			String sql = "SELECT id_usuario, nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao FROM "
+					+ tbl + " WHERE nome = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
@@ -307,12 +315,14 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		}
 		return tempUsuario;
 	}
-	public Usuario getByLogin(String tempLogin){
+
+	public Usuario getByLogin(String tempLogin) {
 		Usuario tempUsuario = null;
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
 			String tbl = getTblName();
-			String sql = "SELECT id_usuario, nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao FROM " + tbl + " WHERE login = ?";
+			String sql = "SELECT id_usuario, nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao FROM "
+					+ tbl + " WHERE login = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, tempLogin);
 			ResultSet rs = ps.executeQuery();
@@ -336,7 +346,7 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		}
 		return tempUsuario;
 	}
-	
+
 	public Nivel getNivelByUserId(Integer user) {
 		Nivel nivel = null;
 		try {
@@ -344,12 +354,12 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 			Usuario tempUser = getById(user);
 			Integer idNivel = tempUser.getPermissoes();
 			nivel = niveldao.getById(idNivel);
-		}catch (SQLException exception) {
+		} catch (SQLException exception) {
 			exception.getMessage();
 		}
 		return nivel;
 	}
-	
+
 	public Situacao getSituacaoByUserId(Integer user) {
 		Situacao situacao = null;
 		try {
@@ -357,12 +367,12 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 			Usuario tempUser = getById(user);
 			Integer idSituacao = tempUser.getSituacao();
 			situacao = situacaodao.getById(idSituacao);
-		}catch (SQLException exception) {
+		} catch (SQLException exception) {
 			exception.getMessage();
 		}
 		return situacao;
 	}
-	
+
 	public Setor getSetorByUserId(Integer user) {
 		Setor setor = null;
 		try {
@@ -370,13 +380,14 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 			Usuario tempUser = getById(user);
 			Integer idSetor = tempUser.getSituacao();
 			setor = situacaodao.getById(idSetor);
-		}catch (SQLException exception) {
+		} catch (SQLException exception) {
 			exception.getMessage();
 		}
 		return setor;
 	}
+
 	@Override
-	public List getColunasDaTabela(){
+	public List getColunasDaTabela() {
 		List<TabelaColuna> colunas = new ArrayList<>();
 		Connection con = ConnectionController.getConexaoMySQL();
 		try {
@@ -389,9 +400,40 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 				int tipo = meta.getColumnType(i);
 				colunas.add(new TabelaColuna(nome, null, tipo));
 			}
-		}catch (SQLException exception) {
+		} catch (SQLException exception) {
 			exception.getMessage();
 		}
 		return colunas;
+	}
+
+	@Override
+	public String getChavePrimaria() {
+		return this.chavePrimaria;
+	}
+
+	@Override
+	public List<TabelaColuna> mapperEntityToView(Integer id, List<TabelaColuna> estrutura) {
+		Usuario tempUser = getById(id);
+		for (TabelaColuna x : estrutura) {
+			if (x.getNome().compareTo("nome") == 0) {
+				x.setValor(tempUser.getNome());
+			} else if (x.getNome().compareTo("login") == 0) {
+				x.setValor(tempUser.getLogin());
+			} else if (x.getNome().compareTo("senha") == 0) {
+				x.setValor(tempUser.getSenha());
+			} else if (x.getNome().compareTo("id_nivel") == 0) {
+				x.setValor(tempUser.getPermissoes());
+			} else if (x.getNome().compareTo("email") == 0) {
+				x.setValor(tempUser.getEmail());
+			} else if (x.getNome().compareTo("email_gerente") == 0) {
+				x.setValor(tempUser.getEmailGerencia());
+			} else if (x.getNome().compareTo("id_setor") == 0) {
+				x.setValor(tempUser.getSetor());
+			} else if (x.getNome().compareTo("id_situacao") == 0) {
+				x.setValor(tempUser.getSituacao());
+			}
+		}
+
+		return estrutura;
 	}
 }

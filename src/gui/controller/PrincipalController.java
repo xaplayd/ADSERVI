@@ -174,13 +174,14 @@ public class PrincipalController {
 			        Parent root = loader.load();
 
 			        FormController controller = loader.getController();
-			        controller.initData(usuariosdao.getTblName(), 1, usuariosdao); // passando a tabela e o id
+			        controller.initData(1, usuariosdao); // passando a tabela e o id
 			        //controller.initData(setoresdao.getTblName(), 1, setoresdao); // passando a tabela e o id
 			        
 			        Stage stage = new Stage();
 			        stage.setTitle("Cadastro de Usuários");
 			        stage.setScene(new Scene(root));
 			        stage.show();
+			        stage.setOnHidden(we -> stageTest = null);
 			    } catch (Exception e) {
 			        e.printStackTrace();
 			    }

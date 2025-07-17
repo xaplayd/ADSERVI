@@ -1,11 +1,13 @@
 package dao;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +17,13 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 import models.Tabela;
 import models.TabelaColuna;
-import utils.TableColumnFormatter;
+import models.Usuario;
 
 public class DicTabelasDAOImpl implements DicTabelasDAO {
 
 	private String dicTabela = "tbls";
+	
+	private String chavePrimaria = "id_tbl";
 
 	@Override
 	public Tabela getById(Integer id){
@@ -201,4 +205,24 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 		}
 		return colunas;
 	}
+
+	@Override
+	public String getChavePrimaria(){
+		return this.chavePrimaria;
+	}
+
+	@Override
+	public List<TabelaColuna> mapperEntityToView(Integer id, List<TabelaColuna> estrutura) {
+		Tabela tempTab = getById(id);
+		for (TabelaColuna x : estrutura) {
+			if (x.getNome().compareTo("id_tbl") == 0) {
+				x.setValor(tempTab.getCodigo());
+			}else if (x.getNome().compareTo("nome_tbl") == 0) {
+				x.setValor(tempTab.getNome());
+			}
+		}
+		return estrutura;
+	
+	}
+
 }

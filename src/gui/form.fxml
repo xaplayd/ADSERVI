@@ -3,25 +3,36 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="gui.controller.FormController"
-            prefWidth="600" prefHeight="400">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="gui.controller.FormController"
+      prefWidth="600" prefHeight="400" spacing="0">
 
-    <!-- Conteúdo principal central -->
-    <center>
-        <VBox fx:id="formContainer" spacing="10" prefWidth="560" prefHeight="360" />
-    </center>
+    <!-- Linha fixa da primeira coluna fixa no topo -->
+    <HBox fx:id="topLinhaFixaContainer" spacing="0" style="-fx-padding: 0;" alignment="CENTER_LEFT" />
 
-    <!-- Rodapé com os botões -->
-    <bottom>
-        <HBox spacing="10" style="-fx-padding: 10;" alignment="CENTER_RIGHT">
-            <Button text="Novo" fx:id="btnNovo"/>
-            <Button text="Editar" fx:id="btnEditar"/>
-            <Button text="Excluir" fx:id="btnExcluir"/>
-            <Button text="Cancelar" fx:id="btnCancelar"/>
-            <Button text="Salvar" fx:id="btnSalvar"/>
-            <Button text="Fechar" fx:id="btnFechar"/>
-        </HBox>
-    </bottom>
+    <!-- Conteúdo principal com BorderPane abaixo da linha fixa -->
+    <BorderPane VBox.vgrow="ALWAYS">
 
-</BorderPane>
+        <!-- Conteúdo do formulário dinâmico dentro do ScrollPane no centro -->
+        <center>
+            <ScrollPane fitToWidth="true" prefWidth="560" prefHeight="360">
+                <content>
+                    <VBox fx:id="formContainer" spacing="0" />
+                </content>
+            </ScrollPane>
+        </center>
+
+        <!-- Rodapé com botões -->
+        <bottom>
+            <HBox spacing="10" style="-fx-padding: 10;" alignment="CENTER_LEFT">
+                <Button text="Novo" fx:id="btnNovo"/>
+                <Button text="Editar" fx:id="btnEditar"/>
+                <Button text="Excluir" fx:id="btnExcluir"/>
+                <Button text="Cancelar" fx:id="btnCancelar"/>
+                <Button text="Salvar" fx:id="btnSalvar"/>
+                <Button text="Fechar" fx:id="btnFechar"/>
+            </HBox>
+        </bottom>
+
+    </BorderPane>
+</VBox>

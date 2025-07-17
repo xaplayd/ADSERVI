@@ -1,11 +1,13 @@
 package dao;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,8 @@ public class TblNiveisDAOImpl implements TblNiveisDAO {
 
 	private Integer idTabela = 3;
 
+	private String chavePrimaria = "id_nivel";
+	
 	@Override
 	public Nivel getById(Integer id) {
 		Nivel tempNivel = null;
@@ -270,4 +274,24 @@ public class TblNiveisDAOImpl implements TblNiveisDAO {
 		}
 		return colunas;
 	}
+
+	@Override
+	public String getChavePrimaria(){
+		return this.chavePrimaria;
+	}
+	
+	@Override
+	public List<TabelaColuna> mapperEntityToView(Integer id, List<TabelaColuna> estrutura) {
+		Nivel tempNivel = getById(id);
+		for (TabelaColuna x : estrutura) {
+			if (x.getNome().compareTo("id_nivel") == 0) {
+				x.setValor(tempNivel.getCodigo());
+			}else if (x.getNome().compareTo("nome_nivel") == 0) {
+				x.setValor(tempNivel.getNome());
+			}
+		}
+		return estrutura;
+	
+	}
+
 }

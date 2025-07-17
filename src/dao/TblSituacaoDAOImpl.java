@@ -1,11 +1,13 @@
 package dao;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +20,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
+import models.Setor;
 import models.Situacao;
 import models.TabelaColuna;
 
 public class TblSituacaoDAOImpl implements TblSituacaoDAO {
 
-	private Integer idTabela = 4;;
+	private Integer idTabela = 4;
+	
+	private String chavePrimaria = "id_situacao";
 
 	@Override
 	public Situacao getById(Integer id){
@@ -264,5 +269,23 @@ public class TblSituacaoDAOImpl implements TblSituacaoDAO {
 			exception.getMessage();
 		}
 		return colunas;
+	}
+
+	@Override
+	public String getChavePrimaria(){
+		return this.chavePrimaria;
+	}
+	@Override
+	public List<TabelaColuna> mapperEntityToView(Integer id, List<TabelaColuna> estrutura) {
+		Situacao tempSituacao = getById(id);
+		for (TabelaColuna x : estrutura) {
+			if (x.getNome().compareTo("id_situacao") == 0) {
+				x.setValor(tempSituacao.getCodigo());
+			}else if (x.getNome().compareTo("nome_situacao") == 0) {
+				x.setValor(tempSituacao.getNome());
+			}
+		}
+		return estrutura;
+	
 	}
 }

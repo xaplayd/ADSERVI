@@ -2,7 +2,7 @@ package dao;
 
 import java.sql.SQLException;
 import java.util.List;
-
+import java.sql.Types;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 import models.TabelaColuna;
@@ -28,5 +28,8 @@ public interface DAO<T> {
 	String getTblName() throws SQLException;
 	
 	List<TabelaColuna> getColunasDaTabela() throws SQLException;
-		
+	
+	String getChavePrimaria() throws SQLException;
+
+	List<TabelaColuna> mapperEntityToView(Integer id, List<TabelaColuna> estrutura);
 }

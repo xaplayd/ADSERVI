@@ -1,26 +1,21 @@
 package gui.controller;
 
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import dao.DAO;
-import dao.TblNiveisDAOImpl;
-import dao.TblSetoresDAOImpl;
-import dao.TblSituacaoDAOImpl;
-import dao.TblUsuariosDAOImpl;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
@@ -29,372 +24,560 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import models.TabelaColuna;
 import utils.TableColumnFormatter;
 
 public class FormController implements Initializable {
 
-	
-	//  ------------ Estados para CRUD ------------  \\
-	 
-	private static final int ESTADO_NEUTRO = 0;
-	private static final int ESTADO_NOVO = 1;
-	private static final int ESTADO_EDICAO = 2;
-	private int estadoAtual = ESTADO_NEUTRO;
+
+    //  ------------- Estrutura base -------------  \\
     
-	// --------------------------------------------- \\
-	
-	
-	//  ------------- Estrutura base -------------  \\
-	
-	@FXML
-	private VBox formContainer;
+    private Integer estado = 0; // 0 - neutro, 1 - novo, 2 - edição
 
-	@FXML
-	private Button btnNovo, btnSalvar, btnExcluir, btnCancelar, btnEditar, btnFechar;
+    @FXML
+    private HBox topLinhaFixaContainer;
+    private Label labelPrimeiraColuna;
+    private TextField tfPrimeiraColuna;
+    private Button btnPesquisaPrimeiraColuna;
+    private HBox linhaFixaPrimeiraColuna;
+    
+    @FXML
+    private VBox formContainer;
 
-	private String tabela;
-	private Integer idRegistro;
-	private DAO<?> dao;
-	
-	private void adicionarIconesAosBotoes() {
-		adicionarIconeComTexto(btnNovo, "/imgs/18x18/adicionar.png");
-		adicionarIconeComTexto(btnSalvar, "/imgs/18x18/save--v1.png");
-		adicionarIconeComTexto(btnExcluir, "/imgs/18x18/delete--v1.png");
-		adicionarIconeComTexto(btnCancelar, "/imgs/18x18/erro.png");
-		adicionarIconeComTexto(btnEditar, "/imgs/18x18/editar.png");
-		adicionarIconeComTexto(btnFechar, "/imgs/18x18/sair.png");
-	}
+    @FXML
+    private Button btnNovo, btnSalvar, btnExcluir, btnCancelar, btnEditar, btnFechar;
+    private DAO<?> dao;
 
-	private void adicionarIconeComTexto(Button botao, String caminhoImagem) {
-		ImageView icone = new ImageView(new Image(getClass().getResourceAsStream(caminhoImagem)));
-		icone.setFitWidth(16);
-		icone.setFitHeight(16);
-		botao.setGraphic(icone);
-		botao.setContentDisplay(ContentDisplay.LEFT);
-	}
+    private List<TabelaColuna> estrutura = null;
 
-	private ImageView imagem(String caminho) {
-		ImageView iv = new ImageView(new Image(getClass().getResourceAsStream(caminho)));
-		iv.setFitWidth(16);
-		iv.setFitHeight(16);
-		return iv;
-	}
-	
-	// --------------------------------------------- \\
-	
-	//  ------------- Ações estrutura base -------------  \\
-	
-	private void onNovo() {
-		formContainer.getChildren().clear();
-		try {
-			List<TabelaColuna> dados = dao.getColunasDaTabela();
-			gerarFormularioDinamico(dados);
-			idRegistro = null;
-			estadoAtual = ESTADO_NOVO;
-			habilitarCamposDeEdicao(true);
-			atualizarEstadoDosBotoes();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    private void adicionarBotoesRodape() {
+        ImageView iconBtnNovo = new ImageView(new Image(getClass().getResourceAsStream("/imgs/18x18/adicionar.png")));
+        iconBtnNovo.setFitWidth(16);
+        iconBtnNovo.setFitHeight(16);
+        btnNovo.setGraphic(iconBtnNovo);
+        btnNovo.setContentDisplay(ContentDisplay.LEFT);
+        ImageView iconBtnSalvar = new ImageView(new Image(getClass().getResourceAsStream("/imgs/18x18/save--v1.png")));
+        iconBtnSalvar.setFitWidth(16);
+        iconBtnSalvar.setFitHeight(16);
+        btnSalvar.setGraphic(iconBtnSalvar);
+        btnSalvar.setContentDisplay(ContentDisplay.LEFT);
+        ImageView iconBtnExcluir = new ImageView(new Image(getClass().getResourceAsStream("/imgs/18x18/delete--v1.png")));
+        iconBtnExcluir.setFitWidth(16);
+        iconBtnExcluir.setFitHeight(16);
+        btnExcluir.setGraphic(iconBtnExcluir);
+        btnExcluir.setContentDisplay(ContentDisplay.LEFT);
+        ImageView iconBtnCancelar = new ImageView(new Image(getClass().getResourceAsStream("/imgs/18x18/erro.png")));
+        iconBtnCancelar.setFitWidth(16);
+        iconBtnCancelar.setFitHeight(16);
+        btnCancelar.setGraphic(iconBtnCancelar);
+        btnCancelar.setContentDisplay(ContentDisplay.LEFT);
+        ImageView iconBtnEditar = new ImageView(new Image(getClass().getResourceAsStream("/imgs/18x18/editar.png")));
+        iconBtnEditar.setFitWidth(16);
+        iconBtnEditar.setFitHeight(16);
+        btnEditar.setGraphic(iconBtnEditar);
+        btnEditar.setContentDisplay(ContentDisplay.LEFT);
+        ImageView iconBtnFechar = new ImageView(new Image(getClass().getResourceAsStream("/imgs/18x18/sair.png")));
+        iconBtnFechar.setFitWidth(16);
+        iconBtnFechar.setFitHeight(16);
+        btnFechar.setGraphic(iconBtnFechar);
+        btnFechar.setContentDisplay(ContentDisplay.LEFT);
 
-	private void onSalvar() {
-		System.out.println("Salvar acionado. Estado atual: " + estadoAtual);
-		estadoAtual = ESTADO_NEUTRO;
-		habilitarCamposDeEdicao(false);
-		atualizarEstadoDosBotoes();
-	}
+    }
 
-	private void onExcluir() {
-		System.out.println("Excluir acionado");
-		estadoAtual = ESTADO_NEUTRO;
-		atualizarEstadoDosBotoes();
-	}
+    private Button adicionarBotaoPesquisa() {
+        Button btnPesquisa = new Button();
+        ImageView iconBtnPesquisa = new ImageView(new Image(getClass().getResourceAsStream("/imgs/18x18/lupa.png")));
+        iconBtnPesquisa.setFitWidth(16);
+        iconBtnPesquisa.setFitHeight(16);
+        btnPesquisa.setGraphic(iconBtnPesquisa);
+        return btnPesquisa;
+    }
 
-	private void onCancelar() {
-		estadoAtual = ESTADO_NEUTRO;
-		initData(tabela, idRegistro, dao);
-	}
+    private void configurarLinhaFixaPrimeiraColuna(TabelaColuna primeiraColuna) {
+        labelPrimeiraColuna = new Label(TableColumnFormatter.formatarNomeColunaAutomaticamente(primeiraColuna.getNome()) + ":");
+        labelPrimeiraColuna.setMinWidth(150);
+        labelPrimeiraColuna.setAlignment(Pos.CENTER_RIGHT);
 
-	private void onEditar() {
-		estadoAtual = ESTADO_EDICAO;
-		habilitarCamposDeEdicao(true);
-		atualizarEstadoDosBotoes();
-	}
+        tfPrimeiraColuna = new TextField(primeiraColuna.getValor() != null ? primeiraColuna.getValor().toString() : "");
+        tfPrimeiraColuna.setId("campo_" + primeiraColuna.getNome());
+        tfPrimeiraColuna.setMinWidth(80);
+        tfPrimeiraColuna.setPrefWidth(80);
+        tfPrimeiraColuna.setMaxWidth(80);
 
-	private void onSair() {
-		System.out.println("Sair acionado");
-	}
-	
-	private void atualizarEstadoDosBotoes() {
-		switch (estadoAtual) {
-			case ESTADO_NEUTRO -> {
-				btnNovo.setDisable(false);
-				btnSalvar.setDisable(true);
-				btnEditar.setDisable(idRegistro == null);
-				btnExcluir.setDisable(idRegistro == null);
-				btnCancelar.setDisable(true);
-			}
-			case ESTADO_NOVO, ESTADO_EDICAO -> {
-				btnNovo.setDisable(true);
-				btnSalvar.setDisable(false);
-				btnEditar.setDisable(true);
-				btnExcluir.setDisable(true);
-				btnCancelar.setDisable(false);
-			}
-		}
-	}
-	
-	private void habilitarCamposDeEdicao(boolean habilitar) {
-		for (javafx.scene.Node node : formContainer.getChildren()) {
-			if (node instanceof HBox hbox) {
-				for (javafx.scene.Node subNode : hbox.getChildren()) {
-					if (subNode instanceof Control control) {
-						control.setDisable(!habilitar);
-					}
-				}
-			}
-		}
-	}
-	
-	// --------------------------------------------- \\
-	
-	//  ------------- Estrutura variável -------------  \\
-	
-	private void gerarFormularioDinamico(List<TabelaColuna> colunas) {
-		
-		//referencia ao campo com chave primaria da tabela
-		boolean primeiroCampoComId = true;
+        btnPesquisaPrimeiraColuna = adicionarBotaoPesquisa();
+        btnPesquisaPrimeiraColuna.setOnAction(e -> abrirPesquisaParaCampo(primeiraColuna.getNome(), tfPrimeiraColuna));
 
-		for (TabelaColuna col : colunas) {
-			String coluna = col.getNome();
-			Object valor = col.getValor();
-			int tipoSQL = col.getTipoSQL();
+        linhaFixaPrimeiraColuna = new HBox(10, labelPrimeiraColuna, tfPrimeiraColuna, btnPesquisaPrimeiraColuna);
+        linhaFixaPrimeiraColuna.setAlignment(Pos.CENTER_LEFT);
+        linhaFixaPrimeiraColuna.setPadding(new Insets(5));
 
-			String nomeFormatado = TableColumnFormatter.formatarNomeColunaAutomaticamente(coluna);
-			Label label = new Label(nomeFormatado + ":");
-			label.setMinWidth(150);
+        topLinhaFixaContainer.getChildren().add(linhaFixaPrimeiraColuna);
+        tfPrimeiraColuna.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case ENTER, TAB -> {
+                    String valor = tfPrimeiraColuna.getText();
+                    if (valor != null && !valor.isBlank()) {
+                        carregarRegistroPorId();
+                        btnNovo.setDisable(true);
+                    }
+                }
+            }
+        });
+    }
 
-			Control campo;
-			boolean isSenha = coluna.toLowerCase().contains("senha");
+    //  ------------- Ações estrutura base -------------  \\
 
-			if (isSenha) {
-				PasswordField pf = new PasswordField();
-				pf.setText(valor != null ? valor.toString() : "");
-				pf.setId("campo_" + coluna);
-				campo = pf;
-			} else {
-				switch (tipoSQL) {
-					case Types.BOOLEAN, Types.BIT -> {
-						CheckBox cb = new CheckBox();
-						cb.setSelected(valor != null && (Boolean.TRUE.equals(valor) || (valor instanceof Number && ((Number) valor).intValue() == 1)));
-						cb.setId("campo_" + coluna);
-						campo = cb;
-					}
-					case Types.DATE, Types.TIMESTAMP -> {
-						DatePicker dp = new DatePicker();
-						if (valor instanceof Date date) {
-							dp.setValue(date.toLocalDate());
-						} else if (valor instanceof Timestamp ts) {
-							dp.setValue(ts.toLocalDateTime().toLocalDate());
-						}
-						dp.setId("campo_" + coluna);
-						campo = dp;
-					}
-					case Types.INTEGER, Types.SMALLINT, Types.TINYINT, Types.BIGINT -> {
-						TextField tf = new TextField(valor != null ? valor.toString() : "");
-						tf.setId("campo_" + coluna);
-						tf.setTextFormatter(TableColumnFormatter.numericIntegerFormatter());
-						campo = tf;
-					}
-					case Types.FLOAT, Types.REAL, Types.DOUBLE, Types.NUMERIC, Types.DECIMAL -> {
-						TextField tf = new TextField(valor != null ? valor.toString() : "");
-						tf.setId("campo_" + coluna);
-						tf.setTextFormatter(TableColumnFormatter.numericDecimalFormatter());
-						campo = tf;
-					}
-					default -> {
-						TextField tf = new TextField(valor != null ? valor.toString() : "");
-						tf.setId("campo_" + coluna);
-						campo = tf;
-					}
-				}
-			}
+    private void onNovo() {
+    	estado = 1;
+      	 // Primeiro desabilita linha fixa
+        tfPrimeiraColuna.setDisable(true);
+        btnPesquisaPrimeiraColuna.setDisable(true);
 
-			HBox linha;
-			if (coluna.toLowerCase().startsWith("id_")) {
-				TextField tf = (TextField) campo;
-				tf.setPrefWidth(80);
+        // Depois habilita/desabilita campos dinâmicos
+        for (Node node : formContainer.getChildren()) {
+            if (node instanceof HBox hbox) {
+                // Ignorar a linha fixa que já foi tratada
+                if (hbox == linhaFixaPrimeiraColuna) {
+                    continue;
+                }
+                for (Node subNode : hbox.getChildren()) {
+                    if (subNode instanceof Control control) {
+                        control.setDisable(false);
+                    }
+                }
+            }
+        }
+        btnNovo.setDisable(true);
+        btnSalvar.setDisable(false);
+        btnExcluir.setDisable(true);
+        btnCancelar.setDisable(false);
+        btnEditar.setDisable(true);
+        btnFechar.setDisable(false);
+    }
 
-				Button btnPesquisa = new Button();
-				btnPesquisa.setGraphic(imagem("/imgs/18x18/lupa.png"));
+    private void onSalvar() {
+    	if(estado == 1) {
+    		   List<TabelaColuna> colunas = coletarValoresDoFormulario();
 
-				Label labelDescricao = new Label();
-				labelDescricao.setMinWidth(200);
-				labelDescricao.setText(obterDescricao(coluna, tf.getText()));
+    	        try {
+    	            // 1. Identificar a classe
+    	            Class<?> classe = dao.getClass().getMethod("getById", Integer.class).getReturnType(); // Ex: Usuario.class
 
-				btnPesquisa.setOnAction(e -> abrirPesquisaParaCampo(coluna, tf, labelDescricao));
+    	            // 2. Instanciar objeto com os dados da tela
+    	            Object novoObjeto = construirObjeto(colunas, classe);
 
-				if (primeiroCampoComId) {
-					tf.setDisable(false);
-					btnPesquisa.setDisable(false);
-					labelDescricao.setDisable(false);
-					primeiroCampoComId = false;
-				} else {
-					tf.setDisable(true);
-					btnPesquisa.setDisable(true);
-					labelDescricao.setDisable(true);
-				}
-				linha = new HBox(10, label, tf, btnPesquisa, labelDescricao);
-			} else {
-				campo.setDisable(true);
-				linha = new HBox(10, label, campo);
-			}
+    	            // 3. Persistir via insert
+    	            Integer resultado = (Integer) dao.getClass().getMethod("insert", classe).invoke(dao, novoObjeto);
 
-			formContainer.getChildren().add(linha);
-		}
+    	            if ((Integer) resultado > 0) {
+    	                System.out.println("Registro inserido com sucesso!");
+    	            } else {
+    	                System.out.println("Falha ao inserir.");
+    	            }
+    	        } catch (Exception e) {
+    	            e.printStackTrace();
+    	        }
 
-		atualizarEstadoDosBotoes();
-	}
-	
-	
+    	        estado = 0;
+    	        btnNovo.setDisable(false);
+    	        btnSalvar.setDisable(true);
+    	        btnExcluir.setDisable(false);
+    	        btnCancelar.setDisable(true);
+    	        btnEditar.setDisable(false);
+    	        btnFechar.setDisable(false);
+    			
+    	}else if(estado == 2) {
+ 		   List<TabelaColuna> colunas = coletarValoresDoFormulario();
 
-	private void abrirPesquisaParaCampo(String coluna, TextField campoDestino, Label labelDescricao) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
-			Object controller;
+	        try {
+	            // 1. Identificar a classe
+	            Class<?> classe = dao.getClass().getMethod("getById", Integer.class).getReturnType(); // Ex: Usuario.class
 
-			switch (coluna) {
-				case "id_setor" -> controller = new PesquisaSetorController();
-				case "id_usuario" -> controller = new PesquisaUsuarioController();
-				case "id_nivel" -> controller = new PesquisaNivelController();
-				case "id_situacao" -> controller = new PesquisaSituacaoController();
-				default -> throw new IllegalArgumentException("Campo de pesquisa não suportado: " + coluna);
-			}
+	            // 2. Instanciar objeto com os dados da tela
+	            Object novoObjeto = construirObjeto(colunas, classe);
 
-			loader.setController(controller);
-			Parent parent = loader.load();
+	            // 3. Persistir via insert
+	            Integer resultado = (Integer) dao.getClass().getMethod("updateById", classe).invoke(dao, novoObjeto);
 
-			Stage stage = new Stage();
-			stage.setTitle("Pesquisa - " + TableColumnFormatter.formatarNomeColunaAutomaticamente(coluna));
-			stage.setScene(new Scene(parent));
-			stage.setResizable(true);
+	            if ((Integer) resultado > 0) {
+	                System.out.println("Registro atualizado com sucesso!");
+	            } else {
+	                System.out.println("Falha ao inserir.");
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+    	
+    		estado = 0;
+        	btnNovo.setDisable(true);
+            btnSalvar.setDisable(true);
+            btnExcluir.setDisable(false);
+            btnCancelar.setDisable(true);
+            btnEditar.setDisable(false);
+            btnFechar.setDisable(false);
+    	}
+    }
 
-			stage.setOnHidden(ev -> {
-				String valorSelecionado = switch (coluna) {
-					case "id_setor" -> ((PesquisaSetorController) controller).getSetorSelecionado();
-					case "id_usuario" -> ((PesquisaUsuarioController) controller).getUsuarioSelecionado();
-					case "id_nivel" -> ((PesquisaNivelController) controller).getNivelSelecionado();
-					case "id_situacao" -> ((PesquisaSituacaoController) controller).getSituacaoSelecionado();
-					default -> null;
-				};
+    private void onExcluir() {}
 
-				if (valorSelecionado != null) {
-					campoDestino.setText(valorSelecionado);
-					labelDescricao.setText(obterDescricao(coluna, valorSelecionado));
-				}
-			});
-			stage.show();
+    private void onCancelar() {}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    private void onEditar() {
+    	estado = 2;
+    	 // Primeiro habilita/desabilita linha fixa
+        tfPrimeiraColuna.setDisable(true);
+        btnPesquisaPrimeiraColuna.setDisable(true);
 
-	private String obterDescricao(String coluna, String id) {
-		try {
-			LookupConfig config = lookupMap.get(coluna);
-			if (config != null) {
-				Object obj = config.dao.getById(Integer.parseInt(id));
-				if (obj != null) {
-					// Retorna toString() do objeto como descrição por padrão
-					return obj.toString();
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "";
-	}
 
-	public Map<String, Object> capturarValoresDoFormulario() {
-		Map<String, Object> valores = new LinkedHashMap<>();
-		for (javafx.scene.Node node : formContainer.getChildren()) {
-			if (node instanceof HBox hbox) {
-				for (javafx.scene.Node subNode : hbox.getChildren()) {
-					if (subNode instanceof TextInputControl input) {
-						String id = input.getId().replace("campo_", "");
-						valores.put(id, input.getText());
-					} else if (subNode instanceof DatePicker dp) {
-						String id = dp.getId().replace("campo_", "");
-						valores.put(id, dp.getValue());
-					} else if (subNode instanceof CheckBox cb) {
-						String id = cb.getId().replace("campo_", "");
-						valores.put(id, cb.isSelected());
-					}
-				}
-			}
-		}
-		return valores;
-	}
-	
-	// ---------- inicializador --------------- \\
-	
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// Inicialização será feita no initData
-	}
-	
-	private static final Map<String, LookupConfig> lookupMap = new HashMap<>();
+        // Depois habilita/desabilita campos dinâmicos
+        for (Node node : formContainer.getChildren()) {
+            if (node instanceof HBox hbox) {
+                // Ignorar a linha fixa que já foi tratada
+                if (hbox == linhaFixaPrimeiraColuna) {
+                    continue;
+                }
+                for (Node subNode : hbox.getChildren()) {
+                    if (subNode instanceof Control control) {
+                        control.setDisable(false);
+                    }
+                }
+            }
+        }
+        btnNovo.setDisable(true);
+        btnSalvar.setDisable(false);
+        btnExcluir.setDisable(false);
+        btnCancelar.setDisable(false);
+        btnEditar.setDisable(true);
+        btnFechar.setDisable(false);
+        
+    }
 
-	static {
-		lookupMap.put("id_usuario", new LookupConfig(new TblUsuariosDAOImpl()));
-		lookupMap.put("id_nivel", new LookupConfig(new TblNiveisDAOImpl()));
-		lookupMap.put("id_setor", new LookupConfig(new TblSetoresDAOImpl()));
-		lookupMap.put("id_situacao", new LookupConfig(new TblSituacaoDAOImpl()));
-	}
+    private void onSair() {}
 
-	public void initData(String tabela, Integer idRegistro, DAO<?> dao) {
-		this.tabela = tabela;
-		this.idRegistro = idRegistro;
-		this.dao = dao;
+    private void carregarRegistroPorId() {
+    	this.estrutura = dao.mapperEntityToView(Integer.parseInt(tfPrimeiraColuna.getText()), this.estrutura);
+		    formContainer.getChildren().clear();
+		    
+	        formContainer.setAlignment(Pos.BASELINE_CENTER); // centralizar VBox
 
-		formContainer.getChildren().clear();
+	        for (TabelaColuna col : this.estrutura.subList(1, this.estrutura.size())){
+	            String coluna = col.getNome();
+	            Object valor = col.getValor();
+	            int tipoSQL = col.getTipoSQL();
 
-		try {
-			List<TabelaColuna> dados = dao.getColunasDaTabela();
+	            String nomeFormatado = TableColumnFormatter.formatarNomeColunaAutomaticamente(coluna);
+	            Label label = new Label(nomeFormatado + ":");
+	            label.setMinWidth(150);
+	            label.setAlignment(Pos.CENTER_RIGHT);
 
-			gerarFormularioDinamico(dados);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	            Control campo;
+	            boolean isSenha = coluna.toLowerCase().contains("senha");
 
-		btnNovo.setOnAction(e -> onNovo());
-		btnSalvar.setOnAction(e -> onSalvar());
-		btnExcluir.setOnAction(e -> onExcluir());
-		btnCancelar.setOnAction(e -> onCancelar());
-		btnEditar.setOnAction(e -> onEditar());
-		btnFechar.setOnAction(e -> onSair());
+	            if (isSenha) {
+	                PasswordField pf = new PasswordField();
+	                pf.setText(valor != null ? valor.toString() : "");
+	                pf.setId("campo_" + coluna);
+	                campo = pf;
+	            } else {
+	                switch (tipoSQL) {
+	                    case Types.BOOLEAN, Types.BIT -> {
+	                        CheckBox cb = new CheckBox();
+	                        cb.setSelected(valor != null && (Boolean.TRUE.equals(valor) || (valor instanceof Number && ((Number) valor).intValue() == 1)));
+	                        cb.setId("campo_" + coluna);
+	                        campo = cb;
+	                    }
+	                    case Types.DATE, Types.TIMESTAMP -> {
+	                        DatePicker dp = new DatePicker();
+	                        if (valor instanceof Date date) {
+	                            dp.setValue(date.toLocalDate());
+	                        } else if (valor instanceof Timestamp ts) {
+	                            dp.setValue(ts.toLocalDateTime().toLocalDate());
+	                        }
+	                        dp.setId("campo_" + coluna);
+	                        campo = dp;
+	                    }
+	                    case Types.INTEGER, Types.SMALLINT, Types.TINYINT, Types.BIGINT -> {
+	                        TextField tf = new TextField(valor != null ? valor.toString() : "");
+	                        tf.setId("campo_" + coluna);
+	                        tf.setTextFormatter(TableColumnFormatter.numericIntegerFormatter());
+	                        campo = tf;
+	                    }
+	                    case Types.FLOAT, Types.REAL, Types.DOUBLE, Types.NUMERIC, Types.DECIMAL -> {
+	                        TextField tf = new TextField(valor != null ? valor.toString() : "");
+	                        tf.setId("campo_" + coluna);
+	                        tf.setTextFormatter(TableColumnFormatter.numericDecimalFormatter());
+	                        campo = tf;
+	                    }
+	                    default -> {
+	                        TextField tf = new TextField(valor != null ? valor.toString() : "");
+	                        tf.setId("campo_" + coluna);
+	                        campo = tf;
+	                    }
+	                }
+	            }
 
-		adicionarIconesAosBotoes();
-		atualizarEstadoDosBotoes();
-	}
+	            HBox linha;
+	            if (coluna.toLowerCase().contains("id")) {
+	                TextField tf = (TextField) campo;
+	                tf.setMinWidth(80);    // tamanho mínimo
+	                tf.setPrefWidth(80);   // tamanho preferido
+	                tf.setMaxWidth(80);    // tamanho máximo
 
-	
-	// ------------------------------------------------- \\
+	                Button btnPesquisa = adicionarBotaoPesquisa();
 
-	private static class LookupConfig {
-		DAO<?> dao;
+	                Label labelDescricao = new Label();
+	                labelDescricao.setMinWidth(200);
+	                labelDescricao.setText(obterDescricao(coluna, tf.getText()));
 
-		LookupConfig(DAO<?> dao) {
-			this.dao = dao;
-		}
-	}
+	                btnPesquisa.setOnAction(e -> abrirPesquisaParaCampo(coluna, tf));
+
+	                tf.setDisable(true);
+	                btnPesquisa.setDisable(true);
+	                labelDescricao.setDisable(true);
+
+	                linha = new HBox(10, label, tf, btnPesquisa, labelDescricao);
+	            } else {
+	                // Definir tamanho máximo para campos que não são IDs
+	                campo.setPrefWidth(250);
+	                campo.setMaxWidth(350);
+	                campo.setDisable(true);
+
+	                linha = new HBox(10, label, campo);
+	            }
+
+	            // Centralizar a linha e adicionar padding
+	            linha.setAlignment(Pos.CENTER_LEFT);
+	            linha.setPadding(new Insets(5));
+
+	            // Impedir que o campo cresça além do maxWidth
+	            HBox.setHgrow(campo, Priority.NEVER);
+
+	            formContainer.getChildren().add(linha);
+	        }
+
+		    btnEditar.setDisable(false);
+		    btnExcluir.setDisable(false);
+		    btnCancelar.setDisable(false);
+		    
+		    
+    }
+
+    //  ------------- Estrutura variável -------------  \\
+
+    private void gerarFormularioDinamico(List<TabelaColuna> colunas) {
+
+        formContainer.setAlignment(Pos.BASELINE_CENTER); // centralizar VBox
+
+        for (TabelaColuna col : colunas) {
+            String coluna = col.getNome();
+            Object valor = col.getValor();
+            int tipoSQL = col.getTipoSQL();
+
+            String nomeFormatado = TableColumnFormatter.formatarNomeColunaAutomaticamente(coluna);
+            Label label = new Label(nomeFormatado + ":");
+            label.setMinWidth(150);
+            label.setAlignment(Pos.CENTER_RIGHT);
+
+            Control campo;
+            boolean isSenha = coluna.toLowerCase().contains("senha");
+
+            if (isSenha) {
+                PasswordField pf = new PasswordField();
+                pf.setText(valor != null ? valor.toString() : "");
+                pf.setId("campo_" + coluna);
+                campo = pf;
+            } else {
+                switch (tipoSQL) {
+                    case Types.BOOLEAN, Types.BIT -> {
+                        CheckBox cb = new CheckBox();
+                        cb.setSelected(valor != null && (Boolean.TRUE.equals(valor) || (valor instanceof Number && ((Number) valor).intValue() == 1)));
+                        cb.setId("campo_" + coluna);
+                        campo = cb;
+                    }
+                    case Types.DATE, Types.TIMESTAMP -> {
+                        DatePicker dp = new DatePicker();
+                        if (valor instanceof Date date) {
+                            dp.setValue(date.toLocalDate());
+                        } else if (valor instanceof Timestamp ts) {
+                            dp.setValue(ts.toLocalDateTime().toLocalDate());
+                        }
+                        dp.setId("campo_" + coluna);
+                        campo = dp;
+                    }
+                    case Types.INTEGER, Types.SMALLINT, Types.TINYINT, Types.BIGINT -> {
+                        TextField tf = new TextField(valor != null ? valor.toString() : "");
+                        tf.setId("campo_" + coluna);
+                        tf.setTextFormatter(TableColumnFormatter.numericIntegerFormatter());
+                        campo = tf;
+                    }
+                    case Types.FLOAT, Types.REAL, Types.DOUBLE, Types.NUMERIC, Types.DECIMAL -> {
+                        TextField tf = new TextField(valor != null ? valor.toString() : "");
+                        tf.setId("campo_" + coluna);
+                        tf.setTextFormatter(TableColumnFormatter.numericDecimalFormatter());
+                        campo = tf;
+                    }
+                    default -> {
+                        TextField tf = new TextField(valor != null ? valor.toString() : "");
+                        tf.setId("campo_" + coluna);
+                        campo = tf;
+                    }
+                }
+            }
+
+            HBox linha;
+            if (coluna.toLowerCase().contains("id")) {
+                TextField tf = (TextField) campo;
+                tf.setMinWidth(80);    // tamanho mínimo
+                tf.setPrefWidth(80);   // tamanho preferido
+                tf.setMaxWidth(80);    // tamanho máximo
+
+                Button btnPesquisa = adicionarBotaoPesquisa();
+
+                Label labelDescricao = new Label();
+                labelDescricao.setMinWidth(200);
+                labelDescricao.setText(obterDescricao(coluna, tf.getText()));
+
+                btnPesquisa.setOnAction(e -> abrirPesquisaParaCampo(coluna, tf));
+
+                tf.setDisable(true);
+                btnPesquisa.setDisable(true);
+                labelDescricao.setDisable(true);
+
+                linha = new HBox(10, label, tf, btnPesquisa, labelDescricao);
+            } else {
+                // Definir tamanho máximo para campos que não são IDs
+                campo.setPrefWidth(250);
+                campo.setMaxWidth(350);
+                campo.setDisable(true);
+
+                linha = new HBox(10, label, campo);
+            }
+
+            // Centralizar a linha e adicionar padding
+            linha.setAlignment(Pos.CENTER_LEFT);
+            linha.setPadding(new Insets(5));
+
+            // Impedir que o campo cresça além do maxWidth
+            HBox.setHgrow(campo, Priority.NEVER);
+
+            formContainer.getChildren().add(linha);
+        }
+
+    }
+
+    // --------------------------------------------------------- \\
+
+    // Simulação do método para pegar descrição do campo
+    private String obterDescricao(String coluna, String valor) {
+        if (valor == null || valor.isBlank()) {
+            return "";
+        }
+        return "Descrição para " + coluna + " = " + valor;
+    }
+
+    private void abrirPesquisaParaCampo(String coluna, TextField tf) {
+        System.out.println("Abrindo pesquisa para campo: " + coluna);
+        // Exemplo simulado:
+        String resultadoPesquisa = "123"; // Exemplo fixo de resultado da pesquisa
+        tf.setText(resultadoPesquisa);
+
+    }
+
+    private Object construirObjeto(List<TabelaColuna> colunas, Class<?> clazz) {
+        try {
+            Object instancia = clazz.getDeclaredConstructor().newInstance();
+            for (TabelaColuna col : colunas) {
+                try {
+                    Field field = clazz.getDeclaredField(col.getNome());
+                    field.setAccessible(true);
+                    Object valor = col.getValor();
+
+                    // Conversão rudimentar, idealmente use utilitário genérico
+                    if (field.getType() == Integer.class || field.getType() == int.class) {
+                        field.set(instancia, valor != null ? Integer.parseInt(valor.toString()) : null);
+                    } else if (field.getType() == String.class) {
+                        field.set(instancia, valor != null ? valor.toString() : null);
+                    } else if (field.getType() == Boolean.class || field.getType() == boolean.class) {
+                        field.set(instancia, valor instanceof Boolean b ? b : Boolean.parseBoolean(valor.toString()));
+                    } else if (field.getType() == java.sql.Date.class && valor instanceof java.sql.Date) {
+                        field.set(instancia, valor);
+                    } else {
+                        field.set(instancia, valor); // fallback
+                    }
+
+                } catch (NoSuchFieldException ignore) {}
+            }
+            return instancia;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    private List<TabelaColuna> coletarValoresDoFormulario() {
+        List<TabelaColuna> valores = new ArrayList<>();
+
+        for (Node node : formContainer.getChildren()) {
+            if (node instanceof HBox hbox) {
+                for (Node subNode : hbox.getChildren()) {
+                    if (subNode instanceof Control control && control.getId() != null && control.getId().startsWith("campo_")) {
+                        String nomeColuna = control.getId().replace("campo_", "");
+                        Object valor = null;
+
+                        if (control instanceof TextField tf) {
+                            valor = tf.getText().isBlank() ? null : tf.getText();
+                        } else if (control instanceof PasswordField pf) {
+                            valor = pf.getText();
+                        } else if (control instanceof DatePicker dp) {
+                            valor = dp.getValue() != null ? java.sql.Date.valueOf(dp.getValue()) : null;
+                        } else if (control instanceof CheckBox cb) {
+                            valor = cb.isSelected();
+                        }
+
+                        int tipoSQL = estrutura.stream()
+                            .filter(c -> c.getNome().equalsIgnoreCase(nomeColuna))
+                            .map(TabelaColuna::getTipoSQL)
+                            .findFirst()
+                            .orElse(Types.VARCHAR);
+
+                        valores.add(new TabelaColuna(nomeColuna, valor, tipoSQL));
+                    }
+                }
+            }
+        }
+
+        return valores;
+    }
+    
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {}
+
+    public void initData(Integer idRegistro, DAO<?> dao) {
+        this.dao = dao;
+    	try {
+    		this.estrutura = dao.getColunasDaTabela();
+    		configurarLinhaFixaPrimeiraColuna(estrutura.get(0));
+    		gerarFormularioDinamico(estrutura.subList(1, estrutura.size()));
+    		}catch (SQLException exception) {
+    		exception.getMessage();    	
+    		}
+        adicionarBotoesRodape();
+        btnNovo.setDisable(false);
+        btnSalvar.setDisable(true);
+        btnExcluir.setDisable(true);
+        btnCancelar.setDisable(true);
+        btnEditar.setDisable(true);
+        btnFechar.setDisable(false);
+        btnNovo.setOnAction(e -> onNovo());
+        btnSalvar.setOnAction(e -> onSalvar());
+        btnExcluir.setOnAction(e -> onExcluir());
+        btnCancelar.setOnAction(e -> onCancelar());
+        btnEditar.setOnAction(e -> onEditar());
+        btnFechar.setOnAction(e -> onSair());
+    }
 }
