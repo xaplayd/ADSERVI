@@ -297,8 +297,10 @@ public class TblNiveisDAOImpl implements TblNiveisDAO {
 	public Nivel mapperViewToEntity(List<TabelaColuna> estrutura){
 		Nivel tempNivel = new Nivel();
 		for (TabelaColuna x : estrutura) {
-			if(x.getNome().compareTo("id_nivel") == 0) {
-				tempNivel.setCodigo(Integer.parseInt(x.getValor().toString()));
+			 if(x.getNome().compareTo("id_nivel") == 0) {
+		            if (x.getValor() != null && !x.getValor().toString().isBlank()) {
+		            	tempNivel.setCodigo(Integer.parseInt(x.getValor().toString()));
+		            }
 			}else if (x.getNome().compareTo("nome_nivel") == 0) {
 				tempNivel.setNome(x.getValor().toString());
 			}

@@ -1,13 +1,11 @@
 package dao;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,29 +117,39 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 
 	@Override
 	public Integer insert(Usuario usuario) {
-		Connection con = ConnectionController.getConexaoMySQL();
-		Integer result = 0;
-		try {
-			String tbl = getTblName();
-			String sql = "INSERT INTO " + tbl
-					+ " (nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao) VALUES (?,?,?,?,?,?,?,?)";
-			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, usuario.getNome());
-			ps.setString(2, usuario.getLogin());
-			ps.setString(3, usuario.getSenha());
-			ps.setInt(4, usuario.getPermissoes());
-			ps.setString(5, usuario.getEmail());
-			ps.setString(6, usuario.getEmailGerencia());
-			ps.setInt(7, usuario.getSetor());
-			ps.setInt(8, usuario.getSituacao());
+	    Connection con = ConnectionController.getConexaoMySQL();
+	    Integer idGerado = null;
+	    try {
+	        String tbl = getTblName();
+	        String sql = "INSERT INTO " + tbl
+	            + " (nome, login, senha, id_nivel, email, email_gerente, id_setor, id_situacao) VALUES (?,?,?,?,?,?,?,?)";
 
-			result = ps.executeUpdate();
-			ps.close();
-			con.close();
-		} catch (SQLException e) {
-			e.getMessage();
-		}
-		return result; // retorna a quantidade de linhas afetadas, nao o novo ID
+	        // Solicita retorno das chaves geradas
+	        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+	        ps.setString(1, usuario.getNome());
+	        ps.setString(2, usuario.getLogin());
+	        ps.setString(3, usuario.getSenha());
+	        ps.setInt(4, usuario.getPermissoes());
+	        ps.setString(5, usuario.getEmail());
+	        ps.setString(6, usuario.getEmailGerencia());
+	        ps.setInt(7, usuario.getSetor());
+	        ps.setInt(8, usuario.getSituacao());
+
+	        ps.executeUpdate();
+
+	        // Pega o ID gerado
+	        ResultSet rs = ps.getGeneratedKeys();
+	        if (rs.next()) {
+	            idGerado = rs.getInt(1); // ou rs.getObject(1) se quiser genérico
+	        }
+
+	        rs.close();
+	        ps.close();
+	        con.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return idGerado;
 	}
 
 	@Override
@@ -441,8 +449,10 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 	public Usuario mapperViewToEntity(List<TabelaColuna> estrutura){
 		Usuario tempUser = new Usuario();
 		for (TabelaColuna x : estrutura) {
-			if(x.getNome().compareTo("id_usuario") == 0) {
-				tempUser.setCodigo(Integer.parseInt(x.getValor().toString()));
+			 if(x.getNome().compareTo("id_usuario") == 0) {
+		            if (x.getValor() != null && !x.getValor().toString().isBlank()) {
+		            	tempUser.setCodigo(Integer.parseInt(x.getValor().toString()));
+		            }
 			}else if (x.getNome().compareTo("nome") == 0) {
 				tempUser.setNome(x.getValor().toString());
 			} else if (x.getNome().compareTo("login") == 0) {

@@ -271,19 +271,50 @@ public class FormController <T> implements Initializable {
 
     public void onSalvar() {
         try {
-            T tempObj = dao.mapperViewToEntity(coletarValoresDoFormulario());
-            
-
-            int resultado = 0;
+            List<TabelaColuna> dados = coletarValoresDoFormulario();
+            T tempObj = dao.mapperViewToEntity(dados);
 
             if (estado == 1) {
-                resultado = dao.insert(tempObj);
-                
-                System.out.println("Entidade inserida com sucesso. Linhas afetadas: " + resultado);
-            } else if (estado == 2) {
+                // Supondo que o método insert agora retorna o ID gerado (Integer ou Object)
+                Object idGerado = dao.insert(tempObj);
 
-                resultado = dao.updateById(tempObj);
+                System.out.println("Entidade inserida com sucesso. ID gerado: " + idGerado);
+
+                // Preencher o campo de ID (tfPrimeiraColuna) com o ID gerado
+                tfPrimeiraColuna.setText(idGerado != null ? idGerado.toString() : null);
+                for (Node node : formContainer.getChildren()) {
+                    if (node instanceof HBox hbox) {
+                        for (Node subNode : hbox.getChildren()) {
+                            if (subNode instanceof Control control) {
+                                control.setDisable(true);
+                            }
+                        }
+                    }
+                }
+                btnNovo.setDisable(true);
+                btnSalvar.setDisable(true);
+                btnExcluir.setDisable(false);
+                btnCancelar.setDisable(false);
+                btnEditar.setDisable(false);
+                btnFechar.setDisable(false);
+            } else if (estado == 2) {
+                int resultado = dao.updateById(tempObj);
                 System.out.println("Entidade atualizada com sucesso. Linhas afetadas: " + resultado);
+                for (Node node : formContainer.getChildren()) {
+                    if (node instanceof HBox hbox) {
+                        for (Node subNode : hbox.getChildren()) {
+                            if (subNode instanceof Control control) {
+                                control.setDisable(true);
+                            }
+                        }
+                    }
+                }
+                btnNovo.setDisable(true);
+                btnSalvar.setDisable(true);
+                btnExcluir.setDisable(false);
+                btnCancelar.setDisable(false);
+                btnEditar.setDisable(false);
+                btnFechar.setDisable(false);
             } else {
                 System.out.println("Estado da tela inválido.");
             }

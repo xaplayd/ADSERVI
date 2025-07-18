@@ -229,8 +229,10 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 	public Tabela mapperViewToEntity(List<TabelaColuna> estrutura) {
 		Tabela tempTabela = new Tabela();
 		for (TabelaColuna x : estrutura) {
-			if(x.getNome().compareTo("id_tbl") == 0) {
-				tempTabela.setCodigo(Integer.parseInt(x.getValor().toString()));
+			 if(x.getNome().compareTo("id_tbl") == 0) {
+		            if (x.getValor() != null && !x.getValor().toString().isBlank()) {
+		            	tempTabela.setCodigo(Integer.parseInt(x.getValor().toString()));
+		            }
 			}else if (x.getNome().compareTo("nome_tbl") == 0) {
 				tempTabela.setNome(x.getValor().toString());
 			}
