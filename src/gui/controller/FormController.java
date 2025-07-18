@@ -1,6 +1,5 @@
 package gui.controller;
 
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -16,7 +15,9 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
@@ -31,6 +32,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.TabelaColuna;
+import models.Usuario;
 import utils.TableColumnFormatter;
 
 public class FormController <T> implements Initializable {
@@ -38,8 +40,10 @@ public class FormController <T> implements Initializable {
 
     //  ------------- Estrutura base -------------  \\
     
+	//estados tela
     private Integer estado = 0; // 0 - neutro, 1 - novo, 2 - edição
 
+    //estrutura fixa topo/id
     @FXML
     private HBox topLinhaFixaContainer;
     private Label labelPrimeiraColuna;
@@ -47,15 +51,21 @@ public class FormController <T> implements Initializable {
     private Button btnPesquisaPrimeiraColuna;
     private HBox linhaFixaPrimeiraColuna;
     
+    //estrutura gerada confome campos tabela
     @FXML
     private VBox formContainer;
 
+    //estrutura fixa rodapé/botoes
     @FXML
     private Button btnNovo, btnSalvar, btnExcluir, btnCancelar, btnEditar, btnFechar;
+    
+    //dao do model para uso
     private DAO<T> dao;
 
+    //lista com estrutura de dados da tela
     private List<TabelaColuna> estrutura = null;
 
+    //  ------------- Gera a view -------------  \\
     private void adicionarBotoesRodape() {
         ImageView iconBtnNovo = new ImageView(new Image(getClass().getResourceAsStream("/imgs/18x18/adicionar.png")));
         iconBtnNovo.setFitWidth(16);
@@ -130,9 +140,110 @@ public class FormController <T> implements Initializable {
             }
         });
     }
+    
+    private void gerarFormularioDinamico(List<TabelaColuna> colunas) {
 
-    //  ------------- Ações estrutura base -------------  \\
+        formContainer.setAlignment(Pos.BASELINE_CENTER); 
 
+        for (TabelaColuna col : colunas) {
+            String coluna = col.getNome();
+            Object valor = col.getValor();
+            int tipoSQL = col.getTipoSQL();
+
+            String nomeFormatado = TableColumnFormatter.formatarNomeColunaAutomaticamente(coluna);
+            Label label = new Label(nomeFormatado + ":");
+            label.setMinWidth(150);
+            label.setAlignment(Pos.CENTER_RIGHT);
+
+            Control campo;
+            boolean isSenha = coluna.toLowerCase().contains("senha");
+
+            if (isSenha) {
+                PasswordField pf = new PasswordField();
+                pf.setText(valor != null ? valor.toString() : "");
+                pf.setId("campo_" + coluna);
+                campo = pf;
+            } else {
+                switch (tipoSQL) {
+                    case Types.BOOLEAN, Types.BIT -> {
+                        CheckBox cb = new CheckBox();
+                        cb.setSelected(valor != null && (Boolean.TRUE.equals(valor) || (valor instanceof Number && ((Number) valor).intValue() == 1)));
+                        cb.setId("campo_" + coluna);
+                        campo = cb;
+                    }
+                    case Types.DATE, Types.TIMESTAMP -> {
+                        DatePicker dp = new DatePicker();
+                        if (valor instanceof Date date) {
+                            dp.setValue(date.toLocalDate());
+                        } else if (valor instanceof Timestamp ts) {
+                            dp.setValue(ts.toLocalDateTime().toLocalDate());
+                        }
+                        dp.setId("campo_" + coluna);
+                        campo = dp;
+                    }
+                    case Types.INTEGER, Types.SMALLINT, Types.TINYINT, Types.BIGINT -> {
+                        TextField tf = new TextField(valor != null ? valor.toString() : "");
+                        tf.setId("campo_" + coluna);
+                        tf.setTextFormatter(TableColumnFormatter.numericIntegerFormatter());
+                        campo = tf;
+                    }
+                    case Types.FLOAT, Types.REAL, Types.DOUBLE, Types.NUMERIC, Types.DECIMAL -> {
+                        TextField tf = new TextField(valor != null ? valor.toString() : "");
+                        tf.setId("campo_" + coluna);
+                        tf.setTextFormatter(TableColumnFormatter.numericDecimalFormatter());
+                        campo = tf;
+                    }
+                    default -> {
+                        TextField tf = new TextField(valor != null ? valor.toString() : "");
+                        tf.setId("campo_" + coluna);
+                        campo = tf;
+                    }
+                }
+            }
+
+            HBox linha;
+            if (coluna.toLowerCase().contains("id")) {
+                TextField tf = (TextField) campo;
+                tf.setMinWidth(80);    // tamanho mínimo
+                tf.setPrefWidth(80);   // tamanho preferido
+                tf.setMaxWidth(80);    // tamanho máximo
+
+                Button btnPesquisa = adicionarBotaoPesquisa();
+
+                Label labelDescricao = new Label();
+                labelDescricao.setMinWidth(200);
+                labelDescricao.setText(obterDescricao(coluna, tf.getText()));
+
+                btnPesquisa.setOnAction(e -> abrirPesquisaParaCampo(coluna, tf));
+
+                tf.setDisable(true);
+                btnPesquisa.setDisable(true);
+                labelDescricao.setDisable(true);
+
+                linha = new HBox(10, label, tf, btnPesquisa, labelDescricao);
+            } else {
+                // Definir tamanho máximo para campos que não são IDs
+                campo.setPrefWidth(250);
+                campo.setMaxWidth(350);
+                campo.setDisable(true);
+
+                linha = new HBox(10, label, campo);
+            }
+
+            // Centralizar a linha e adicionar padding
+            linha.setAlignment(Pos.CENTER_LEFT);
+            linha.setPadding(new Insets(5));
+
+            // Impedir que o campo cresça além do maxWidth
+            HBox.setHgrow(campo, Priority.NEVER);
+
+            formContainer.getChildren().add(linha);
+        }
+
+    }
+
+    //  ------------- Ações  -------------  \\
+    
     private void onNovo() {
     	estado = 1;
         tfPrimeiraColuna.setDisable(true);
@@ -181,9 +292,31 @@ public class FormController <T> implements Initializable {
         }
     }
     
-    private void onExcluir() {}
+    private void onExcluir() {
+  		try {
+  			T tempObj = dao.mapperViewToEntity(coletarValoresDoFormulario());
+			System.out.println("EXCLUSÃO DE DADOS ATIVA!!");
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+			alert.setTitle("Confirmação:");
+			alert.setHeaderText("Realmente deseja excluir o usuário selecionado?");
+			alert.showAndWait();
+			if (alert.getResult() == ButtonType.YES) {
+				int result = dao.deleteById(tempObj);
+				if (result > 0) {
+					onCancelar();
+					this.estado = 0;
+				}
+			}
+		} catch (SQLException exception) {
+			exception.getMessage();
+		}  
+    }
 
-    private void onCancelar() {}
+    private void onCancelar() {
+    	topLinhaFixaContainer.getChildren().clear();
+    	formContainer.getChildren().clear();
+    	initData(null, dao);
+    }
 
     private void onEditar() {
     	estado = 2;
@@ -333,111 +466,6 @@ public class FormController <T> implements Initializable {
 		    
     }
 
-    //  ------------- Estrutura variável -------------  \\
-
-    private void gerarFormularioDinamico(List<TabelaColuna> colunas) {
-
-        formContainer.setAlignment(Pos.BASELINE_CENTER); // centralizar VBox
-
-        for (TabelaColuna col : colunas) {
-            String coluna = col.getNome();
-            Object valor = col.getValor();
-            int tipoSQL = col.getTipoSQL();
-
-            String nomeFormatado = TableColumnFormatter.formatarNomeColunaAutomaticamente(coluna);
-            Label label = new Label(nomeFormatado + ":");
-            label.setMinWidth(150);
-            label.setAlignment(Pos.CENTER_RIGHT);
-
-            Control campo;
-            boolean isSenha = coluna.toLowerCase().contains("senha");
-
-            if (isSenha) {
-                PasswordField pf = new PasswordField();
-                pf.setText(valor != null ? valor.toString() : "");
-                pf.setId("campo_" + coluna);
-                campo = pf;
-            } else {
-                switch (tipoSQL) {
-                    case Types.BOOLEAN, Types.BIT -> {
-                        CheckBox cb = new CheckBox();
-                        cb.setSelected(valor != null && (Boolean.TRUE.equals(valor) || (valor instanceof Number && ((Number) valor).intValue() == 1)));
-                        cb.setId("campo_" + coluna);
-                        campo = cb;
-                    }
-                    case Types.DATE, Types.TIMESTAMP -> {
-                        DatePicker dp = new DatePicker();
-                        if (valor instanceof Date date) {
-                            dp.setValue(date.toLocalDate());
-                        } else if (valor instanceof Timestamp ts) {
-                            dp.setValue(ts.toLocalDateTime().toLocalDate());
-                        }
-                        dp.setId("campo_" + coluna);
-                        campo = dp;
-                    }
-                    case Types.INTEGER, Types.SMALLINT, Types.TINYINT, Types.BIGINT -> {
-                        TextField tf = new TextField(valor != null ? valor.toString() : "");
-                        tf.setId("campo_" + coluna);
-                        tf.setTextFormatter(TableColumnFormatter.numericIntegerFormatter());
-                        campo = tf;
-                    }
-                    case Types.FLOAT, Types.REAL, Types.DOUBLE, Types.NUMERIC, Types.DECIMAL -> {
-                        TextField tf = new TextField(valor != null ? valor.toString() : "");
-                        tf.setId("campo_" + coluna);
-                        tf.setTextFormatter(TableColumnFormatter.numericDecimalFormatter());
-                        campo = tf;
-                    }
-                    default -> {
-                        TextField tf = new TextField(valor != null ? valor.toString() : "");
-                        tf.setId("campo_" + coluna);
-                        campo = tf;
-                    }
-                }
-            }
-
-            HBox linha;
-            if (coluna.toLowerCase().contains("id")) {
-                TextField tf = (TextField) campo;
-                tf.setMinWidth(80);    // tamanho mínimo
-                tf.setPrefWidth(80);   // tamanho preferido
-                tf.setMaxWidth(80);    // tamanho máximo
-
-                Button btnPesquisa = adicionarBotaoPesquisa();
-
-                Label labelDescricao = new Label();
-                labelDescricao.setMinWidth(200);
-                labelDescricao.setText(obterDescricao(coluna, tf.getText()));
-
-                btnPesquisa.setOnAction(e -> abrirPesquisaParaCampo(coluna, tf));
-
-                tf.setDisable(true);
-                btnPesquisa.setDisable(true);
-                labelDescricao.setDisable(true);
-
-                linha = new HBox(10, label, tf, btnPesquisa, labelDescricao);
-            } else {
-                // Definir tamanho máximo para campos que não são IDs
-                campo.setPrefWidth(250);
-                campo.setMaxWidth(350);
-                campo.setDisable(true);
-
-                linha = new HBox(10, label, campo);
-            }
-
-            // Centralizar a linha e adicionar padding
-            linha.setAlignment(Pos.CENTER_LEFT);
-            linha.setPadding(new Insets(5));
-
-            // Impedir que o campo cresça além do maxWidth
-            HBox.setHgrow(campo, Priority.NEVER);
-
-            formContainer.getChildren().add(linha);
-        }
-
-    }
-
-    // --------------------------------------------------------- \\
-
     // Simulação do método para pegar descrição do campo
     private String obterDescricao(String coluna, String valor) {
         if (valor == null || valor.isBlank()) {
@@ -452,37 +480,6 @@ public class FormController <T> implements Initializable {
         String resultadoPesquisa = "123"; // Exemplo fixo de resultado da pesquisa
         tf.setText(resultadoPesquisa);
 
-    }
-
-    private Object construirObjeto(List<TabelaColuna> colunas, Class<?> clazz) {
-        try {
-            Object instancia = clazz.getDeclaredConstructor().newInstance();
-            for (TabelaColuna col : colunas) {
-                try {
-                    Field field = clazz.getDeclaredField(col.getNome());
-                    field.setAccessible(true);
-                    Object valor = col.getValor();
-
-                    // Conversão rudimentar, idealmente use utilitário genérico
-                    if (field.getType() == Integer.class || field.getType() == int.class) {
-                        field.set(instancia, valor != null ? Integer.parseInt(valor.toString()) : null);
-                    } else if (field.getType() == String.class) {
-                        field.set(instancia, valor != null ? valor.toString() : null);
-                    } else if (field.getType() == Boolean.class || field.getType() == boolean.class) {
-                        field.set(instancia, valor instanceof Boolean b ? b : Boolean.parseBoolean(valor.toString()));
-                    } else if (field.getType() == java.sql.Date.class && valor instanceof java.sql.Date) {
-                        field.set(instancia, valor);
-                    } else {
-                        field.set(instancia, valor); // fallback
-                    }
-
-                } catch (NoSuchFieldException ignore) {}
-            }
-            return instancia;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
     
     private List<TabelaColuna> coletarValoresDoFormulario() {
