@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import models.Setor;
 import models.Usuario;
 import services.UserService;
 
@@ -168,17 +169,17 @@ public class PrincipalController {
 				stageTest = new Stage();
 
 			    try {
-			    	//TblSetoresDAO setoresdao = new TblSetoresDAOImpl();
-			    	TblUsuariosDAO usuariosdao = new TblUsuariosDAOImpl();
+			    	//TblSetoresDAO dao = new TblSetoresDAOImpl();
+			    	TblUsuariosDAO dao = new TblUsuariosDAOImpl();
 			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Form.fxml"));
 			        Parent root = loader.load();
 
-			        FormController controller = loader.getController();
-			        controller.initData(1, usuariosdao); // passando a tabela e o id
-			        //controller.initData(setoresdao.getTblName(), 1, setoresdao); // passando a tabela e o id
+			        FormController <Usuario> controller = loader.getController();
+			        controller.initData(1, dao); // passando a tabela e o id
+			        
 			        
 			        Stage stage = new Stage();
-			        stage.setTitle("Cadastro de Usuários");
+			        stage.setTitle("Cadastro de Setores");
 			        stage.setScene(new Scene(root));
 			        stage.show();
 			        stage.setOnHidden(we -> stageTest = null);

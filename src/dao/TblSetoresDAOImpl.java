@@ -290,4 +290,18 @@ public class TblSetoresDAOImpl implements TblSetoresDAO {
 		return estrutura;
 	
 	}
+	@Override
+	public Setor mapperViewToEntity(List<TabelaColuna> estrutura){
+	    Setor tempSetor = new Setor();
+	    for (TabelaColuna x : estrutura) {
+	        if(x.getNome().compareTo("id_setor") == 0) {
+	            if (x.getValor() != null && !x.getValor().toString().isBlank()) {
+	                tempSetor.setCodigo(Integer.parseInt(x.getValor().toString()));
+	            }
+	        } else if (x.getNome().compareTo("nome_setor") == 0) {
+	            tempSetor.setNome(x.getValor().toString());
+	        }
+	    }
+	    return tempSetor;
+	}
 }

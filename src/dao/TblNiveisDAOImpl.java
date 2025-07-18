@@ -293,5 +293,17 @@ public class TblNiveisDAOImpl implements TblNiveisDAO {
 		return estrutura;
 	
 	}
-
+	@Override
+	public Nivel mapperViewToEntity(List<TabelaColuna> estrutura){
+		Nivel tempNivel = new Nivel();
+		for (TabelaColuna x : estrutura) {
+			if(x.getNome().compareTo("id_nivel") == 0) {
+				tempNivel.setCodigo(Integer.parseInt(x.getValor().toString()));
+			}else if (x.getNome().compareTo("nome_nivel") == 0) {
+				tempNivel.setNome(x.getValor().toString());
+			}
+		}
+		return tempNivel;
+	
+	}
 }

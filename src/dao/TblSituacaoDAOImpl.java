@@ -286,6 +286,18 @@ public class TblSituacaoDAOImpl implements TblSituacaoDAO {
 			}
 		}
 		return estrutura;
+	}
+	@Override
+	public Situacao mapperViewToEntity(List<TabelaColuna> estrutura){
+		Situacao tempSituacao = new Situacao();
+		for (TabelaColuna x : estrutura) {
+			if(x.getNome().compareTo("id_situacao") == 0) {
+				tempSituacao.setCodigo(Integer.parseInt(x.getValor().toString()));
+			}else if (x.getNome().compareTo("nome_situacao") == 0) {
+				tempSituacao.setNome(x.getValor().toString());
+			}
+		}
+		return tempSituacao;
 	
 	}
 }

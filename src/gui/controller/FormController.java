@@ -29,10 +29,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import models.TabelaColuna;
 import utils.TableColumnFormatter;
 
-public class FormController implements Initializable {
+public class FormController <T> implements Initializable {
 
 
     //  ------------- Estrutura base -------------  \\
@@ -51,7 +52,7 @@ public class FormController implements Initializable {
 
     @FXML
     private Button btnNovo, btnSalvar, btnExcluir, btnCancelar, btnEditar, btnFechar;
-    private DAO<?> dao;
+    private DAO<T> dao;
 
     private List<TabelaColuna> estrutura = null;
 
@@ -134,14 +135,11 @@ public class FormController implements Initializable {
 
     private void onNovo() {
     	estado = 1;
-      	 // Primeiro desabilita linha fixa
         tfPrimeiraColuna.setDisable(true);
         btnPesquisaPrimeiraColuna.setDisable(true);
 
-        // Depois habilita/desabilita campos dinâmicos
         for (Node node : formContainer.getChildren()) {
             if (node instanceof HBox hbox) {
-                // Ignorar a linha fixa que já foi tratada
                 if (hbox == linhaFixaPrimeiraColuna) {
                     continue;
                 }
@@ -160,84 +158,40 @@ public class FormController implements Initializable {
         btnFechar.setDisable(false);
     }
 
-    private void onSalvar() {
-    	if(estado == 1) {
-    		   List<TabelaColuna> colunas = coletarValoresDoFormulario();
+    public void onSalvar() {
+        try {
+            T tempObj = dao.mapperViewToEntity(coletarValoresDoFormulario());
+            
 
-    	        try {
-    	            // 1. Identificar a classe
-    	            Class<?> classe = dao.getClass().getMethod("getById", Integer.class).getReturnType(); // Ex: Usuario.class
+            int resultado = 0;
 
-    	            // 2. Instanciar objeto com os dados da tela
-    	            Object novoObjeto = construirObjeto(colunas, classe);
+            if (estado == 1) {
+                resultado = dao.insert(tempObj);
+                
+                System.out.println("Entidade inserida com sucesso. Linhas afetadas: " + resultado);
+            } else if (estado == 2) {
 
-    	            // 3. Persistir via insert
-    	            Integer resultado = (Integer) dao.getClass().getMethod("insert", classe).invoke(dao, novoObjeto);
-
-    	            if ((Integer) resultado > 0) {
-    	                System.out.println("Registro inserido com sucesso!");
-    	            } else {
-    	                System.out.println("Falha ao inserir.");
-    	            }
-    	        } catch (Exception e) {
-    	            e.printStackTrace();
-    	        }
-
-    	        estado = 0;
-    	        btnNovo.setDisable(false);
-    	        btnSalvar.setDisable(true);
-    	        btnExcluir.setDisable(false);
-    	        btnCancelar.setDisable(true);
-    	        btnEditar.setDisable(false);
-    	        btnFechar.setDisable(false);
-    			
-    	}else if(estado == 2) {
- 		   List<TabelaColuna> colunas = coletarValoresDoFormulario();
-
-	        try {
-	            // 1. Identificar a classe
-	            Class<?> classe = dao.getClass().getMethod("getById", Integer.class).getReturnType(); // Ex: Usuario.class
-
-	            // 2. Instanciar objeto com os dados da tela
-	            Object novoObjeto = construirObjeto(colunas, classe);
-
-	            // 3. Persistir via insert
-	            Integer resultado = (Integer) dao.getClass().getMethod("updateById", classe).invoke(dao, novoObjeto);
-
-	            if ((Integer) resultado > 0) {
-	                System.out.println("Registro atualizado com sucesso!");
-	            } else {
-	                System.out.println("Falha ao inserir.");
-	            }
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-    	
-    		estado = 0;
-        	btnNovo.setDisable(true);
-            btnSalvar.setDisable(true);
-            btnExcluir.setDisable(false);
-            btnCancelar.setDisable(true);
-            btnEditar.setDisable(false);
-            btnFechar.setDisable(false);
-    	}
+                resultado = dao.updateById(tempObj);
+                System.out.println("Entidade atualizada com sucesso. Linhas afetadas: " + resultado);
+            } else {
+                System.out.println("Estado da tela inválido.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
+    
     private void onExcluir() {}
 
     private void onCancelar() {}
 
     private void onEditar() {
     	estado = 2;
-    	 // Primeiro habilita/desabilita linha fixa
         tfPrimeiraColuna.setDisable(true);
         btnPesquisaPrimeiraColuna.setDisable(true);
 
-
-        // Depois habilita/desabilita campos dinâmicos
         for (Node node : formContainer.getChildren()) {
             if (node instanceof HBox hbox) {
-                // Ignorar a linha fixa que já foi tratada
                 if (hbox == linhaFixaPrimeiraColuna) {
                     continue;
                 }
@@ -257,10 +211,22 @@ public class FormController implements Initializable {
         
     }
 
-    private void onSair() {}
+    private void onSair() {
+		Stage stage = (Stage) btnFechar.getScene().getWindow();
+		stage.close();
+	}
+    
 
     private void carregarRegistroPorId() {
-    	this.estrutura = dao.mapperEntityToView(Integer.parseInt(tfPrimeiraColuna.getText()), this.estrutura);
+    	try {
+			this.estrutura = dao.mapperEntityToView(Integer.parseInt(tfPrimeiraColuna.getText()), this.estrutura);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		    formContainer.getChildren().clear();
 		    
 	        formContainer.setAlignment(Pos.BASELINE_CENTER); // centralizar VBox
@@ -522,7 +488,38 @@ public class FormController implements Initializable {
     private List<TabelaColuna> coletarValoresDoFormulario() {
         List<TabelaColuna> valores = new ArrayList<>();
 
+        // Coletar valores do formContainer
         for (Node node : formContainer.getChildren()) {
+            if (node instanceof HBox hbox) {
+                for (Node subNode : hbox.getChildren()) {
+                    if (subNode instanceof Control control && control.getId() != null && control.getId().startsWith("campo_")) {
+                        String nomeColuna = control.getId().replace("campo_", "");
+                        Object valor = null;
+
+                        if (control instanceof TextField tf) {
+                            valor = tf.getText().isBlank() ? null : tf.getText();
+                        } else if (control instanceof PasswordField pf) {
+                            valor = pf.getText();
+                        } else if (control instanceof DatePicker dp) {
+                            valor = dp.getValue() != null ? java.sql.Date.valueOf(dp.getValue()) : null;
+                        } else if (control instanceof CheckBox cb) {
+                            valor = cb.isSelected();
+                        }
+
+                        int tipoSQL = estrutura.stream()
+                            .filter(c -> c.getNome().equalsIgnoreCase(nomeColuna))
+                            .map(TabelaColuna::getTipoSQL)
+                            .findFirst()
+                            .orElse(Types.VARCHAR);
+
+                        valores.add(new TabelaColuna(nomeColuna, valor, tipoSQL));
+                    }
+                }
+            }
+        }
+
+        // Coletar valores do topLinhaFixaContainer
+        for (Node node : topLinhaFixaContainer.getChildren()) {
             if (node instanceof HBox hbox) {
                 for (Node subNode : hbox.getChildren()) {
                     if (subNode instanceof Control control && control.getId() != null && control.getId().startsWith("campo_")) {
@@ -557,7 +554,7 @@ public class FormController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {}
 
-    public void initData(Integer idRegistro, DAO<?> dao) {
+    public void initData(Integer idRegistro, DAO<T> dao) {
         this.dao = dao;
     	try {
     		this.estrutura = dao.getColunasDaTabela();

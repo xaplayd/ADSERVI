@@ -436,4 +436,32 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 
 		return estrutura;
 	}
+
+	@Override
+	public Usuario mapperViewToEntity(List<TabelaColuna> estrutura){
+		Usuario tempUser = new Usuario();
+		for (TabelaColuna x : estrutura) {
+			if(x.getNome().compareTo("id_usuario") == 0) {
+				tempUser.setCodigo(Integer.parseInt(x.getValor().toString()));
+			}else if (x.getNome().compareTo("nome") == 0) {
+				tempUser.setNome(x.getValor().toString());
+			} else if (x.getNome().compareTo("login") == 0) {
+				tempUser.setLogin(x.getValor().toString());
+			} else if (x.getNome().compareTo("senha") == 0) {
+				tempUser.setSenha(x.getValor().toString());
+			} else if (x.getNome().compareTo("id_nivel") == 0) {
+				tempUser.setPermissoes(Integer.parseInt(x.getValor().toString()));
+			} else if (x.getNome().compareTo("email") == 0) {
+				tempUser.setEmail(x.getValor().toString());
+			} else if (x.getNome().compareTo("email_gerente") == 0) {
+				tempUser.setEmailGerencia(x.getValor().toString());
+			} else if (x.getNome().compareTo("id_setor") == 0) {
+				tempUser.setSetor(Integer.parseInt(x.getValor().toString()));
+			} else if (x.getNome().compareTo("id_situacao") == 0) {
+				tempUser.setSituacao(Integer.parseInt(x.getValor().toString()));
+			}
+		}
+		return tempUser;
+	}
+	
 }

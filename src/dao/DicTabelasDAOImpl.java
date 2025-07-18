@@ -225,4 +225,18 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 	
 	}
 
+	@Override
+	public Tabela mapperViewToEntity(List<TabelaColuna> estrutura) {
+		Tabela tempTabela = new Tabela();
+		for (TabelaColuna x : estrutura) {
+			if(x.getNome().compareTo("id_tbl") == 0) {
+				tempTabela.setCodigo(Integer.parseInt(x.getValor().toString()));
+			}else if (x.getNome().compareTo("nome_tbl") == 0) {
+				tempTabela.setNome(x.getValor().toString());
+			}
+		}
+		return tempTabela;
+	
+	}
+
 }
