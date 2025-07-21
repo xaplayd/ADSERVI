@@ -2,8 +2,6 @@ package gui.controller;
 
 import dao.TblSetoresDAO;
 import dao.TblSetoresDAOImpl;
-import dao.TblUsuariosDAO;
-import dao.TblUsuariosDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -169,12 +167,12 @@ public class PrincipalController {
 				stageTest = new Stage();
 
 			    try {
-			    	//TblSetoresDAO dao = new TblSetoresDAOImpl();
-			    	TblUsuariosDAO dao = new TblUsuariosDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Form.fxml"));
+			    	TblSetoresDAO dao = new TblSetoresDAOImpl();
+			    	//TblUsuariosDAO dao = new TblUsuariosDAOImpl();
+			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
 			        Parent root = loader.load();
 
-			        FormController <Usuario> controller = loader.getController();
+			        CadastroFormController <Setor> controller = loader.getController();
 			        controller.initData(1, dao); // passando a tabela e o id
 			        
 			        

@@ -2,8 +2,12 @@ package gui.controller;
 
 import java.sql.SQLException;
 
+import dao.TblNiveisDAO;
+import dao.TblNiveisDAOImpl;
 import dao.TblSetoresDAO;
 import dao.TblSetoresDAOImpl;
+import dao.TblSituacaoDAO;
+import dao.TblSituacaoDAOImpl;
 import dao.TblUsuariosDAO;
 import dao.TblUsuariosDAOImpl;
 import javafx.fxml.FXML;
@@ -20,7 +24,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import models.Nivel;
 import models.Setor;
+import models.Situacao;
 import models.Usuario;
 
 public class CadastroUsuarioController {
@@ -306,11 +312,13 @@ public class CadastroUsuarioController {
 		if (stagePesquisaUsuario == null) {
 			stagePesquisaUsuario = new Stage();
 
-			try {
-				PesquisaUsuarioController psu = new PesquisaUsuarioController();
+			try {	
+				TblUsuariosDAO dao = new TblUsuariosDAOImpl();
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
-				loader.setController(psu);
-
+				
+				PesquisaFormController <Usuario> psc = new PesquisaFormController();
+				psc.initData(dao);
+				loader.setController(psc);
 				Parent parent = loader.load();
 
 				// Passa a referência do controller para atualizar a string após a seleção
@@ -323,7 +331,7 @@ public class CadastroUsuarioController {
 				// Defina o que acontece quando a janela for fechada
 				stagePesquisaUsuario.setOnHidden(event -> {
 					// Aqui você pega a string da nova janela
-					String usuarioSelecionado = psu.getUsuarioSelecionado();
+					String usuarioSelecionado = psc.getIdItemSelecionado();
 					System.out.println("Usuario Selecionado: " + usuarioSelecionado);
 
 					// Agora você pode fazer o que quiser com essa string
@@ -353,10 +361,12 @@ public class CadastroUsuarioController {
 			stagePesquisaNivel = new Stage();
 
 			try {
-				PesquisaNivelController pnc = new PesquisaNivelController();
+				TblNiveisDAO dao = new TblNiveisDAOImpl();
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
-				loader.setController(pnc);
-
+				
+				PesquisaFormController <Nivel> psc = new PesquisaFormController();
+				psc.initData(dao);
+				loader.setController(psc);
 				Parent parent = loader.load();
 
 				// Passa a referência do controller para atualizar a string após a seleção
@@ -369,7 +379,7 @@ public class CadastroUsuarioController {
 				// Defina o que acontece quando a janela for fechada
 				stagePesquisaNivel.setOnHidden(event -> {
 					// Aqui você pega a string da nova janela
-					String nivelSelecionado = pnc.getNivelSelecionado();
+					String nivelSelecionado = psc.getIdItemSelecionado();
 					System.out.println("Usuario Selecionado: " + nivelSelecionado);
 
 					// Agora você pode fazer o que quiser com essa string
@@ -399,10 +409,12 @@ public class CadastroUsuarioController {
 			stagePesquisaSituacao = new Stage();
 
 			try {
-				PesquisaSituacaoController psc = new PesquisaSituacaoController();
+				TblSituacaoDAO dao = new TblSituacaoDAOImpl();
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
+				
+				PesquisaFormController <Situacao> psc = new PesquisaFormController();
+				psc.initData(dao);
 				loader.setController(psc);
-
 				Parent parent = loader.load();
 
 				// Passa a referência do controller para atualizar a string após a seleção
@@ -415,7 +427,7 @@ public class CadastroUsuarioController {
 				// Defina o que acontece quando a janela for fechada
 				stagePesquisaSituacao.setOnHidden(event -> {
 					// Aqui você pega a string da nova janela
-					String situacaoSelecionado = psc.getSituacaoSelecionado();
+					String situacaoSelecionado = psc.getIdItemSelecionado();
 					System.out.println("Usuario Selecionado: " + situacaoSelecionado);
 
 					// Agora você pode fazer o que quiser com essa string
@@ -445,10 +457,12 @@ public class CadastroUsuarioController {
 			stagePesquisaSetor = new Stage();
 
 			try {
-				PesquisaSetorController psc = new PesquisaSetorController();
+				TblSetoresDAO dao = new TblSetoresDAOImpl();
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
+				
+				PesquisaFormController <Setor> psc = new PesquisaFormController();
+				psc.initData(dao);
 				loader.setController(psc);
-
 				Parent parent = loader.load();
 
 				// Passa a referência do controller para atualizar a string após a seleção
@@ -461,7 +475,7 @@ public class CadastroUsuarioController {
 				// Defina o que acontece quando a janela for fechada
 				stagePesquisaSetor.setOnHidden(event -> {
 					// Aqui você pega a string da nova janela
-					String setorSelecionado = psc.getSetorSelecionado();
+					String setorSelecionado = psc.getIdItemSelecionado();
 					System.out.println("Setor Selecionado: " + setorSelecionado);
 
 					// Agora você pode fazer o que quiser com essa string

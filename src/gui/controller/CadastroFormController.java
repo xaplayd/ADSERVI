@@ -10,11 +10,18 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import dao.DAO;
+import dao.TblNiveisDAOImpl;
+import dao.TblSetoresDAOImpl;
+import dao.TblSituacaoDAOImpl;
+import dao.TblUsuariosDAOImpl;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -32,10 +39,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.TabelaColuna;
-import models.Usuario;
 import utils.TableColumnFormatter;
 
-public class FormController <T> implements Initializable {
+public class CadastroFormController <T> implements Initializable {
 
 
     //  ------------- Estrutura base -------------  \\
@@ -132,9 +138,52 @@ public class FormController <T> implements Initializable {
             switch (event.getCode()) {
                 case ENTER, TAB -> {
                     String valor = tfPrimeiraColuna.getText();
-                    if (valor != null && !valor.isBlank()) {
-                        carregarRegistroPorId();
-                        btnNovo.setDisable(true);
+                    T temp = null;
+                    try {
+						temp = dao.getById(Integer.parseInt(tfPrimeiraColuna.getText()));
+					} catch (NumberFormatException | SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                    if(temp != null) {
+
+			                    if (valor != null && !valor.isBlank()) {
+			                        try {
+			                            int id = Integer.parseInt(valor);
+			                            this.estrutura = dao.mapperEntityToView(id, this.estrutura);
+			                            if (estrutura == null || estrutura.isEmpty()) {
+			                                throw new SQLException("ID não encontrado.");
+			                            }
+			
+			                            formContainer.getChildren().clear();
+			                            for (TabelaColuna col : estrutura.subList(1, estrutura.size())) {
+			                                HBox linha = construirLinhaFormulario(col, false);
+			                                formContainer.getChildren().add(linha);
+			                            }
+			
+			                            btnEditar.setDisable(false);
+			                            btnExcluir.setDisable(false);
+			                            btnCancelar.setDisable(false);
+			                            btnNovo.setDisable(true);
+			
+			                        } catch (NumberFormatException | SQLException e) {
+			                            tfPrimeiraColuna.clear();
+			                            Alert alert = new Alert(Alert.AlertType.WARNING);
+			                            alert.setTitle("ID inválido");
+			                            alert.setHeaderText("Esta chave ID não existe!");
+			                            alert.showAndWait();
+			                            tfPrimeiraColuna.requestFocus();
+			                            event.consume(); // Impede o foco de sair do campo
+			                        }
+			                    }
+                    } else {
+                    	Alert alert = new Alert(Alert.AlertType.WARNING);
+						alert.setTitle("ID não encontrado");
+						alert.setHeaderText("Esta chave ID não existe para esta tabela!");
+                        alert.showAndWait();
+                        tfPrimeiraColuna.requestFocus();
+                        event.consume(); // Impede o foco de sair do campo
+                    	
                     }
                 }
             }
@@ -142,104 +191,11 @@ public class FormController <T> implements Initializable {
     }
     
     private void gerarFormularioDinamico(List<TabelaColuna> colunas) {
-
-        formContainer.setAlignment(Pos.BASELINE_CENTER); 
-
+        formContainer.setAlignment(Pos.BASELINE_CENTER);
         for (TabelaColuna col : colunas) {
-            String coluna = col.getNome();
-            Object valor = col.getValor();
-            int tipoSQL = col.getTipoSQL();
-
-            String nomeFormatado = TableColumnFormatter.formatarNomeColunaAutomaticamente(coluna);
-            Label label = new Label(nomeFormatado + ":");
-            label.setMinWidth(150);
-            label.setAlignment(Pos.CENTER_RIGHT);
-
-            Control campo;
-            boolean isSenha = coluna.toLowerCase().contains("senha");
-
-            if (isSenha) {
-                PasswordField pf = new PasswordField();
-                pf.setText(valor != null ? valor.toString() : "");
-                pf.setId("campo_" + coluna);
-                campo = pf;
-            } else {
-                switch (tipoSQL) {
-                    case Types.BOOLEAN, Types.BIT -> {
-                        CheckBox cb = new CheckBox();
-                        cb.setSelected(valor != null && (Boolean.TRUE.equals(valor) || (valor instanceof Number && ((Number) valor).intValue() == 1)));
-                        cb.setId("campo_" + coluna);
-                        campo = cb;
-                    }
-                    case Types.DATE, Types.TIMESTAMP -> {
-                        DatePicker dp = new DatePicker();
-                        if (valor instanceof Date date) {
-                            dp.setValue(date.toLocalDate());
-                        } else if (valor instanceof Timestamp ts) {
-                            dp.setValue(ts.toLocalDateTime().toLocalDate());
-                        }
-                        dp.setId("campo_" + coluna);
-                        campo = dp;
-                    }
-                    case Types.INTEGER, Types.SMALLINT, Types.TINYINT, Types.BIGINT -> {
-                        TextField tf = new TextField(valor != null ? valor.toString() : "");
-                        tf.setId("campo_" + coluna);
-                        tf.setTextFormatter(TableColumnFormatter.numericIntegerFormatter());
-                        campo = tf;
-                    }
-                    case Types.FLOAT, Types.REAL, Types.DOUBLE, Types.NUMERIC, Types.DECIMAL -> {
-                        TextField tf = new TextField(valor != null ? valor.toString() : "");
-                        tf.setId("campo_" + coluna);
-                        tf.setTextFormatter(TableColumnFormatter.numericDecimalFormatter());
-                        campo = tf;
-                    }
-                    default -> {
-                        TextField tf = new TextField(valor != null ? valor.toString() : "");
-                        tf.setId("campo_" + coluna);
-                        campo = tf;
-                    }
-                }
-            }
-
-            HBox linha;
-            if (coluna.toLowerCase().contains("id")) {
-                TextField tf = (TextField) campo;
-                tf.setMinWidth(80);    // tamanho mínimo
-                tf.setPrefWidth(80);   // tamanho preferido
-                tf.setMaxWidth(80);    // tamanho máximo
-
-                Button btnPesquisa = adicionarBotaoPesquisa();
-
-                Label labelDescricao = new Label();
-                labelDescricao.setMinWidth(200);
-                labelDescricao.setText(obterDescricao(coluna, tf.getText()));
-
-                btnPesquisa.setOnAction(e -> abrirPesquisaParaCampo(coluna, tf));
-
-                tf.setDisable(true);
-                btnPesquisa.setDisable(true);
-                labelDescricao.setDisable(true);
-
-                linha = new HBox(10, label, tf, btnPesquisa, labelDescricao);
-            } else {
-                // Definir tamanho máximo para campos que não são IDs
-                campo.setPrefWidth(250);
-                campo.setMaxWidth(350);
-                campo.setDisable(true);
-
-                linha = new HBox(10, label, campo);
-            }
-
-            // Centralizar a linha e adicionar padding
-            linha.setAlignment(Pos.CENTER_LEFT);
-            linha.setPadding(new Insets(5));
-
-            // Impedir que o campo cresça além do maxWidth
-            HBox.setHgrow(campo, Priority.NEVER);
-
+            HBox linha = construirLinhaFormulario(col, false); // inicia desabilitado
             formContainer.getChildren().add(linha);
         }
-
     }
 
     //  ------------- Ações  -------------  \\
@@ -380,121 +336,154 @@ public class FormController <T> implements Initializable {
 		stage.close();
 	}
     
+    private HBox construirLinhaFormulario(TabelaColuna col, boolean camposEditaveis) {
+        String coluna = col.getNome();
+        Object valor = col.getValor();
+        int tipoSQL = col.getTipoSQL();
 
+        String nomeFormatado = TableColumnFormatter.formatarNomeColunaAutomaticamente(coluna);
+        Label label = new Label(nomeFormatado + ":");
+        label.setMinWidth(150);
+        label.setAlignment(Pos.CENTER_RIGHT);
+
+        Control campo;
+        boolean isSenha = coluna.toLowerCase().contains("senha");
+
+        if (isSenha) {
+            PasswordField pf = new PasswordField();
+            pf.setText(valor != null ? valor.toString() : "");
+            pf.setId("campo_" + coluna);
+            campo = pf;
+        } else {
+            switch (tipoSQL) {
+                case Types.BOOLEAN, Types.BIT -> {
+                    CheckBox cb = new CheckBox();
+                    cb.setSelected(valor != null && (Boolean.TRUE.equals(valor) || (valor instanceof Number && ((Number) valor).intValue() == 1)));
+                    cb.setId("campo_" + coluna);
+                    campo = cb;
+                }
+                case Types.DATE, Types.TIMESTAMP -> {
+                    DatePicker dp = new DatePicker();
+                    if (valor instanceof Date date) {
+                        dp.setValue(date.toLocalDate());
+                    } else if (valor instanceof Timestamp ts) {
+                        dp.setValue(ts.toLocalDateTime().toLocalDate());
+                    }
+                    dp.setId("campo_" + coluna);
+                    campo = dp;
+                }
+                case Types.INTEGER, Types.SMALLINT, Types.TINYINT, Types.BIGINT -> {
+                    TextField tf = new TextField(valor != null ? valor.toString() : "");
+                    tf.setId("campo_" + coluna);
+                    tf.setTextFormatter(TableColumnFormatter.numericIntegerFormatter());
+                    campo = tf;
+                }
+                case Types.FLOAT, Types.REAL, Types.DOUBLE, Types.NUMERIC, Types.DECIMAL -> {
+                    TextField tf = new TextField(valor != null ? valor.toString() : "");
+                    tf.setId("campo_" + coluna);
+                    tf.setTextFormatter(TableColumnFormatter.numericDecimalFormatter());
+                    campo = tf;
+                }
+                default -> {
+                    TextField tf = new TextField(valor != null ? valor.toString() : "");
+                    tf.setId("campo_" + coluna);
+                    campo = tf;
+                }
+            }
+        }
+
+        HBox linha;
+        if (coluna.toLowerCase().contains("id")) {
+            TextField tf = (TextField) campo;
+            tf.setMinWidth(80);
+            tf.setPrefWidth(80);
+            tf.setMaxWidth(80);
+
+            Button btnPesquisa = adicionarBotaoPesquisa();
+            Label labelDescricao = new Label(obterDescricao(coluna, tf.getText()));
+            labelDescricao.setId("descricao_" + coluna); // <-- Adiciona ID único
+            labelDescricao.setMinWidth(200);
+            labelDescricao.setText(obterDescricaoComDao(coluna, tf.getText()));
+            btnPesquisa.setOnAction(e -> abrirPesquisaParaCampo(coluna, tf));
+
+            tf.setDisable(!camposEditaveis);
+            btnPesquisa.setDisable(!camposEditaveis);
+            labelDescricao.setDisable(!camposEditaveis);
+            tf.setOnKeyPressed(event -> {
+                switch (event.getCode()) {
+                    case ENTER, TAB -> {
+                        String idDigitado = tf.getText();
+                        if (idDigitado != null && !idDigitado.isBlank()) {
+                            String descricao = obterDescricaoComDao(coluna, idDigitado);
+                            if (descricao != null && !descricao.isBlank()) {
+                                labelDescricao.setText(descricao);
+                            } else {
+                                tf.clear();
+                                tf.requestFocus();
+        						Alert alert = new Alert(Alert.AlertType.WARNING);
+        						alert.setTitle("ID não encontrado");
+        						alert.setHeaderText("Esta chave ID não existe para esta tabela!");
+        						alert.showAndWait();
+        						tf.requestFocus(); 
+                            }
+                        } else {
+                            labelDescricao.setText("");
+                        }
+                    }
+                }
+            });
+
+            linha = new HBox(10, label, tf, btnPesquisa, labelDescricao);
+        } else {
+            campo.setPrefWidth(250);
+            campo.setMaxWidth(350);
+            campo.setDisable(!camposEditaveis);
+            linha = new HBox(10, label, campo);
+        }
+
+        linha.setAlignment(Pos.CENTER_LEFT);
+        linha.setPadding(new Insets(5));
+        HBox.setHgrow(campo, Priority.NEVER);
+
+        return linha;
+    }
+    
     private void carregarRegistroPorId() {
-    	try {
-			this.estrutura = dao.mapperEntityToView(Integer.parseInt(tfPrimeiraColuna.getText()), this.estrutura);
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		    formContainer.getChildren().clear();
-		    
-	        formContainer.setAlignment(Pos.BASELINE_CENTER); // centralizar VBox
+        try {
+            this.estrutura = dao.mapperEntityToView(Integer.parseInt(tfPrimeiraColuna.getText()), this.estrutura);
+        } catch (NumberFormatException | SQLException e) {
+            e.printStackTrace();
+            return;
+        }
 
-	        for (TabelaColuna col : this.estrutura.subList(1, this.estrutura.size())){
-	            String coluna = col.getNome();
-	            Object valor = col.getValor();
-	            int tipoSQL = col.getTipoSQL();
+        formContainer.getChildren().clear();
+        formContainer.setAlignment(Pos.BASELINE_CENTER);
 
-	            String nomeFormatado = TableColumnFormatter.formatarNomeColunaAutomaticamente(coluna);
-	            Label label = new Label(nomeFormatado + ":");
-	            label.setMinWidth(150);
-	            label.setAlignment(Pos.CENTER_RIGHT);
+        for (TabelaColuna col : this.estrutura.subList(1, this.estrutura.size())) {
+            HBox linha = construirLinhaFormulario(col, false); // inicia desabilitado
 
-	            Control campo;
-	            boolean isSenha = coluna.toLowerCase().contains("senha");
+            // Se a coluna for de ID e tiver botão de pesquisa, atualiza o label de descrição
+            if (col.getNome().toLowerCase().startsWith("id_")) {
+                for (Node node : linha.getChildren()) {
+                    if (node instanceof TextField tf && tf.getId() != null && tf.getId().startsWith("campo_")) {
+                        String coluna = col.getNome();
+                        String valor = tf.getText();
+                        for (Node sub : linha.getChildren()) {
+                        	Label labelDescricao = (Label) linha.lookup("#descricao_" + coluna);
+                        	if (labelDescricao != null) {
+                        	    labelDescricao.setText(obterDescricaoComDao(coluna, valor));
+                        	}
+                        }
+                    }
+                }
+            }
 
-	            if (isSenha) {
-	                PasswordField pf = new PasswordField();
-	                pf.setText(valor != null ? valor.toString() : "");
-	                pf.setId("campo_" + coluna);
-	                campo = pf;
-	            } else {
-	                switch (tipoSQL) {
-	                    case Types.BOOLEAN, Types.BIT -> {
-	                        CheckBox cb = new CheckBox();
-	                        cb.setSelected(valor != null && (Boolean.TRUE.equals(valor) || (valor instanceof Number && ((Number) valor).intValue() == 1)));
-	                        cb.setId("campo_" + coluna);
-	                        campo = cb;
-	                    }
-	                    case Types.DATE, Types.TIMESTAMP -> {
-	                        DatePicker dp = new DatePicker();
-	                        if (valor instanceof Date date) {
-	                            dp.setValue(date.toLocalDate());
-	                        } else if (valor instanceof Timestamp ts) {
-	                            dp.setValue(ts.toLocalDateTime().toLocalDate());
-	                        }
-	                        dp.setId("campo_" + coluna);
-	                        campo = dp;
-	                    }
-	                    case Types.INTEGER, Types.SMALLINT, Types.TINYINT, Types.BIGINT -> {
-	                        TextField tf = new TextField(valor != null ? valor.toString() : "");
-	                        tf.setId("campo_" + coluna);
-	                        tf.setTextFormatter(TableColumnFormatter.numericIntegerFormatter());
-	                        campo = tf;
-	                    }
-	                    case Types.FLOAT, Types.REAL, Types.DOUBLE, Types.NUMERIC, Types.DECIMAL -> {
-	                        TextField tf = new TextField(valor != null ? valor.toString() : "");
-	                        tf.setId("campo_" + coluna);
-	                        tf.setTextFormatter(TableColumnFormatter.numericDecimalFormatter());
-	                        campo = tf;
-	                    }
-	                    default -> {
-	                        TextField tf = new TextField(valor != null ? valor.toString() : "");
-	                        tf.setId("campo_" + coluna);
-	                        campo = tf;
-	                    }
-	                }
-	            }
+            formContainer.getChildren().add(linha);
+        }
 
-	            HBox linha;
-	            if (coluna.toLowerCase().contains("id")) {
-	                TextField tf = (TextField) campo;
-	                tf.setMinWidth(80);    // tamanho mínimo
-	                tf.setPrefWidth(80);   // tamanho preferido
-	                tf.setMaxWidth(80);    // tamanho máximo
-
-	                Button btnPesquisa = adicionarBotaoPesquisa();
-
-	                Label labelDescricao = new Label();
-	                labelDescricao.setMinWidth(200);
-	                labelDescricao.setText(obterDescricao(coluna, tf.getText()));
-
-	                btnPesquisa.setOnAction(e -> abrirPesquisaParaCampo(coluna, tf));
-
-	                tf.setDisable(true);
-	                btnPesquisa.setDisable(true);
-	                labelDescricao.setDisable(true);
-
-	                linha = new HBox(10, label, tf, btnPesquisa, labelDescricao);
-	            } else {
-	                // Definir tamanho máximo para campos que não são IDs
-	                campo.setPrefWidth(250);
-	                campo.setMaxWidth(350);
-	                campo.setDisable(true);
-
-	                linha = new HBox(10, label, campo);
-	            }
-
-	            // Centralizar a linha e adicionar padding
-	            linha.setAlignment(Pos.CENTER_LEFT);
-	            linha.setPadding(new Insets(5));
-
-	            // Impedir que o campo cresça além do maxWidth
-	            HBox.setHgrow(campo, Priority.NEVER);
-
-	            formContainer.getChildren().add(linha);
-	        }
-
-		    btnEditar.setDisable(false);
-		    btnExcluir.setDisable(false);
-		    btnCancelar.setDisable(false);
-		    
-		    
+        btnEditar.setDisable(false);
+        btnExcluir.setDisable(false);
+        btnCancelar.setDisable(false);
     }
 
     // Simulação do método para pegar descrição do campo
@@ -506,11 +495,77 @@ public class FormController <T> implements Initializable {
     }
 
     private void abrirPesquisaParaCampo(String coluna, TextField tf) {
-        System.out.println("Abrindo pesquisa para campo: " + coluna);
-        // Exemplo simulado:
-        String resultadoPesquisa = "123"; // Exemplo fixo de resultado da pesquisa
-        tf.setText(resultadoPesquisa);
+        DAO<T> daoPesquisa = obterDaoParaColuna(coluna);
+        if (daoPesquisa == null) {
+            System.out.println("Nenhum DAO disponível para a coluna: " + coluna);
+            return;
+        }
 
+        Stage stagePesquisa = new Stage();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
+            PesquisaFormController<T> psc = new PesquisaFormController<>();
+            psc.initData(daoPesquisa);
+            loader.setController(psc);
+            Parent parent = loader.load();
+
+            Scene scenePesquisa = new Scene(parent);
+            stagePesquisa.setTitle("Pesquisa para " + coluna);
+            stagePesquisa.setScene(scenePesquisa);
+            stagePesquisa.setResizable(true);
+            stagePesquisa.getIcons().add(new Image(getClass().getResourceAsStream("/imgs/18x18/lupa.png")));
+
+            stagePesquisa.setOnHidden(event -> {
+                String resultado = psc.getIdItemSelecionado();
+                if (resultado != null) {
+                    tf.setText(resultado);
+                    tf.requestFocus();
+
+                    // ⚠️ Atualizar o Label ao lado com a descrição do nome
+                    HBox parenti = (HBox) tf.getParent();
+                    for (Node node : parenti.getChildren()) {
+                        if (node instanceof Label label && !label.getText().endsWith(":")) {
+                            // Chama o método para obter a descrição a partir do DAO e ID
+                            String descricao = obterDescricaoComDao(coluna, resultado);
+                            label.setText(descricao);
+                        }
+                    }
+                }
+            });
+
+            stagePesquisa.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String obterDescricaoComDao(String coluna, String id) {
+        DAO<?> daoPesquisa = obterDaoParaColuna(coluna);
+        if (daoPesquisa == null || id == null || id.isBlank()) {
+            return "";
+        }
+
+        try {
+            Object entidade = daoPesquisa.getById(Integer.parseInt(id));
+            if (entidade != null) {
+                var metodoGetNome = entidade.getClass().getMethod("getNome");
+                Object valorNome = metodoGetNome.invoke(entidade);
+                return valorNome != null ? valorNome.toString() : "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+    private <T> DAO<T> obterDaoParaColuna(String coluna) {
+        return (DAO<T>) switch (coluna.toLowerCase()) {
+            case "id_setor" -> new TblSetoresDAOImpl();
+            case "id_usuario" -> new TblUsuariosDAOImpl();
+            case "id_nivel" -> new TblNiveisDAOImpl();
+            case "id_situacao" -> new TblSituacaoDAOImpl();
+            default -> null;
+        };
     }
     
     private List<TabelaColuna> coletarValoresDoFormulario() {

@@ -1,13 +1,11 @@
 package dao;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +15,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 import models.Tabela;
 import models.TabelaColuna;
-import models.Usuario;
 
 public class DicTabelasDAOImpl implements DicTabelasDAO {
 
@@ -79,18 +76,26 @@ public class DicTabelasDAOImpl implements DicTabelasDAO {
 		Connection con = ConnectionController.getConexaoMySQL();
 		String tbl = "tbls";
 		String sql = "INSERT INTO " + tbl + " (nome_tbl) VALUES (?)";
-		Integer result = 0;
+		Integer idGerado = null;
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, tabela.getNome());
 			
-			result = ps.executeUpdate();
-			ps.close();
-			con.close();
-		} catch (SQLException e) {
-			e.getMessage();
-		}
-		return result; //retorna a quantidade de linhas afetadas, nao o novo ID
+			ps.executeUpdate();
+			
+			  // Pega o ID gerado
+	        ResultSet rs = ps.getGeneratedKeys();
+	        if (rs.next()) {
+	            idGerado = rs.getInt(1); // ou rs.getObject(1) se quiser genérico
+	        }
+
+	        rs.close();
+	        ps.close();
+	        con.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return idGerado;
 	}
 
 	@Override

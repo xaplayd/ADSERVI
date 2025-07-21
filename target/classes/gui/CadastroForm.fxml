@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="gui.controller.FormController"
+      fx:controller="gui.controller.CadastroFormController"
       prefWidth="600" prefHeight="400" spacing="0">
 
     <!-- Linha fixa da primeira coluna fixa no topo -->

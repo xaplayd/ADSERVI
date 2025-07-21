@@ -1,13 +1,11 @@
 package dao;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
-import models.Setor;
 import models.Situacao;
 import models.TabelaColuna;
 
@@ -82,20 +79,28 @@ public class TblSituacaoDAOImpl implements TblSituacaoDAO {
 	@Override
 	public Integer insert(Situacao situacao){
 		Connection con = ConnectionController.getConexaoMySQL();
-		Integer result = 0;
+		Integer idGerado = null;
 		try {
 			String tbl = getTblName();
 			String sql = "INSERT INTO " + tbl + " (nome_situacao) VALUES (?)";
-			PreparedStatement ps = con.prepareStatement(sql);
+			PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, situacao.getNome());
 			
-			result = ps.executeUpdate();
-			ps.close();
-			con.close();
-		} catch (SQLException e) {
-			e.getMessage();
-		}
-		return result; //retorna a quantidade de linhas afetadas, nao o novo ID
+			ps.executeUpdate();
+			
+			  // Pega o ID gerado
+	        ResultSet rs = ps.getGeneratedKeys();
+	        if (rs.next()) {
+	            idGerado = rs.getInt(1); // ou rs.getObject(1) se quiser genérico
+	        }
+
+	        rs.close();
+	        ps.close();
+	        con.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return idGerado;
 	}
 
 	@Override

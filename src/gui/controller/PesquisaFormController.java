@@ -8,8 +8,7 @@ import java.util.ResourceBundle;
 
 import config.DatabaseConfig;
 import connection.controller.ConnectionController;
-import dao.TblSetoresDAO;
-import dao.TblSetoresDAOImpl;
+import dao.DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,13 +23,15 @@ import javafx.stage.DirectoryChooser;
 import models.Filtro;
 import services.ExpReporService;
 
-public class PesquisaSetorController implements Initializable {
+public class PesquisaFormController <T> implements Initializable {
 
+	private DAO<T> dao;
+	
 	private final ObservableList<Filtro> filtrosAtivos = FXCollections.observableArrayList();
 
 	private String idSelecionado;
 
-	public String getSetorSelecionado() {
+	public String getIdItemSelecionado() {
 		return this.idSelecionado;
 	}
 
@@ -127,13 +128,12 @@ public class PesquisaSetorController implements Initializable {
 	@FXML
 	public void onLimparFiltrosAction() {
 		try {
-			TblSetoresDAO setoresdao = new TblSetoresDAOImpl();
 			filtrosAtivos.clear();
 			filtroCorrente.clear();
-			tabelita.setItems(setoresdao.estruturaTbl().getItems());
+			tabelita.setItems(dao.estruturaTbl().getItems());
 			valorParaFiltro.clear();
-		}catch (SQLException exception) {
-			exception.getMessage();
+			} catch (SQLException exception) {
+				exception.getMessage();
 		}
 	}
 
@@ -149,11 +149,13 @@ public class PesquisaSetorController implements Initializable {
 		}
 
 		filtrosAtivos.add(new Filtro(colunaSelecionada, valorFiltro, condicaoSelecionada));
-
+		
 		ObservableList<ObservableList<String>> dadosFiltrados = FXCollections.observableArrayList();
+
 		try {
-			TblSetoresDAO setoresdao = new TblSetoresDAOImpl();
-			ObservableList<ObservableList<String>> dadosOriginais = setoresdao.estruturaTbl().getItems();
+			
+			ObservableList<ObservableList<String>> dadosOriginais = dao.estruturaTbl().getItems();
+			
 			for (ObservableList<String> linha : dadosOriginais) {
 				boolean correspondeTodos = true;
 	
@@ -210,24 +212,22 @@ public class PesquisaSetorController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		TblSetoresDAO setoresdao = new TblSetoresDAOImpl();
+
 		try {
-			TableView<ObservableList<String>> tbl = setoresdao.estruturaTbl();
+			TableView<ObservableList<String>> tbl = dao.estruturaTbl();
 			tabelita.getColumns().setAll(tbl.getColumns());
 			tabelita.setItems(tbl.getItems());
-			} catch(SQLException exception) {
-				exception.getMessage();
+		}catch(SQLException exception) {
+			exception.getMessage();
 		}
-		
 		try {
-			campoParaFiltro.setItems(setoresdao.obterNomesDasColunas());
-			campoParaFiltro.setValue(setoresdao.obterNomesDasColunas().get(0));
+			campoParaFiltro.setItems(dao.obterNomesDasColunas());
+			campoParaFiltro.setValue(dao.obterNomesDasColunas().get(0));
 			condicaoFiltro.setItems(FXCollections.observableArrayList("Contém", "Igual", "Diferente"));
 			condicaoFiltro.setValue("Contém");
-			} catch(SQLException exception) {
-				exception.getMessage();
+		}catch(SQLException exception) {
+			exception.getMessage();
 		}
-		
 		adicionar.setOnAction(e -> onAdicionarAction());
 		limpar.setOnAction(e -> onLimparFiltrosAction());
 		okButton.setOnAction(e -> onOkButtonAction());
@@ -243,16 +243,23 @@ public class PesquisaSetorController implements Initializable {
 		List<DatabaseConfig> parametros = ConnectionController.getParametrosDeConexao();
 		lblEnderecoDatabase.setText(parametros.get(3).getParametro());
 		lblNomeDatabase.setText(parametros.get(5).getParametro());
-		
 		try {
-			lblNomeTabela.setText(setoresdao.getTblName());
+			lblNomeTabela.setText(dao.getTblName());
 			}catch(SQLException exception) {
 				exception.getMessage();
 			}
+
 		btDiretorioArquivo.setOnAction(e -> onDiretorioArquivoAction());
 		btExportaCsv.setOnAction(e -> onExportarCsvAction());
 		btExportaTxt.setOnAction(e -> onExportarTxtAction());
 		btExportaXlsx.setOnAction(e -> onExportarXlsxAction());
 		btExportaPdf.setOnAction(e -> onExportarPdfAction());
 	}
+		
+	
+	
+	public void initData(DAO<T> dao) {
+		this.dao = dao;
+	}
+	
 }
