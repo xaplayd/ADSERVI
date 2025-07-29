@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Editor TinyMCE Offline</title>
+  <script src="tinymce/tinymce.min.js"></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    #editor {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="editor"></textarea>
+  <script src="tinymce/langs/pt_BR.js"></script>
+  <script>
+    let editorInstance;
+
+	alert('TinyMCE loading...');
+	tinymce.init({
+	   selector: '#editor',
+	   height: '100%',
+	   width: '100%',
+	   resize: true,
+	   language: 'pt_BR',
+	   license_key: 'gpl',  // <- obrigatório no TinyMCE 7+
+	   plugins: `
+	     advlist anchor autolink autosave charmap code codesample directionality emoticons fullscreen help hr image
+	     insertdatetime link lists media nonbreaking pagebreak preview print save searchreplace table template visualblocks
+	     visualchars wordcount
+	   `,
+	   toolbar: `
+	     print save | undo redo | formatselect fontselect fontsizeselect | bold italic underline strikethrough hr | forecolor backcolor |
+	     alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist |
+	     link codesample table
+	   `, // blockquote subscript superscript removeformat help fullscreen visualblocks preview pagebreak image media
+	   menubar: 'file edit view insert format tools table help',
+	   content_style: "body { font-family:Arial; font-size:14px; }",
+	   image_caption: true,
+	   toolbar_mode: 'wrap',
+	   promotion: false,
+	   statusbar: false,
+	   menubar: false,
+	   branding: false,
+	   setup: function (editor) {
+	     window.getEditorContent = () => editor.getContent();
+	     window.insertImage = (url) => {
+	       editor.insertContent(`<img src="${url}" style="max-width:100%; resize:both;" />`);
+	     };
+	   }
+	 });
+  </script>
+</body>
+</html>

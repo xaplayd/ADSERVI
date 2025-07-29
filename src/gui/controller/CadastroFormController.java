@@ -494,14 +494,17 @@ public class CadastroFormController <T> implements Initializable {
         return "Descrição para " + coluna + " = " + valor;
     }
 
+    Stage stagePesquisa = null;
+    
     private void abrirPesquisaParaCampo(String coluna, TextField tf) {
         DAO<T> daoPesquisa = obterDaoParaColuna(coluna);
         if (daoPesquisa == null) {
             System.out.println("Nenhum DAO disponível para a coluna: " + coluna);
             return;
         }
-
-        Stage stagePesquisa = new Stage();
+        if (stagePesquisa == null) {
+        	stagePesquisa = new Stage();
+        
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pesquisa.fxml"));
             PesquisaFormController<T> psc = new PesquisaFormController<>();
@@ -514,7 +517,6 @@ public class CadastroFormController <T> implements Initializable {
             stagePesquisa.setScene(scenePesquisa);
             stagePesquisa.setResizable(true);
             stagePesquisa.getIcons().add(new Image(getClass().getResourceAsStream("/imgs/18x18/lupa.png")));
-
             stagePesquisa.setOnHidden(event -> {
                 String resultado = psc.getIdItemSelecionado();
                 if (resultado != null) {
@@ -532,11 +534,15 @@ public class CadastroFormController <T> implements Initializable {
                     }
                 }
             });
+            stagePesquisa.setOnHidden(we -> stagePesquisa = null);
 
             stagePesquisa.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        } else {
+        	stagePesquisa.toFront();
+		}
     }
 
     private String obterDescricaoComDao(String coluna, String id) {

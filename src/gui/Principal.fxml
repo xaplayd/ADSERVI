@@ -8,6 +8,7 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
@@ -25,6 +26,47 @@
             <items>
               <MenuItem mnemonicParsing="false" text="Contratos" />
                   <MenuItem mnemonicParsing="false" text="Clientes" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Acesso">
+                     <items>
+                        <MenuItem fx:id="cadastroUsuario" mnemonicParsing="false" onAction="#onMenuItemCadastroUsuarioAction" text="Usuários">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/usuario.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="cadastroSetor" mnemonicParsing="false" onAction="#onMenuItemCadastroSetorAction" text="Setores">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/conferencia.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="cadastroPermissao" mnemonicParsing="false" onAction="#onMenuItemCadastroPermissaoAction" text="Permissões">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/password.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="cadastroSituacao" mnemonicParsing="false" onAction="#onMenuItemCadastroSituacaoAction" text="Situações">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/erro.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </MenuItem>
+                     </items>
+                  </Menu>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Ajuda">
@@ -72,7 +114,7 @@
             </Button>
             <MenuButton mnemonicParsing="false" text="Configurações">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Base">
+                  <MenuItem mnemonicParsing="false" text="Database">
                      <graphic>
                         <ImageView>
                            <image>
@@ -80,27 +122,20 @@
                            </image>
                         </ImageView>
                      </graphic></MenuItem>
-                  <MenuItem fx:id="cadastroUsuario" mnemonicParsing="false" onAction="#onMenuItemCadastroUsuarioAction" text="Usuários">
+                  <MenuItem mnemonicParsing="false" text="Tabelas">
                      <graphic>
                         <ImageView>
                            <image>
-                              <Image url="@../imgs/18x18/usuario.png" />
+                              <Image url="@../imgs/18x18/config.png" />
                            </image>
                         </ImageView>
-                     </graphic></MenuItem>
-                  <MenuItem fx:id="cadastroSetor" mnemonicParsing="false" onAction="#onMenuItemCadastroSetorAction" text="Setores">
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" text="Diretórios">
                      <graphic>
                         <ImageView>
                            <image>
-                              <Image url="@../imgs/18x18/conferencia.png" />
-                           </image>
-                        </ImageView>
-                     </graphic></MenuItem>
-                  <MenuItem fx:id="teste" mnemonicParsing="false" onAction="#onMenuItemTeste" text="TESTE">
-                     <graphic>
-                        <ImageView>
-                           <image>
-                              <Image url="@../imgs/18x18/conferencia.png" />
+                              <Image url="@../imgs/18x18/config.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -141,7 +176,7 @@
                            </image>
                         </ImageView>
                      </graphic></MenuItem>
-                  <MenuItem mnemonicParsing="false" text="Pendências" />
+                  <MenuItem mnemonicParsing="false" onAction="#onMenuItemPendencia" text="Pendências" />
                </items>
                <font>
                   <Font size="10.0" />
