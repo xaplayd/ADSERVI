@@ -13,6 +13,7 @@ import dao.DAO;
 import dao.TblNiveisDAOImpl;
 import dao.TblSetoresDAOImpl;
 import dao.TblSituacaoDAOImpl;
+import dao.TblTagsDAOImpl;
 import dao.TblUsuariosDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -570,6 +571,7 @@ public class CadastroFormController <T> implements Initializable {
             case "id_usuario" -> new TblUsuariosDAOImpl();
             case "id_nivel" -> new TblNiveisDAOImpl();
             case "id_situacao" -> new TblSituacaoDAOImpl();
+            case "id_tag" -> new TblTagsDAOImpl();
             default -> null;
         };
     }

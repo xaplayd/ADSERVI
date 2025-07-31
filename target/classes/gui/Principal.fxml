@@ -26,6 +26,18 @@
             <items>
               <MenuItem mnemonicParsing="false" text="Contratos" />
                   <MenuItem mnemonicParsing="false" text="Clientes" />
+                  <Menu mnemonicParsing="false" text="Produção">
+                    <items>
+                      <MenuItem fx:id="cadastroTag" mnemonicParsing="false" onAction="#onMenuItemCadastroTagAction" text="Tags">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/lista.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></MenuItem>
+                    </items>
+                  </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Acesso">
                      <items>

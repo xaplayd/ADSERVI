@@ -6,6 +6,8 @@ import dao.TblSetoresDAO;
 import dao.TblSetoresDAOImpl;
 import dao.TblSituacaoDAO;
 import dao.TblSituacaoDAOImpl;
+import dao.TblTagsDAO;
+import dao.TblTagsDAOImpl;
 import dao.TblUsuariosDAO;
 import dao.TblUsuariosDAOImpl;
 import javafx.fxml.FXML;
@@ -22,6 +24,7 @@ import javafx.stage.Stage;
 import models.Nivel;
 import models.Setor;
 import models.Situacao;
+import models.Tag;
 import models.Usuario;
 import services.UserService;
 
@@ -273,13 +276,57 @@ public class PrincipalController {
 
 	}
 
+	Stage stageCadastroTag = null;
+	
+	@FXML
+	public void onMenuItemCadastroTagAction() {
+
+		Usuario tempUser = new Usuario(null, null, getLoggedUser(), null, null, null, null, null, null);
+
+		Integer validado = UserService.validaPermissao(tempUser);
+
+		if (validado == 1) {
+			System.out.println("PERMISSÃO FUNCIONOU!");
+
+			if (stageCadastroTag == null) {
+				stageCadastroTag = new Stage();
+
+			    try {
+			    	TblTagsDAO dao = new TblTagsDAOImpl();
+			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+			        Parent root = loader.load();
+
+			        CadastroFormController <Tag> controller = loader.getController();
+			        controller.initData(1, dao); // passando a tabela e o id
+			        
+			        stageCadastroTag.setTitle("Cadastro de Tags");
+			        stageCadastroTag.getIcons().add(new Image("/imgs/18x18/lista.png"));
+			        stageCadastroTag.setScene(new Scene(root));
+			        stageCadastroTag.show();
+			        stageCadastroTag.setOnHidden(we -> stageCadastroTag = null);
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			} else {
+				stageCadastroTag.toFront();
+			}
+
+		} else {
+			System.out.println("ALGO ERRADO COM A PERMISSÃO!");
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Usuário sem permissão");
+			alert.setHeaderText("Este usuário não tem permissão para esta rotina!");
+			alert.showAndWait();
+		}
+
+	}
 	
 	@FXML
 	public void onMenuItemPendencia() {
 
 		 try {
 			 	Stage primaryStage = new Stage();
-	            FXMLLoader loader = new FXMLLoader(getClass().getResource("/email/EditorView.fxml"));
+	            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pendencia.fxml"));
 	            AnchorPane root = loader.load();
 	            Scene scene = new Scene(root, 900, 600);
 	            primaryStage.setTitle("Editor de E-mail HTML");

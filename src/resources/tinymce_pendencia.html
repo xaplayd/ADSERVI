@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Editor TinyMCE Offline</title>
+  <script src="tinymce/tinymce.min.js"></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    #editor {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="editor"></textarea>
+  <script src="tinymce/langs/pt_BR.js"></script>
+  <script>
+    tinymce.init({
+      selector: '#editor',
+      height: '100%',
+      width: '100%',
+      resize: true,
+      language: 'pt_BR',
+      license_key: 'gpl',
+      plugins: `
+        advlist anchor autolink autosave charmap code codesample directionality emoticons fullscreen help hr image
+        insertdatetime link lists media nonbreaking pagebreak preview print save searchreplace table template visualblocks
+        visualchars wordcount
+      `,
+      toolbar: `
+        print save | undo redo | formatselect fontselect fontsizeselect | bold italic underline strikethrough hr | forecolor backcolor |
+        alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist |
+        link codesample table
+      `,
+      menubar: false,
+      content_style: "body { font-family:Arial; font-size:14px; }",
+      image_caption: true,
+      toolbar_mode: 'wrap',
+      promotion: false,
+      branding: false,
+      statusbar: false,
+
+      // Inserção via botão externo
+      setup: function (editor) {
+        window.getEditorContent = () => editor.getContent();
+        window.insertImage = (url) => {
+          editor.insertContent(`<img src="${url}" style="max-width:100%; resize:both;" />`);
+        };
+      },
+
+      // Inserção via drag & drop (corrigido com Promise)
+	  images_upload_handler: function (blobInfo, success, failure) {
+	    return new Promise((resolve, reject) => {
+	      const reader = new FileReader();
+	      reader.readAsDataURL(blobInfo.blob());
+	      reader.onload = () => {
+	        const base64 = reader.result;
+	        if (base64 && typeof base64 === 'string') {
+	          success(base64);
+	          resolve();
+	        } else {
+	          failure("Imagem inválida.");
+	          reject("Imagem inválida.");
+	        }
+	      };
+	      reader.onerror = () => {
+	        failure("Erro ao ler imagem.");
+	        reject("Erro ao ler imagem.");
+	      };
+	    });
+	  }
+    });
+  </script>
+</body>
+</html>
