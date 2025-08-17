@@ -1,5 +1,9 @@
 package gui.controller;
 
+import dao.TblFormatoContratoDAO;
+import dao.TblFormatoContratoDAOImpl;
+import dao.TblIndiceEscopoDAO;
+import dao.TblIndiceEscopoDAOImpl;
 import dao.TblNiveisDAO;
 import dao.TblNiveisDAOImpl;
 import dao.TblSetoresDAO;
@@ -8,6 +12,10 @@ import dao.TblSituacaoDAO;
 import dao.TblSituacaoDAOImpl;
 import dao.TblTagsDAO;
 import dao.TblTagsDAOImpl;
+import dao.TblTipoClienteDAO;
+import dao.TblTipoClienteDAOImpl;
+import dao.TblUniMedidasDAO;
+import dao.TblUniMedidasDAOImpl;
 import dao.TblUsuariosDAO;
 import dao.TblUsuariosDAOImpl;
 import javafx.fxml.FXML;
@@ -26,6 +34,10 @@ import models.Setor;
 import models.Situacao;
 import models.Tag;
 import models.Usuario;
+import models.comercial.FormatoContrato;
+import models.comercial.IndiceEscopo;
+import models.comercial.TipoCliente;
+import models.comercial.UniMedida;
 import services.UserService;
 
 public class PrincipalController {
@@ -319,6 +331,119 @@ public class PrincipalController {
 			alert.showAndWait();
 		}
 
+	}
+	
+	Stage stageCadastroUniMedida = null;
+	
+	@FXML
+	public void onMenuItemCadastroUniMedidaAction() {
+			if (stageCadastroUniMedida == null) {
+				stageCadastroUniMedida = new Stage();
+
+			    try {
+			    	TblUniMedidasDAO dao = new TblUniMedidasDAOImpl();
+			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+			        Parent root = loader.load();
+
+			        CadastroFormController <UniMedida> controller = loader.getController();
+			        controller.initData(1, dao); // passando a tabela e o id
+			        
+			        stageCadastroUniMedida.setTitle("Cadastro de Unidades de Medida");
+			        stageCadastroUniMedida.getIcons().add(new Image("/imgs/18x18/lista.png"));
+			        stageCadastroUniMedida.setScene(new Scene(root));
+			        stageCadastroUniMedida.show();
+			        stageCadastroUniMedida.setOnHidden(we -> stageCadastroUniMedida = null);
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			} else {
+				stageCadastroUniMedida.toFront();
+			}
+
+	}
+	
+	Stage stageCadastroFormatoContrato = null;
+	
+	@FXML
+	public void onMenuItemCadastroFormatoContratoAction() {
+			if (stageCadastroFormatoContrato == null) {
+				stageCadastroFormatoContrato = new Stage();
+
+			    try {
+			    	TblFormatoContratoDAO dao = new TblFormatoContratoDAOImpl();
+			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+			        Parent root = loader.load();
+
+			        CadastroFormController <FormatoContrato> controller = loader.getController();
+			        controller.initData(1, dao); // passando a tabela e o id
+			        
+			        stageCadastroFormatoContrato.setTitle("Cadastro Formato Contrato");
+			        stageCadastroFormatoContrato.getIcons().add(new Image("/imgs/18x18/lista.png"));
+			        stageCadastroFormatoContrato.setScene(new Scene(root));
+			        stageCadastroFormatoContrato.show();
+			        stageCadastroFormatoContrato.setOnHidden(we -> stageCadastroFormatoContrato = null);
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			} else {
+				stageCadastroFormatoContrato.toFront();
+			}
+	}
+	
+	Stage stageCadastroTipoCliente = null;
+	
+	@FXML
+	public void onMenuItemCadastroTipoClienteAction() {
+			if (stageCadastroTipoCliente == null) {
+				stageCadastroTipoCliente = new Stage();
+
+			    try {
+			    	TblTipoClienteDAO dao = new TblTipoClienteDAOImpl();
+			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+			        Parent root = loader.load();
+
+			        CadastroFormController <TipoCliente> controller = loader.getController();
+			        controller.initData(1, dao); // passando a tabela e o id
+			        
+			        stageCadastroTipoCliente.setTitle("Cadastro Tipo Cliente");
+			        stageCadastroTipoCliente.getIcons().add(new Image("/imgs/18x18/lista.png"));
+			        stageCadastroTipoCliente.setScene(new Scene(root));
+			        stageCadastroTipoCliente.show();
+			        stageCadastroTipoCliente.setOnHidden(we -> stageCadastroTipoCliente = null);
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			} else {
+				stageCadastroTipoCliente.toFront();
+			}
+	}
+	
+	Stage stageCadastroIndiceEscopo = null;
+	
+	@FXML
+	public void onMenuItemCadastroIndiceEscopoAction() {
+			if (stageCadastroIndiceEscopo == null) {
+				stageCadastroIndiceEscopo = new Stage();
+
+			    try {
+			    	TblIndiceEscopoDAO dao = new TblIndiceEscopoDAOImpl();
+			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+			        Parent root = loader.load();
+
+			        CadastroFormController <IndiceEscopo> controller = loader.getController();
+			        controller.initData(1, dao); // passando a tabela e o id
+			        
+			        stageCadastroIndiceEscopo.setTitle("Cadastro Indice Escopo");
+			        stageCadastroIndiceEscopo.getIcons().add(new Image("/imgs/18x18/lista.png"));
+			        stageCadastroIndiceEscopo.setScene(new Scene(root));
+			        stageCadastroIndiceEscopo.show();
+			        stageCadastroIndiceEscopo.setOnHidden(we -> stageCadastroIndiceEscopo = null);
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			} else {
+				stageCadastroIndiceEscopo.toFront();
+			}
 	}
 	
 	@FXML

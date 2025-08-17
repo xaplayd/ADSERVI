@@ -10,10 +10,14 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import dao.DAO;
+import dao.TblFormatoContratoDAOImpl;
+import dao.TblIndiceEscopoDAOImpl;
 import dao.TblNiveisDAOImpl;
 import dao.TblSetoresDAOImpl;
 import dao.TblSituacaoDAOImpl;
 import dao.TblTagsDAOImpl;
+import dao.TblTipoClienteDAOImpl;
+import dao.TblUniMedidasDAOImpl;
 import dao.TblUsuariosDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -227,6 +231,11 @@ public class CadastroFormController <T> implements Initializable {
     }
 
     public void onSalvar() {
+    	
+		  if (!validarCamposObrigatorios()) {
+		        return; // Interrompe o salvamento se houver campos em branco
+		    }
+	    	  
         try {
             List<TabelaColuna> dados = coletarValoresDoFormulario();
             T tempObj = dao.mapperViewToEntity(dados);
@@ -278,6 +287,40 @@ public class CadastroFormController <T> implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private boolean validarCamposObrigatorios() {
+        StringBuilder camposInvalidos = new StringBuilder();
+
+        for (Node node : formContainer.getChildren()) {
+            if (node instanceof HBox hbox) {
+                for (Node subNode : hbox.getChildren()) {
+                    if (subNode instanceof TextField tf && tf.getId() != null && tf.getId().startsWith("campo_")) {
+                        if (tf.getText() == null || tf.getText().isBlank()) {
+                            String nomeCampo = tf.getId().replace("campo_", "");
+                            camposInvalidos.append("- ").append(TableColumnFormatter.formatarNomeColunaAutomaticamente(nomeCampo)).append("\n");
+                        }
+                    }
+                    if (subNode instanceof PasswordField pf && pf.getId() != null && pf.getId().startsWith("campo_")) {
+                        if (pf.getText() == null || pf.getText().isBlank()) {
+                            String nomeCampo = pf.getId().replace("campo_", "");
+                            camposInvalidos.append("- ").append(TableColumnFormatter.formatarNomeColunaAutomaticamente(nomeCampo)).append("\n");
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!camposInvalidos.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Campos obrigatórios");
+            alert.setHeaderText("Por favor, preencha os seguintes campos:");
+            alert.setContentText(camposInvalidos.toString());
+            alert.showAndWait();
+            return false;
+        }
+
+        return true;
     }
     
     private void onExcluir() {
@@ -572,6 +615,10 @@ public class CadastroFormController <T> implements Initializable {
             case "id_nivel" -> new TblNiveisDAOImpl();
             case "id_situacao" -> new TblSituacaoDAOImpl();
             case "id_tag" -> new TblTagsDAOImpl();
+            case "id_unimedida" -> new TblUniMedidasDAOImpl();
+            case "id_formatocontrato" -> new TblFormatoContratoDAOImpl();
+            case "id_tipocliente" -> new TblTipoClienteDAOImpl();
+            case "id_escopo" -> new TblIndiceEscopoDAOImpl();
             default -> null;
         };
     }

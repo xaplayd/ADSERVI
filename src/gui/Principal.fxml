@@ -24,21 +24,41 @@
         <menus>
           <Menu mnemonicParsing="false" text="Cadastros">
             <items>
-              <MenuItem mnemonicParsing="false" text="Contratos" />
-                  <MenuItem mnemonicParsing="false" text="Clientes" />
+                  <Menu mnemonicParsing="false" text="Comercial">
+                    <items>
+                        <Menu mnemonicParsing="false" text="Contratos">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Serviço" />
+                              <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroFormatoContratoAction" text="Formato Preço" />
+                              <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroIndiceEscopoAction" text="Escopo" />
+                              <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroTipoClienteAction" text="Tipo Cliente" />
+                           </items>
+                        </Menu>
+                    </items>
+                  </Menu>
                   <Menu mnemonicParsing="false" text="Produção">
                     <items>
-                      <MenuItem fx:id="cadastroTag" mnemonicParsing="false" onAction="#onMenuItemCadastroTagAction" text="Tags">
-                           <graphic>
-                              <ImageView>
-                                 <image>
-                                    <Image url="@../imgs/18x18/lista.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></MenuItem>
+                        <Menu mnemonicParsing="false" text="Pendências">
+                           <items>
+                              <MenuItem fx:id="cadastroTag1" mnemonicParsing="false" onAction="#onMenuItemCadastroTagAction" text="Tags">
+                                 <graphic>
+                                    <ImageView>
+                                       <image>
+                                          <Image url="@../imgs/18x18/lista.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </MenuItem>
+                           </items>
+                        </Menu>
                     </items>
                   </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Gerais">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroUniMedidaAction" text="Unidades de Medida" />
+                    </items>
+                  </Menu>
                   <Menu mnemonicParsing="false" text="Acesso">
                      <items>
                         <MenuItem fx:id="cadastroUsuario" mnemonicParsing="false" onAction="#onMenuItemCadastroUsuarioAction" text="Usuários">
