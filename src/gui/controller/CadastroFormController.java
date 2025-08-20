@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import dao.DAO;
+import dao.TblContratoGeralDAOImpl;
 import dao.TblFormatoContratoDAOImpl;
 import dao.TblIndiceEscopoDAOImpl;
 import dao.TblNiveisDAOImpl;
@@ -208,6 +209,7 @@ public class CadastroFormController <T> implements Initializable {
     private void onNovo() {
     	estado = 1;
         tfPrimeiraColuna.setDisable(true);
+        tfPrimeiraColuna.clear();
         btnPesquisaPrimeiraColuna.setDisable(true);
 
         for (Node node : formContainer.getChildren()) {
@@ -412,6 +414,10 @@ public class CadastroFormController <T> implements Initializable {
                         dp.setValue(date.toLocalDate());
                     } else if (valor instanceof Timestamp ts) {
                         dp.setValue(ts.toLocalDateTime().toLocalDate());
+                    } else if (valor instanceof java.time.LocalDateTime ldt) {
+                        dp.setValue(ldt.toLocalDate());
+                    } else if (valor instanceof java.time.LocalDate ld) {
+                        dp.setValue(ld);
                     }
                     dp.setId("campo_" + coluna);
                     campo = dp;
@@ -437,7 +443,7 @@ public class CadastroFormController <T> implements Initializable {
         }
 
         HBox linha;
-        if (coluna.toLowerCase().contains("id")) {
+        if (coluna.toLowerCase().contains("id_")) {
             TextField tf = (TextField) campo;
             tf.setMinWidth(80);
             tf.setPrefWidth(80);
@@ -567,18 +573,19 @@ public class CadastroFormController <T> implements Initializable {
                     tf.setText(resultado);
                     tf.requestFocus();
 
-                    // ⚠️ Atualizar o Label ao lado com a descrição do nome
+                    // Atualizar descrição
                     HBox parenti = (HBox) tf.getParent();
                     for (Node node : parenti.getChildren()) {
                         if (node instanceof Label label && !label.getText().endsWith(":")) {
-                            // Chama o método para obter a descrição a partir do DAO e ID
                             String descricao = obterDescricaoComDao(coluna, resultado);
                             label.setText(descricao);
                         }
                     }
                 }
+
+                // Finaliza a referência da stage para permitir nova abertura
+                stagePesquisa = null;
             });
-            stagePesquisa.setOnHidden(we -> stagePesquisa = null);
 
             stagePesquisa.show();
         } catch (Exception e) {
@@ -617,8 +624,19 @@ public class CadastroFormController <T> implements Initializable {
             case "id_tag" -> new TblTagsDAOImpl();
             case "id_unimedida" -> new TblUniMedidasDAOImpl();
             case "id_formatocontrato" -> new TblFormatoContratoDAOImpl();
+            case "id_formatocontratogeral" -> new TblFormatoContratoDAOImpl();
             case "id_tipocliente" -> new TblTipoClienteDAOImpl();
             case "id_escopo" -> new TblIndiceEscopoDAOImpl();
+            case "id_contratogeral" -> new TblContratoGeralDAOImpl();
+            case "id_gestordocsusuario" -> new TblUsuariosDAOImpl();
+            case "id_gestormedusuario" -> new TblUsuariosDAOImpl();
+            case "id_geramedicao" -> new TblSituacaoDAOImpl();
+            case " id_imr_ans" -> new TblSituacaoDAOImpl();
+            case "id_desconta_vt" -> new TblSituacaoDAOImpl();
+            case "id_desconta_va" -> new TblSituacaoDAOImpl();
+            case "id_executa_he" -> new TblSituacaoDAOImpl();
+            case "id_executa_diaria" -> new TblSituacaoDAOImpl();
+            case "id_imr_ans" -> new TblSituacaoDAOImpl();
             default -> null;
         };
     }
@@ -639,7 +657,7 @@ public class CadastroFormController <T> implements Initializable {
                         } else if (control instanceof PasswordField pf) {
                             valor = pf.getText();
                         } else if (control instanceof DatePicker dp) {
-                            valor = dp.getValue() != null ? java.sql.Date.valueOf(dp.getValue()) : null;
+                            valor = dp.getValue() != null ? dp.getValue() : null;
                         } else if (control instanceof CheckBox cb) {
                             valor = cb.isSelected();
                         }

@@ -95,7 +95,7 @@ public class TblUniMedidasDAOImpl implements TblUniMedidasDAO {
 	        // Solicita retorno das chaves geradas
 	        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 	        ps.setString(1, uniMedida.getAbrevUniMedida());
-	        ps.setString(2, uniMedida.getNomeUniMedida());
+	        ps.setString(2, uniMedida.getNome());
 
 	        ps.executeUpdate();
 
@@ -124,8 +124,8 @@ public class TblUniMedidasDAOImpl implements TblUniMedidasDAO {
 					+ " SET abrev_unimedida = (?), nome_unimedida = (?) WHERE id_unimedida = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, uniMedida.getAbrevUniMedida());
-			ps.setString(2, uniMedida.getNomeUniMedida());
-			ps.setInt(3, uniMedida.getIdUniMedida());
+			ps.setString(2, uniMedida.getNome());
+			ps.setInt(3, uniMedida.getId());
 
 
 			result = ps.executeUpdate();
@@ -145,7 +145,7 @@ public class TblUniMedidasDAOImpl implements TblUniMedidasDAO {
 			String tbl = getTblName();
 			String sql = "DELETE from " + tbl + " WHERE id_unimedida = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, uniMedida.getIdUniMedida());
+			ps.setInt(1, uniMedida.getId());
 
 			result = ps.executeUpdate();
 			ps.close();
@@ -307,7 +307,7 @@ public class TblUniMedidasDAOImpl implements TblUniMedidasDAO {
 			if (x.getNome().compareTo("abrev_unimedida") == 0) {
 				x.setValor(tempUniMedida.getAbrevUniMedida());
 			} else if (x.getNome().compareTo("nome_unimedida") == 0) {
-				x.setValor(tempUniMedida.getNomeUniMedida());
+				x.setValor(tempUniMedida.getNome());
 			}
 		}
 
@@ -320,12 +320,12 @@ public class TblUniMedidasDAOImpl implements TblUniMedidasDAO {
 		for (TabelaColuna x : estrutura) {
 			 if(x.getNome().compareTo("id_unimedida") == 0) {
 		            if (x.getValor() != null && !x.getValor().toString().isBlank()) {
-		            	tempUniMedida.setIdUniMedida(Integer.parseInt(x.getValor().toString()));
+		            	tempUniMedida.setId(Integer.parseInt(x.getValor().toString()));
 		            }
 			}else if (x.getNome().compareTo("abrev_unimedida") == 0) {
 				tempUniMedida.setAbrevUniMedida(x.getValor().toString());
 			} else if (x.getNome().compareTo("login") == 0) {
-				tempUniMedida.setNomeUniMedida(x.getValor().toString());
+				tempUniMedida.setNome(x.getValor().toString());
 			} 
 		}
 		return tempUniMedida;

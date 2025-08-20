@@ -89,7 +89,7 @@ public class TblFormatoContratoDAOImpl implements TblFormatoContratoDAO {
 
 	        // Solicita retorno das chaves geradas
 	        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-	        ps.setString(1, formatoContrato.getNomeFormatoContrato());
+	        ps.setString(1, formatoContrato.getNome());
 
 	        ps.executeUpdate();
 
@@ -117,8 +117,8 @@ public class TblFormatoContratoDAOImpl implements TblFormatoContratoDAO {
 			String sql = "UPDATE " + tbl
 					+ " SET nome_formatocontrato = (?) WHERE id_formatocontrato = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, formatoContrato.getNomeFormatoContrato());
-			ps.setInt(2, formatoContrato.getIdFormatoContrato());
+			ps.setString(1, formatoContrato.getNome());
+			ps.setInt(2, formatoContrato.getId());
 
 
 
@@ -139,7 +139,7 @@ public class TblFormatoContratoDAOImpl implements TblFormatoContratoDAO {
 			String tbl = getTblName();
 			String sql = "DELETE from " + tbl + " WHERE id_formatocontrato = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, formatoContrato.getIdFormatoContrato());
+			ps.setInt(1, formatoContrato.getId());
 
 			result = ps.executeUpdate();
 			ps.close();
@@ -298,7 +298,7 @@ public class TblFormatoContratoDAOImpl implements TblFormatoContratoDAO {
 		FormatoContrato tempFormatoContrato = getById(id);
 		for (TabelaColuna x : estrutura) {
 			if (x.getNome().compareTo("nome_formatocontrato") == 0) {
-				x.setValor(tempFormatoContrato.getNomeFormatoContrato());
+				x.setValor(tempFormatoContrato.getNome());
 			}
 		}
 		return estrutura;
@@ -310,10 +310,10 @@ public class TblFormatoContratoDAOImpl implements TblFormatoContratoDAO {
 		for (TabelaColuna x : estrutura) {
 			 if(x.getNome().compareTo("id_formatocontrato") == 0) {
 		            if (x.getValor() != null && !x.getValor().toString().isBlank()) {
-		            	tempFormatoContrato.setIdFormatoContrato(Integer.parseInt(x.getValor().toString()));
+		            	tempFormatoContrato.setId(Integer.parseInt(x.getValor().toString()));
 		            }
 			}else if (x.getNome().compareTo("nome_formatocontrato") == 0) {
-				tempFormatoContrato.setNomeFormatoContrato(x.getValor().toString());
+				tempFormatoContrato.setNome(x.getValor().toString());
 			}
 		}
 		return tempFormatoContrato;

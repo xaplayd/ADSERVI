@@ -16,11 +16,11 @@ public class UniMedida {
 		this.nomeUniMedida = nomeUniMedida;
 	}
 
-	public Integer getIdUniMedida() {
+	public Integer getId() {
 		return idUniMedida;
 	}
 
-	public void setIdUniMedida(Integer idUniMedida) {
+	public void setId(Integer idUniMedida) {
 		this.idUniMedida = idUniMedida;
 	}
 
@@ -32,11 +32,11 @@ public class UniMedida {
 		this.abrevUniMedida = abrevUniMedida;
 	}
 
-	public String getNomeUniMedida() {
+	public String getNome() {
 		return nomeUniMedida;
 	}
 
-	public void setNomeUniMedida(String nomeUniMedida) {
+	public void setNome(String nomeUniMedida) {
 		this.nomeUniMedida = nomeUniMedida;
 	}
 

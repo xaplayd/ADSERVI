@@ -13,16 +13,16 @@ public class FormatoContrato {
 		this.idFilialCliente = idFilialCliente;
 		this.nomeFilialCliente = nomeFilialCliente;
 	}
-	public Integer getIdFormatoContrato() {
+	public Integer getId() {
 		return idFilialCliente;
 	}
-	public void setIdFormatoContrato(Integer idFilialCliente) {
+	public void setId(Integer idFilialCliente) {
 		this.idFilialCliente = idFilialCliente;
 	}
-	public String getNomeFormatoContrato() {
+	public String getNome() {
 		return nomeFilialCliente;
 	}
-	public void setNomeFormatoContrato(String nomeFilialCliente) {
+	public void setNome(String nomeFilialCliente) {
 		this.nomeFilialCliente = nomeFilialCliente;
 	}
 	@Override

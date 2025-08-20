@@ -17,11 +17,11 @@ public class IndiceEscopo {
 		this.dataVigente = dataVigente;
 	}
 
-	public Integer getIdEscopo() {
+	public Integer getId() {
 		return idEscopo;
 	}
 
-	public void setIdEscopo(Integer idEscopo) {
+	public void setId(Integer idEscopo) {
 		this.idEscopo = idEscopo;
 	}
 

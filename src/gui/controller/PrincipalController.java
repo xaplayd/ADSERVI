@@ -1,5 +1,7 @@
 package gui.controller;
 
+import dao.TblContratoGeralDAO;
+import dao.TblContratoGeralDAOImpl;
 import dao.TblFormatoContratoDAO;
 import dao.TblFormatoContratoDAOImpl;
 import dao.TblIndiceEscopoDAO;
@@ -34,6 +36,7 @@ import models.Setor;
 import models.Situacao;
 import models.Tag;
 import models.Usuario;
+import models.comercial.ContratoGeral;
 import models.comercial.FormatoContrato;
 import models.comercial.IndiceEscopo;
 import models.comercial.TipoCliente;
@@ -443,6 +446,34 @@ public class PrincipalController {
 			    }
 			} else {
 				stageCadastroIndiceEscopo.toFront();
+			}
+	}
+	
+	Stage stageCadastroContratoGeral = null;
+	
+	@FXML
+	public void onMenuItemCadastroContratoGeralAction() {
+			if (stageCadastroContratoGeral == null) {
+				stageCadastroContratoGeral = new Stage();
+
+			    try {
+			    	TblContratoGeralDAO dao = new TblContratoGeralDAOImpl();
+			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+			        Parent root = loader.load();
+
+			        CadastroFormController <ContratoGeral> controller = loader.getController();
+			        controller.initData(1, dao); // passando a tabela e o id
+			        
+			        stageCadastroContratoGeral.setTitle("Cadastro Contrato Geral");
+			        stageCadastroContratoGeral.getIcons().add(new Image("/imgs/18x18/lista.png"));
+			        stageCadastroContratoGeral.setScene(new Scene(root));
+			        stageCadastroContratoGeral.show();
+			        stageCadastroContratoGeral.setOnHidden(we -> stageCadastroContratoGeral = null);
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			} else {
+				stageCadastroContratoGeral.toFront();
 			}
 	}
 	

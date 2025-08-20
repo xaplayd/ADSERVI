@@ -453,7 +453,7 @@ public class TblUsuariosDAOImpl implements TblUsuariosDAO {
 		            if (x.getValor() != null && !x.getValor().toString().isBlank()) {
 		            	tempUser.setCodigo(Integer.parseInt(x.getValor().toString()));
 		            }
-			}else if (x.getNome().compareTo("nome") == 0) {
+			} else if (x.getNome().compareTo("nome") == 0) {
 				tempUser.setNome(x.getValor().toString());
 			} else if (x.getNome().compareTo("login") == 0) {
 				tempUser.setLogin(x.getValor().toString());

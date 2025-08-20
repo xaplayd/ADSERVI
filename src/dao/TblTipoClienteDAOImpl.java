@@ -88,7 +88,7 @@ public class TblTipoClienteDAOImpl implements TblTipoClienteDAO {
 
 	        // Solicita retorno das chaves geradas
 	        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-	        ps.setString(1, tipoCliente.getNomeTipoCliente());
+	        ps.setString(1, tipoCliente.getNome());
 
 	        ps.executeUpdate();
 
@@ -116,8 +116,8 @@ public class TblTipoClienteDAOImpl implements TblTipoClienteDAO {
 			String sql = "UPDATE " + tbl
 					+ " SET nome_tipocliente = (?) WHERE id_tipocliente = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, tipoCliente.getNomeTipoCliente());
-			ps.setInt(2, tipoCliente.getIdTipoCliente());
+			ps.setString(1, tipoCliente.getNome());
+			ps.setInt(2, tipoCliente.getId());
 
 
 
@@ -138,7 +138,7 @@ public class TblTipoClienteDAOImpl implements TblTipoClienteDAO {
 			String tbl = getTblName();
 			String sql = "DELETE from " + tbl + " WHERE id_tipocliente = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, tipoCliente.getIdTipoCliente());
+			ps.setInt(1, tipoCliente.getId());
 
 			result = ps.executeUpdate();
 			ps.close();
@@ -297,7 +297,7 @@ public class TblTipoClienteDAOImpl implements TblTipoClienteDAO {
 		TipoCliente tempTipoCliente = getById(id);
 		for (TabelaColuna x : estrutura) {
 			if (x.getNome().compareTo("nome_tipocliente") == 0) {
-				x.setValor(tempTipoCliente.getNomeTipoCliente());
+				x.setValor(tempTipoCliente.getNome());
 			}
 		}
 		return estrutura;
@@ -309,10 +309,10 @@ public class TblTipoClienteDAOImpl implements TblTipoClienteDAO {
 		for (TabelaColuna x : estrutura) {
 			 if(x.getNome().compareTo("id_tipocliente") == 0) {
 		            if (x.getValor() != null && !x.getValor().toString().isBlank()) {
-		            	tempTipoCliente.setIdTipoCliente(Integer.parseInt(x.getValor().toString()));
+		            	tempTipoCliente.setId(Integer.parseInt(x.getValor().toString()));
 		            }
 			}else if (x.getNome().compareTo("nome_tipocliente") == 0) {
-				tempTipoCliente.setNomeTipoCliente(x.getValor().toString());
+				tempTipoCliente.setNome(x.getValor().toString());
 			}
 		}
 		return tempTipoCliente;

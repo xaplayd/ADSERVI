@@ -10,15 +10,20 @@ public class ItemEscopo {
 	private Integer idMedidaItem;
 	private Double qtdItem;
 	private Integer idEscopo;
+	private String documento;
+	
+	
+	public ItemEscopo () {};
 	
 	public ItemEscopo(Integer idCtoInt, String nomeItem, Double valorItem, Integer idMedidaItem, Double qtdItem,
-			Integer idEscopo) {
+			Integer idEscopo, String documento) {
 		this.idCtoInt = idCtoInt;
 		this.nomeItem = nomeItem;
 		this.valorItem = valorItem;
 		this.idMedidaItem = idMedidaItem;
 		this.qtdItem = qtdItem;
 		this.idEscopo = idEscopo;
+		this.documento = documento;
 	}
 
 	public Integer getIdCtoInt() {
@@ -69,9 +74,17 @@ public class ItemEscopo {
 		this.idEscopo = idEscopo;
 	}
 
+	public String getDocumento() {
+		return documento;
+	}
+
+	public void setDocumento(String documento) {
+		this.documento = documento;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(idCtoInt, idEscopo, idMedidaItem, nomeItem, qtdItem, valorItem);
+		return Objects.hash(documento, idCtoInt, idEscopo, idMedidaItem, nomeItem, qtdItem, valorItem);
 	}
 
 	@Override
@@ -83,17 +96,19 @@ public class ItemEscopo {
 		if (getClass() != obj.getClass())
 			return false;
 		ItemEscopo other = (ItemEscopo) obj;
-		return Objects.equals(idCtoInt, other.idCtoInt) && Objects.equals(idEscopo, other.idEscopo)
-				&& Objects.equals(idMedidaItem, other.idMedidaItem) && Objects.equals(nomeItem, other.nomeItem)
-				&& Objects.equals(qtdItem, other.qtdItem) && Objects.equals(valorItem, other.valorItem);
+		return Objects.equals(documento, other.documento) && Objects.equals(idCtoInt, other.idCtoInt)
+				&& Objects.equals(idEscopo, other.idEscopo) && Objects.equals(idMedidaItem, other.idMedidaItem)
+				&& Objects.equals(nomeItem, other.nomeItem) && Objects.equals(qtdItem, other.qtdItem)
+				&& Objects.equals(valorItem, other.valorItem);
 	}
 
 	@Override
 	public String toString() {
 		return "ItemEscopo [idCtoInt=" + idCtoInt + ", nomeItem=" + nomeItem + ", valorItem=" + valorItem
-				+ ", idMedidaItem=" + idMedidaItem + ", qtdItem=" + qtdItem + ", idEscopo=" + idEscopo + "]";
+				+ ", idMedidaItem=" + idMedidaItem + ", qtdItem=" + qtdItem + ", idEscopo=" + idEscopo + ", documento="
+				+ documento + "]";
 	}
-	
+
 	
 
 }

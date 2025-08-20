@@ -7,10 +7,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import connection.controller.ConnectionController;
@@ -23,7 +23,6 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
 import models.TabelaColuna;
-import models.comercial.FormatoContrato;
 import models.comercial.IndiceEscopo;
 
 public class TblIndiceEscopoDAOImpl implements TblIndiceEscopoDAO {
@@ -88,12 +87,13 @@ public class TblIndiceEscopoDAOImpl implements TblIndiceEscopoDAO {
 
 	@Override
 	public Integer insert(IndiceEscopo indiceEscopo) {
+		System.out.println(indiceEscopo.getIdContratoGeral());
+		System.out.println(indiceEscopo.getDataVigente());
 	    Connection con = ConnectionController.getConexaoMySQL();
 	    Integer idGerado = null;
 	    try {
 	        String tbl = getTblName();
-	        String sql = "INSERT INTO " + tbl
-	            + " (id_contratogeral), (data_vigente) VALUES (?), (?)";
+	        String sql = "INSERT INTO " + tbl + " (id_contratogeral, data_vigente) VALUES (?, ?)";
 
 	        // Solicita retorno das chaves geradas
 	        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -128,7 +128,7 @@ public class TblIndiceEscopoDAOImpl implements TblIndiceEscopoDAO {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, indiceEscopo.getIdContratoGeral());
 			ps.setTimestamp(2, Timestamp.valueOf(indiceEscopo.getDataVigente()));
-			ps.setInt(3, indiceEscopo.getIdEscopo());
+			ps.setInt(3, indiceEscopo.getId());
 
 			result = ps.executeUpdate();
 			ps.close();
@@ -147,7 +147,7 @@ public class TblIndiceEscopoDAOImpl implements TblIndiceEscopoDAO {
 			String tbl = getTblName();
 			String sql = "DELETE from " + tbl + " WHERE id_escopo = (?)";
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setInt(1, indiceEscopo.getIdEscopo());
+			ps.setInt(1, indiceEscopo.getId());
 
 			result = ps.executeUpdate();
 			ps.close();
@@ -288,7 +288,10 @@ public class TblIndiceEscopoDAOImpl implements TblIndiceEscopoDAO {
 			if (x.getNome().compareTo("id_contratogeral") == 0) {
 				x.setValor(tempIndiceEscopo.getIdContratoGeral());
 			} else if(x.getNome().compareTo("data_vigente") == 0) {
-				x.setValor(tempIndiceEscopo.getDataVigente());
+				LocalDateTime ldt = tempIndiceEscopo.getDataVigente();
+				if (ldt != null) {
+			        x.setValor(ldt.toLocalDate()); // se o campo espera LocalDate
+			    }
 			}
 		}
 		return estrutura;
@@ -298,23 +301,37 @@ public class TblIndiceEscopoDAOImpl implements TblIndiceEscopoDAO {
 	public IndiceEscopo mapperViewToEntity(List<TabelaColuna> estrutura){
 		IndiceEscopo tempIndiceEscopo = new IndiceEscopo();
 		for (TabelaColuna x : estrutura) {
-			 if(x.getNome().compareTo("id_escopo") == 0) {
-		            if (x.getValor() != null && !x.getValor().toString().isBlank()) {
-		            	tempIndiceEscopo.setIdEscopo(Integer.parseInt(x.getValor().toString()));
-		            }
-			}else if (x.getNome().compareTo("id_contratogeral") == 0) {
-				tempIndiceEscopo.setIdContratoGeral(Integer.parseInt(x.getValor().toString()));
-			}else if (x.getNome().compareTo("data_vigente") == 0) {
-			    if (x.getValor() != null && !x.getValor().toString().isBlank()) {
-			        String dataStr = x.getValor().toString().trim();
-			        try {
-			            LocalDateTime data = LocalDateTime.parse(dataStr); // ISO 8601
-			            tempIndiceEscopo.setDataVigente(data);
-			        } catch (DateTimeParseException e) {
-			            System.err.println("Erro ao converter data_vigente: " + dataStr);
-			            e.printStackTrace();
-			        }
-			    }
+			switch (x.getNome()) {
+				case "id_escopo":
+					if (x.getValor() != null && !x.getValor().toString().isBlank()) {
+						tempIndiceEscopo.setId(Integer.parseInt(x.getValor().toString()));
+					}
+					break;
+					
+				case "id_contratogeral":
+					if (x.getValor() != null && !x.getValor().toString().isBlank()) {
+						tempIndiceEscopo.setIdContratoGeral(Integer.parseInt(x.getValor().toString()));
+					}
+					break;
+
+				case "data_vigente":
+					if (x.getValor() != null) {
+						Object valor = x.getValor();
+
+						if (valor instanceof LocalDate) {
+							// Converte LocalDate para LocalDateTime (meia-noite)
+							tempIndiceEscopo.setDataVigente(((LocalDate) valor).atStartOfDay());
+						} else if (valor instanceof LocalDateTime) {
+							tempIndiceEscopo.setDataVigente((LocalDateTime) valor);
+						} else if (valor instanceof String) {
+							try {
+								tempIndiceEscopo.setDataVigente(LocalDateTime.parse((String) valor));
+							} catch (DateTimeParseException e) {
+								System.err.println("Erro ao converter String para LocalDateTime: " + valor);
+							}
+						}
+					}
+					break;
 			}
 		}
 		return tempIndiceEscopo;

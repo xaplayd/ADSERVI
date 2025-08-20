@@ -13,16 +13,16 @@ public class TipoCliente {
 		this.idTipoCliente = idTipoCliente;
 		this.nomeTipoCliente = nomeTipoCliente;
 	}
-	public Integer getIdTipoCliente() {
+	public Integer getId() {
 		return idTipoCliente;
 	}
-	public void setIdTipoCliente(Integer idTipoCliente) {
+	public void setId(Integer idTipoCliente) {
 		this.idTipoCliente = idTipoCliente;
 	}
-	public String getNomeTipoCliente() {
+	public String getNome() {
 		return nomeTipoCliente;
 	}
-	public void setNomeTipoCliente(String nomeTipoCliente) {
+	public void setNome(String nomeTipoCliente) {
 		this.nomeTipoCliente = nomeTipoCliente;
 	}
 	@Override

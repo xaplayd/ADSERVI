@@ -28,6 +28,7 @@
                     <items>
                         <Menu mnemonicParsing="false" text="Contratos">
                            <items>
+                              <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroContratoGeralAction" text="Contrato Geral" />
                               <MenuItem mnemonicParsing="false" text="Serviço" />
                               <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroFormatoContratoAction" text="Formato Preço" />
                               <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroIndiceEscopoAction" text="Escopo" />
