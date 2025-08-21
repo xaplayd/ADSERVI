@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import dao.DAO;
 import dao.TblContratoGeralDAOImpl;
+import dao.TblFilialClienteDAOImpl;
 import dao.TblFormatoContratoDAOImpl;
 import dao.TblIndiceEscopoDAOImpl;
 import dao.TblNiveisDAOImpl;
@@ -637,6 +638,7 @@ public class CadastroFormController <T> implements Initializable {
             case "id_executa_he" -> new TblSituacaoDAOImpl();
             case "id_executa_diaria" -> new TblSituacaoDAOImpl();
             case "id_imr_ans" -> new TblSituacaoDAOImpl();
+            case "id_filialcliente" -> new TblFilialClienteDAOImpl();
             default -> null;
         };
     }

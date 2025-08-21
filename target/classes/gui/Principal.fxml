@@ -26,13 +26,15 @@
             <items>
                   <Menu mnemonicParsing="false" text="Comercial">
                     <items>
-                        <Menu mnemonicParsing="false" text="Contratos">
+                        <Menu mnemonicParsing="false" text="Contratos" />
+                        <Menu mnemonicParsing="false" text="Unitarios (ADM)">
                            <items>
                               <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroContratoGeralAction" text="Contrato Geral" />
                               <MenuItem mnemonicParsing="false" text="Serviço" />
                               <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroFormatoContratoAction" text="Formato Preço" />
                               <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroIndiceEscopoAction" text="Escopo" />
                               <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroTipoClienteAction" text="Tipo Cliente" />
+                              <MenuItem mnemonicParsing="false" onAction="#onMenuItemCadastroCadastroFilialClienteAction" text="Filial Cliente" />
                            </items>
                         </Menu>
                     </items>

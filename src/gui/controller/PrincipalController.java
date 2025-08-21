@@ -2,6 +2,8 @@ package gui.controller;
 
 import dao.TblContratoGeralDAO;
 import dao.TblContratoGeralDAOImpl;
+import dao.TblFilialClienteDAO;
+import dao.TblFilialClienteDAOImpl;
 import dao.TblFormatoContratoDAO;
 import dao.TblFormatoContratoDAOImpl;
 import dao.TblIndiceEscopoDAO;
@@ -37,6 +39,7 @@ import models.Situacao;
 import models.Tag;
 import models.Usuario;
 import models.comercial.ContratoGeral;
+import models.comercial.FilialCliente;
 import models.comercial.FormatoContrato;
 import models.comercial.IndiceEscopo;
 import models.comercial.TipoCliente;
@@ -474,6 +477,34 @@ public class PrincipalController {
 			    }
 			} else {
 				stageCadastroContratoGeral.toFront();
+			}
+	}
+	
+	Stage stageCadastroFilialCliente = null;
+	
+	@FXML
+	public void onMenuItemCadastroCadastroFilialClienteAction() {
+			if (stageCadastroFilialCliente == null) {
+				stageCadastroFilialCliente = new Stage();
+
+			    try {
+			    	TblFilialClienteDAO dao = new TblFilialClienteDAOImpl();
+			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+			        Parent root = loader.load();
+
+			        CadastroFormController <FilialCliente> controller = loader.getController();
+			        controller.initData(1, dao); // passando a tabela e o id
+			        
+			        stageCadastroFilialCliente.setTitle("Cadastro Filial Cliente");
+			        stageCadastroFilialCliente.getIcons().add(new Image("/imgs/18x18/lista.png"));
+			        stageCadastroFilialCliente.setScene(new Scene(root));
+			        stageCadastroFilialCliente.show();
+			        stageCadastroFilialCliente.setOnHidden(we -> stageCadastroFilialCliente = null);
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			} else {
+				stageCadastroFilialCliente.toFront();
 			}
 	}
 	

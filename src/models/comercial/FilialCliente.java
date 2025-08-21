@@ -7,20 +7,22 @@ public class FilialCliente {
 	private Integer idFormatoContrato;
 	private String nomeFormatoContrato;
 	
+	public FilialCliente() {};
+	
 	public FilialCliente(Integer idFormatoContrato, String nomeFormatoContrato) {
 		this.idFormatoContrato = idFormatoContrato;
 		this.nomeFormatoContrato = nomeFormatoContrato;
 	}
-	public Integer getIdTipoCliente() {
+	public Integer getId() {
 		return idFormatoContrato;
 	}
-	public void setIdTipoCliente(Integer idFormatoContrato) {
+	public void setId(Integer idFormatoContrato) {
 		this.idFormatoContrato = idFormatoContrato;
 	}
-	public String getNomeTipoCliente() {
+	public String getNome() {
 		return nomeFormatoContrato;
 	}
-	public void setNomeTipoCliente(String nomeFormatoContrato) {
+	public void setNome(String nomeFormatoContrato) {
 		this.nomeFormatoContrato = nomeFormatoContrato;
 	}
 	@Override
