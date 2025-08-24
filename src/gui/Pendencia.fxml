@@ -19,7 +19,7 @@
 
         <Button fx:id="insertImageBtn" layoutX="11.200000000000017" layoutY="94.6" prefHeight="30.0" prefWidth="106.0" text="Inserir Imagem" />
 
-		<Button fx:id="sendEmailBtn" layoutX="616.0" layoutY="79.0" prefHeight="43.0" prefWidth="178.0" text="Gerar Pendência">
+		<Button fx:id="sendEmailBtn" layoutX="616.0" layoutY="79.0" onAction="#handleSendEmail" prefHeight="43.0" prefWidth="178.0" text="Gerar Pendência">
          <font>
             <Font size="19.0" />
          </font></Button>

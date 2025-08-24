@@ -17,8 +17,10 @@ import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import models.Tag;
+import services.GMailer;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,32 +35,28 @@ public class PendenciaController {
     @FXML private Button clearFilterBtn;
 
     private WebEngine engine;
-
+    private final List<File> insertedImages = new ArrayList<>();
     private ObservableList<String> allTags;
     private FilteredList<String> filteredTags;
 
     private final ObservableMap<String, BooleanProperty> tagSelections = FXCollections.observableHashMap();
-
     private final TblTagsDAOImpl tagsDAO = new TblTagsDAOImpl();
 
     @FXML
     public void initialize() {
-        // 1. Carrega tags do banco
+        // Carrega tags do banco
         List<Tag> tagsFromDB = tagsDAO.getAll();
         allTags = FXCollections.observableArrayList(
             tagsFromDB.stream().map(Tag::getNome).collect(Collectors.toList())
         );
 
-        // 2. Cria mapa de seleção de tags
         for (String tag : allTags) {
             tagSelections.put(tag, new SimpleBooleanProperty(false));
         }
 
-        // 3. Lista filtrável
         filteredTags = new FilteredList<>(allTags, s -> true);
         tagListView.setItems(filteredTags);
 
-        // 4. Células com checkbox
         tagListView.setCellFactory(CheckBoxListCell.forListView(
             tag -> tagSelections.get(tag),
             new StringConverter<>() {
@@ -67,20 +65,17 @@ public class PendenciaController {
             }
         ));
 
-        // 5. Filtro por texto
         filterTextField.textProperty().addListener((obs, oldVal, newVal) -> {
             String filter = newVal == null ? "" : newVal.toLowerCase().trim();
             filteredTags.setPredicate(tag -> tag.toLowerCase().contains(filter));
         });
 
-        // 6. Botão limpar filtro
         clearFilterBtn.setOnAction(e -> filterTextField.clear());
 
-        // 7. Carrega o WebView com TinyMCE
         initializeWebView();
 
-        // 8. Ação botão inserir imagem
         insertImageBtn.setOnAction(e -> handleInsertImage());
+        sendEmailBtn.setOnAction(e -> handleSendEmail());
     }
 
     private void initializeWebView() {
@@ -88,18 +83,13 @@ public class PendenciaController {
         String url = getClass().getResource("/resources/tinymce_pendencia.html").toExternalForm();
         engine.load(url);
 
-        // Aplica zoom menor (para reduzir tamanho visual dos botões do editor)
         engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-            if (newState.toString().equals("SUCCEEDED")) {
-                webView.setZoom(0.8); // ajustável
-            }
+            if (newState.toString().equals("SUCCEEDED")) webView.setZoom(0.8);
         });
 
         engine.setOnAlert(event -> System.out.println("JS ALERT: " + event.getData()));
         engine.getLoadWorker().exceptionProperty().addListener((obs, oldExc, newExc) -> {
-            if (newExc != null) {
-                System.err.println("Load exception: " + newExc.getMessage());
-            }
+            if (newExc != null) System.err.println("Load exception: " + newExc.getMessage());
         });
         engine.setOnError(event -> System.err.println("JS error: " + event.getMessage()));
     }
@@ -110,26 +100,58 @@ public class PendenciaController {
         File file = fileChooser.showOpenDialog(null);
 
         if (file != null) {
-            String imageUrl = file.toURI().toString();
-            // Chama JS no editor para inserir imagem
-            engine.executeScript("insertImage('" + imageUrl + "')");
+            try {
+                byte[] bytes = java.nio.file.Files.readAllBytes(file.toPath());
+                String base64 = java.util.Base64.getEncoder().encodeToString(bytes);
+                String mimeType = java.nio.file.Files.probeContentType(file.toPath());
+                if (mimeType == null || !mimeType.startsWith("image/")) mimeType = "image/png";
+
+                String imgTag = "<img src='data:" + mimeType + ";base64," + base64 + "' />";
+                engine.executeScript(
+                        "tinymce.activeEditor.execCommand('mceInsertContent', false, `" + imgTag + "`);"
+                );
+
+                insertedImages.add(file);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @FXML
     private void handleSendEmail() {
-        // Captura conteúdo HTML
-        String htmlContent = (String) engine.executeScript("getEditorContent()");
+        try {
+            // 1️⃣ Conteúdo HTML do TinyMCE
+            String htmlContent = (String) engine.executeScript("getEditorContent()");
 
-        // Coleta tags marcadas
-        List<String> selectedTags = tagSelections.entrySet().stream()
-            .filter(entry -> entry.getValue().get())
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toList());
+            // 2️⃣ Tags selecionadas (para assunto)
+            List<String> selectedTags = tagSelections.entrySet().stream()
+                    .filter(entry -> entry.getValue().get())
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
 
-        System.out.println("TAGS selecionadas: " + selectedTags);
-        System.out.println("HTML gerado:\n" + htmlContent);
+            GMailer mailer = new GMailer();
 
-        // Aqui você pode disparar o envio do e-mail
+            // 3️⃣ Cria lista de arquivos a enviar como anexos
+            List<File> attachments = new ArrayList<>(insertedImages);
+
+            // 4️⃣ Padrão inline + anexos separados
+            // Criar Multipart mixed
+            // HTML + inline primeiro (related)
+            // Anexos depois
+
+            // Adaptando a lógica do mini-exemplo
+            mailer.sendMail(
+                    "Pendência - " + String.join(", ", selectedTags),
+                    htmlContent,
+                    attachments // GMailer já vai criar inline + anexos separados
+            );
+
+            System.out.println("Email enviado com sucesso!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
