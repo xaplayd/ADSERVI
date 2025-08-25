@@ -17,6 +17,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import models.Tag;
+import netscape.javascript.JSObject;
 import services.GMailer;
 
 import java.io.File;
@@ -36,6 +37,7 @@ public class PendenciaController {
 
     private WebEngine engine;
     private final List<File> insertedImages = new ArrayList<>();
+    private final List<String> editorImages = new ArrayList<>();
     private ObservableList<String> allTags;
     private FilteredList<String> filteredTags;
 
@@ -101,17 +103,37 @@ public class PendenciaController {
 
         if (file != null) {
             try {
+                // lê bytes do arquivo e transforma em base64
                 byte[] bytes = java.nio.file.Files.readAllBytes(file.toPath());
                 String base64 = java.util.Base64.getEncoder().encodeToString(bytes);
-                String mimeType = java.nio.file.Files.probeContentType(file.toPath());
-                if (mimeType == null || !mimeType.startsWith("image/")) mimeType = "image/png";
 
+                // detecta MIME
+                String mimeType = java.nio.file.Files.probeContentType(file.toPath());
+                if (mimeType == null || !mimeType.startsWith("image/")) {
+                    mimeType = "image/png";
+                }
+
+                // monta a tag <img>
                 String imgTag = "<img src='data:" + mimeType + ";base64," + base64 + "' />";
                 engine.executeScript(
-                        "tinymce.activeEditor.execCommand('mceInsertContent', false, `" + imgTag + "`);"
+                    "tinymce.activeEditor.execCommand('mceInsertContent', false, `" + imgTag + "`);"
                 );
 
+                // adiciona o arquivo escolhido na lista local
                 insertedImages.add(file);
+
+                // agora pega TODAS as imagens que estão no TinyMCE
+                JSObject result = (JSObject) engine.executeScript(
+                    "Array.from(tinymce.activeEditor.dom.select('img')).map(img => img.src)"
+                );
+
+                editorImages.clear();
+                for (int i = 0; i < (int) result.getMember("length"); i++) {
+                    editorImages.add((String) result.getSlot(i));
+                }
+
+                System.out.println("Arquivos escolhidos: " + insertedImages.size());
+                System.out.println("Imagens no editor: " + editorImages.size());
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -145,7 +167,7 @@ public class PendenciaController {
             mailer.sendMail(
                     "Pendência - " + String.join(", ", selectedTags),
                     htmlContent,
-                    attachments // GMailer já vai criar inline + anexos separados
+                    insertedImages // GMailer já vai criar inline + anexos separados
             );
 
             System.out.println("Email enviado com sucesso!");

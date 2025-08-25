@@ -17,8 +17,6 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.googleapis.json.GoogleJsonError;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.Base64;
@@ -26,19 +24,20 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
+
 import jakarta.activation.DataHandler;
 import jakarta.activation.DataSource;
+import jakarta.mail.Multipart;
 import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.Multipart;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.util.ByteArrayDataSource;
 
 public class GMailer {
 
-    private static final String TEST_EMAIL = "EMAIL HERE";
+    private static final String TEST_EMAIL = "MAIL HERE";
     private final Gmail service;
 
     public GMailer() throws Exception {
@@ -63,9 +62,7 @@ public class GMailer {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    /**
-     * Envia email com HTML + inline + anexos reais
-     */
+    
     public void sendMail(String subject, String htmlContent, List<File> insertedImages) throws Exception {
 
         // Multipart raiz: mixed
@@ -77,10 +74,18 @@ public class GMailer {
         MimeBodyPart htmlPart = new MimeBodyPart();
         relatedMultipart.addBodyPart(htmlPart);
 
-        // Processa todas as imagens inseridas
+        // Regex para encontrar todas as imagens no HTML
+        Pattern imgPattern = Pattern.compile("<img([^>]*)>");
+        Matcher matcher = imgPattern.matcher(htmlContent);
+
         int counter = 0;
-        for (File file : insertedImages) {
+        StringBuffer sb = new StringBuffer();
+
+        // Percorre todas as imagens encontradas no HTML
+        while (matcher.find() && counter < insertedImages.size()) {
+            File file = insertedImages.get(counter);
             counter++;
+
             String cid = "img" + counter;
             String mimeType = java.nio.file.Files.probeContentType(file.toPath());
             if (mimeType == null) mimeType = "image/png";
@@ -95,36 +100,22 @@ public class GMailer {
             inlinePart.setDisposition(MimeBodyPart.INLINE);
             relatedMultipart.addBodyPart(inlinePart);
 
-            // Substitui a primeira tag <img> mantendo todos os atributos exceto src
-            Pattern imgPattern = Pattern.compile("<img([^>]*)>");
-            Matcher matcher = imgPattern.matcher(htmlContent);
-            if (matcher.find()) {
-                String originalAttrs = matcher.group(1);
+            // Mantém os atributos originais (exceto src)
+            String originalAttrs = matcher.group(1);
+            String newAttrs = originalAttrs.replaceAll("src\\s*=\\s*['\"][^'\"]*['\"]", "");
+            String newImgTag = "<img src='cid:" + cid + "'" + newAttrs + ">";
 
-                // Remove src existente, mas mantém width, height, style, class, etc.
-                String newAttrs = originalAttrs.replaceAll("src\\s*=\\s*['\"][^'\"]*['\"]", "");
-                String newImgTag = "<img src='cid:" + cid + "'" + newAttrs + ">";
-                htmlContent = matcher.replaceFirst(Matcher.quoteReplacement(newImgTag));
-            }
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(newImgTag));
         }
 
+        // Finaliza substituições
+        matcher.appendTail(sb);
+        htmlContent = sb.toString();
+
+        // Define HTML final
         htmlPart.setContent(htmlContent, "text/html; charset=utf-8");
         relatedPart.setContent(relatedMultipart);
         mixedMultipart.addBodyPart(relatedPart);
-
-        // Adiciona os anexos reais
-        for (File file : insertedImages) {
-            MimeBodyPart attachment = new MimeBodyPart();
-            byte[] bytes = java.nio.file.Files.readAllBytes(file.toPath());
-            String mimeType = java.nio.file.Files.probeContentType(file.toPath());
-            if (mimeType == null) mimeType = "application/octet-stream";
-
-            DataSource dsAttach = new ByteArrayDataSource(bytes, mimeType);
-            attachment.setDataHandler(new DataHandler(dsAttach));
-            attachment.setFileName(file.getName());
-            attachment.setDisposition(MimeBodyPart.ATTACHMENT);
-            mixedMultipart.addBodyPart(attachment);
-        }
 
         // Cria a mensagem
         Session session = Session.getDefaultInstance(System.getProperties(), null);
