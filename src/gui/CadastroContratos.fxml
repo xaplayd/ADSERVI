@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="546.0" prefWidth="741.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="14.0" layoutY="14.0" text="ID contrato geral:" />
+      <TextField layoutX="111.0" layoutY="11.0" prefHeight="26.0" prefWidth="55.0" />
+      <Button layoutX="172.0" layoutY="12.0" mnemonicParsing="false">
+         <graphic>
+            <ImageView>
+               <image>
+                  <Image url="@../imgs/18x18/lupa.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <Label layoutX="214.0" layoutY="16.0" text="(nome_contratogeral)" />
+      <TabPane layoutY="48.0" prefHeight="359.0" prefWidth="606.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.80000000000001">
+        <tabs>
+          <Tab text="Geral">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="148.0" prefWidth="262.0">
+                     <children>
+                        <TextField layoutX="64.0" layoutY="11.0" prefHeight="26.0" prefWidth="114.0" />
+                        <Label layoutX="24.0" layoutY="16.0" text="Nome:" />
+                        <TextField layoutX="256.0" layoutY="11.0" prefHeight="26.0" prefWidth="114.0" />
+                        <Label layoutX="207.0" layoutY="16.0" text="Apelido:" />
+                        <TextField layoutX="124.0" layoutY="60.0" prefHeight="26.0" prefWidth="44.0" />
+                        <Label layoutX="31.0" layoutY="64.0" text="Gestor de Docs:" />
+                        <TextField layoutX="124.0" layoutY="92.0" prefHeight="26.0" prefWidth="43.0" />
+                        <Label layoutX="12.0" layoutY="97.0" text="Gestor de Medição:" />
+                        <Separator layoutY="49.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                        <Button layoutX="175.0" layoutY="60.0" mnemonicParsing="false">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/lupa.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="175.0" layoutY="92.0" mnemonicParsing="false">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/lupa.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Label layoutX="222.0" layoutY="65.0" text="(nome gestor docs)" />
+                        <Label layoutX="222.0" layoutY="96.0" text="(nome gestor medição)" />
+                        <Separator layoutX="15.0" layoutY="128.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                        <Label layoutX="12.0" layoutY="139.0" text="(Sapiens) Contratos Internos Relacionados" />
+                        <Label layoutX="359.0" layoutY="139.0" text="(Rubi) Filiais Relacionadas" />
+                        <TableView layoutX="24.0" layoutY="166.0" prefHeight="200.0" prefWidth="200.0" />
+                        <TableView layoutX="331.0" layoutY="166.0" prefHeight="200.0" prefWidth="200.0" />
+                        <Button layoutX="13.19999999999996" layoutY="436.00000000000006" mnemonicParsing="false" prefHeight="26.0" prefWidth="69.0" text="Novo" AnchorPane.bottomAnchor="14.399999999999977">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/adicionar.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="85.19999999999993" layoutY="436.00000000000006" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="Editar" AnchorPane.bottomAnchor="14.399999999999977">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/editar.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="168.39999999999998" layoutY="436.00000000000006" mnemonicParsing="false" prefHeight="26.0" prefWidth="73.0" text="Excluir" AnchorPane.bottomAnchor="14.399999999999977">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/delete--v1.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="247.5999999999999" layoutY="436.00000000000006" mnemonicParsing="false" prefHeight="26.0" prefWidth="84.0" text="Cancelar" AnchorPane.bottomAnchor="14.399999999999977">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/erro.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="341.9999999999999" layoutY="436.00000000000006" mnemonicParsing="false" text="Salvar" AnchorPane.bottomAnchor="14.399999999999977">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/save--v1.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="415.6" layoutY="436.00000000000006" mnemonicParsing="false" text="Fechar" AnchorPane.bottomAnchor="14.399999999999977">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/sair.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Comercial">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
+          <Tab text="Documentação">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+            <Tab text="Medição">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextField layoutX="65.0" layoutY="8.0" prefHeight="26.0" prefWidth="74.0" />
+                        <Label layoutX="11.0" layoutY="12.0" text="Cadastro:" />
+                        <Label layoutX="14.0" layoutY="48.0" text="Periodo:" />
+                        <DatePicker layoutX="65.0" layoutY="44.0" prefHeight="26.0" prefWidth="123.0" />
+                        <DatePicker layoutX="214.0" layoutY="44.0" prefHeight="26.0" prefWidth="123.0" />
+                        <Label layoutX="197.0" layoutY="48.0" text="a" />
+                        <Button layoutX="146.0" layoutY="8.0" mnemonicParsing="false">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/lupa.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <TextField layoutX="410.0" layoutY="43.0" prefHeight="26.0" prefWidth="74.0" />
+                        <Label layoutX="349.0" layoutY="47.0" text="Categoria:" />
+                        <Button layoutX="492.0" layoutY="44.0" mnemonicParsing="false">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/lupa.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Separator layoutX="2.0" layoutY="77.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                        <TextField layoutX="607.0" layoutY="44.0" prefHeight="26.0" prefWidth="74.0" />
+                        <Label layoutX="555.0" layoutY="48.0" text="Situação:" />
+                        <Button layoutX="687.0" layoutY="45.0" mnemonicParsing="false">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/lupa.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="13.19999999999996" layoutY="436.00000000000006" mnemonicParsing="false" prefHeight="26.0" prefWidth="69.0" text="Novo" AnchorPane.bottomAnchor="14.399999999999977">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/adicionar.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="85.19999999999993" layoutY="436.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="Editar" AnchorPane.bottomAnchor="14.399999999999977">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/editar.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="168.39999999999998" layoutY="436.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="73.0" text="Excluir" AnchorPane.bottomAnchor="14.399999999999977">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/delete--v1.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="247.5999999999999" layoutY="436.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="84.0" text="Cancelar" AnchorPane.bottomAnchor="14.399999999999956">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/erro.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="341.9999999999999" layoutY="436.0" mnemonicParsing="false" text="Salvar" AnchorPane.bottomAnchor="14.399999999999956">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/save--v1.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button layoutX="415.6" layoutY="436.0" mnemonicParsing="false" text="Fechar" AnchorPane.bottomAnchor="14.399999999999956">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../imgs/18x18/sair.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <TableView layoutX="7.0" layoutY="84.8" prefHeight="346.0" prefWidth="729.0" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="85.0" />
+                     </children></AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Notas Fiscais">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
