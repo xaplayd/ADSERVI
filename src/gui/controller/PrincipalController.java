@@ -1,5 +1,8 @@
 package gui.controller;
 
+import java.io.IOException;
+import java.util.List;
+
 import dao.TblContratoGeralDAO;
 import dao.TblContratoGeralDAOImpl;
 import dao.TblFilialClienteDAO;
@@ -30,21 +33,29 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import models.Nivel;
-import models.Setor;
-import models.Situacao;
 import models.Tag;
-import models.Usuario;
 import models.comercial.ContratoGeral;
 import models.comercial.FilialCliente;
 import models.comercial.FormatoContrato;
 import models.comercial.IndiceEscopo;
 import models.comercial.TipoCliente;
 import models.comercial.UniMedida;
-import services.GMailer;
+import models.faturamento.medicao.Colaborador;
+import models.faturamento.medicao.Medicao;
+import models.faturamento.medicao.MedicaoController;
+import models.faturamento.medicao.Periodo;
+import models.faturamento.medicao.PostoVaga;
+import models.faturamento.medicao.PostoVagaListController;
+import models.sis.Nivel;
+import models.sis.Setor;
+import models.sis.Situacao;
+import models.sis.Usuario;
 import services.UserService;
 
 public class PrincipalController {
@@ -67,6 +78,8 @@ public class PrincipalController {
 	private MenuItem teste;
 	@FXML
 	private MenuItem miHtml;
+	@FXML
+	private MenuItem medicaoFat;
 
 	public PrincipalController() {
 	}
@@ -128,23 +141,23 @@ public class PrincipalController {
 			if (stageCadastroUser == null) {
 				stageCadastroUser = new Stage();
 
-			    try {
-			    	//TblSetoresDAO dao = new TblSetoresDAOImpl();
-			    	TblUsuariosDAO dao = new TblUsuariosDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+				try {
+					// TblSetoresDAO dao = new TblSetoresDAOImpl();
+					TblUsuariosDAO dao = new TblUsuariosDAOImpl();
+					FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+					Parent root = loader.load();
 
-			        CadastroFormController <Usuario> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroUser.setTitle("Cadastro de Usuários");
-			        stageCadastroUser.getIcons().add(new Image("/imgs/18x18/usuario.png"));
-			        stageCadastroUser.setScene(new Scene(root));
-			        stageCadastroUser.show();
-			        stageCadastroUser.setOnHidden(we -> stageCadastroUser = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
+					CadastroFormController<Usuario> controller = loader.getController();
+					controller.initData(1, dao); // passando a tabela e o id
+
+					stageCadastroUser.setTitle("Cadastro de Usuários");
+					stageCadastroUser.getIcons().add(new Image("/imgs/18x18/usuario.png"));
+					stageCadastroUser.setScene(new Scene(root));
+					stageCadastroUser.show();
+					stageCadastroUser.setOnHidden(we -> stageCadastroUser = null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else {
 				stageCadastroUser.toFront();
 			}
@@ -174,23 +187,23 @@ public class PrincipalController {
 			if (stageCadastroSetor == null) {
 				stageCadastroSetor = new Stage();
 
-			    try {
-			    	TblSetoresDAO dao = new TblSetoresDAOImpl();
-			    	//TblUsuariosDAO dao = new TblUsuariosDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+				try {
+					TblSetoresDAO dao = new TblSetoresDAOImpl();
+					// TblUsuariosDAO dao = new TblUsuariosDAOImpl();
+					FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+					Parent root = loader.load();
 
-			        CadastroFormController <Setor> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroSetor.setTitle("Cadastro de Setores");
-			        stageCadastroSetor.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
-			        stageCadastroSetor.setScene(new Scene(root));
-			        stageCadastroSetor.show();
-			        stageCadastroSetor.setOnHidden(we -> stageCadastroSetor = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
+					CadastroFormController<Setor> controller = loader.getController();
+					controller.initData(1, dao); // passando a tabela e o id
+
+					stageCadastroSetor.setTitle("Cadastro de Setores");
+					stageCadastroSetor.getIcons().add(new Image("/imgs/18x18/conferencia.png"));
+					stageCadastroSetor.setScene(new Scene(root));
+					stageCadastroSetor.show();
+					stageCadastroSetor.setOnHidden(we -> stageCadastroSetor = null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else {
 				stageCadastroSetor.toFront();
 			}
@@ -204,7 +217,7 @@ public class PrincipalController {
 		}
 
 	}
-	
+
 	Stage stageCadastroPermissao = null;
 
 	@FXML
@@ -220,22 +233,22 @@ public class PrincipalController {
 			if (stageCadastroPermissao == null) {
 				stageCadastroPermissao = new Stage();
 
-			    try {
-			    	TblNiveisDAO dao = new TblNiveisDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+				try {
+					TblNiveisDAO dao = new TblNiveisDAOImpl();
+					FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+					Parent root = loader.load();
 
-			        CadastroFormController <Nivel> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroPermissao.setTitle("Cadastro de Permissões");
-			        stageCadastroPermissao.getIcons().add(new Image("/imgs/18x18/password.png"));
-			        stageCadastroPermissao.setScene(new Scene(root));
-			        stageCadastroPermissao.show();
-			        stageCadastroPermissao.setOnHidden(we -> stageCadastroPermissao = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
+					CadastroFormController<Nivel> controller = loader.getController();
+					controller.initData(1, dao); // passando a tabela e o id
+
+					stageCadastroPermissao.setTitle("Cadastro de Permissões");
+					stageCadastroPermissao.getIcons().add(new Image("/imgs/18x18/password.png"));
+					stageCadastroPermissao.setScene(new Scene(root));
+					stageCadastroPermissao.show();
+					stageCadastroPermissao.setOnHidden(we -> stageCadastroPermissao = null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else {
 				stageCadastroPermissao.toFront();
 			}
@@ -249,9 +262,9 @@ public class PrincipalController {
 		}
 
 	}
-	
+
 	Stage stageCadastroSituacao = null;
-	
+
 	@FXML
 	public void onMenuItemCadastroSituacaoAction() {
 
@@ -265,22 +278,22 @@ public class PrincipalController {
 			if (stageCadastroSituacao == null) {
 				stageCadastroSituacao = new Stage();
 
-			    try {
-			    	TblSituacaoDAO dao = new TblSituacaoDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+				try {
+					TblSituacaoDAO dao = new TblSituacaoDAOImpl();
+					FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+					Parent root = loader.load();
 
-			        CadastroFormController <Situacao> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroSituacao.setTitle("Cadastro de Situações");
-			        stageCadastroSituacao.getIcons().add(new Image("/imgs/18x18/erro.png"));
-			        stageCadastroSituacao.setScene(new Scene(root));
-			        stageCadastroSituacao.show();
-			        stageCadastroSituacao.setOnHidden(we -> stageCadastroSituacao = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
+					CadastroFormController<Situacao> controller = loader.getController();
+					controller.initData(1, dao); // passando a tabela e o id
+
+					stageCadastroSituacao.setTitle("Cadastro de Situações");
+					stageCadastroSituacao.getIcons().add(new Image("/imgs/18x18/erro.png"));
+					stageCadastroSituacao.setScene(new Scene(root));
+					stageCadastroSituacao.show();
+					stageCadastroSituacao.setOnHidden(we -> stageCadastroSituacao = null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else {
 				stageCadastroSituacao.toFront();
 			}
@@ -296,7 +309,7 @@ public class PrincipalController {
 	}
 
 	Stage stageCadastroTag = null;
-	
+
 	@FXML
 	public void onMenuItemCadastroTagAction() {
 
@@ -310,22 +323,22 @@ public class PrincipalController {
 			if (stageCadastroTag == null) {
 				stageCadastroTag = new Stage();
 
-			    try {
-			    	TblTagsDAO dao = new TblTagsDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+				try {
+					TblTagsDAO dao = new TblTagsDAOImpl();
+					FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+					Parent root = loader.load();
 
-			        CadastroFormController <Tag> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroTag.setTitle("Cadastro de Tags");
-			        stageCadastroTag.getIcons().add(new Image("/imgs/18x18/lista.png"));
-			        stageCadastroTag.setScene(new Scene(root));
-			        stageCadastroTag.show();
-			        stageCadastroTag.setOnHidden(we -> stageCadastroTag = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
+					CadastroFormController<Tag> controller = loader.getController();
+					controller.initData(1, dao); // passando a tabela e o id
+
+					stageCadastroTag.setTitle("Cadastro de Tags");
+					stageCadastroTag.getIcons().add(new Image("/imgs/18x18/lista.png"));
+					stageCadastroTag.setScene(new Scene(root));
+					stageCadastroTag.show();
+					stageCadastroTag.setOnHidden(we -> stageCadastroTag = null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else {
 				stageCadastroTag.toFront();
 			}
@@ -339,190 +352,237 @@ public class PrincipalController {
 		}
 
 	}
-	
+
 	Stage stageCadastroUniMedida = null;
-	
+
 	@FXML
 	public void onMenuItemCadastroUniMedidaAction() {
-			if (stageCadastroUniMedida == null) {
-				stageCadastroUniMedida = new Stage();
+		if (stageCadastroUniMedida == null) {
+			stageCadastroUniMedida = new Stage();
 
-			    try {
-			    	TblUniMedidasDAO dao = new TblUniMedidasDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+			try {
+				TblUniMedidasDAO dao = new TblUniMedidasDAOImpl();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+				Parent root = loader.load();
 
-			        CadastroFormController <UniMedida> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroUniMedida.setTitle("Cadastro de Unidades de Medida");
-			        stageCadastroUniMedida.getIcons().add(new Image("/imgs/18x18/lista.png"));
-			        stageCadastroUniMedida.setScene(new Scene(root));
-			        stageCadastroUniMedida.show();
-			        stageCadastroUniMedida.setOnHidden(we -> stageCadastroUniMedida = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
-			} else {
-				stageCadastroUniMedida.toFront();
+				CadastroFormController<UniMedida> controller = loader.getController();
+				controller.initData(1, dao); // passando a tabela e o id
+
+				stageCadastroUniMedida.setTitle("Cadastro de Unidades de Medida");
+				stageCadastroUniMedida.getIcons().add(new Image("/imgs/18x18/lista.png"));
+				stageCadastroUniMedida.setScene(new Scene(root));
+				stageCadastroUniMedida.show();
+				stageCadastroUniMedida.setOnHidden(we -> stageCadastroUniMedida = null);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		} else {
+			stageCadastroUniMedida.toFront();
+		}
 
 	}
-	
+
 	Stage stageCadastroFormatoContrato = null;
-	
+
 	@FXML
 	public void onMenuItemCadastroFormatoContratoAction() {
-			if (stageCadastroFormatoContrato == null) {
-				stageCadastroFormatoContrato = new Stage();
+		if (stageCadastroFormatoContrato == null) {
+			stageCadastroFormatoContrato = new Stage();
 
-			    try {
-			    	TblFormatoContratoDAO dao = new TblFormatoContratoDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+			try {
+				TblFormatoContratoDAO dao = new TblFormatoContratoDAOImpl();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+				Parent root = loader.load();
 
-			        CadastroFormController <FormatoContrato> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroFormatoContrato.setTitle("Cadastro Formato Contrato");
-			        stageCadastroFormatoContrato.getIcons().add(new Image("/imgs/18x18/lista.png"));
-			        stageCadastroFormatoContrato.setScene(new Scene(root));
-			        stageCadastroFormatoContrato.show();
-			        stageCadastroFormatoContrato.setOnHidden(we -> stageCadastroFormatoContrato = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
-			} else {
-				stageCadastroFormatoContrato.toFront();
+				CadastroFormController<FormatoContrato> controller = loader.getController();
+				controller.initData(1, dao); // passando a tabela e o id
+
+				stageCadastroFormatoContrato.setTitle("Cadastro Formato Contrato");
+				stageCadastroFormatoContrato.getIcons().add(new Image("/imgs/18x18/lista.png"));
+				stageCadastroFormatoContrato.setScene(new Scene(root));
+				stageCadastroFormatoContrato.show();
+				stageCadastroFormatoContrato.setOnHidden(we -> stageCadastroFormatoContrato = null);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		} else {
+			stageCadastroFormatoContrato.toFront();
+		}
 	}
-	
+
 	Stage stageCadastroTipoCliente = null;
-	
+
 	@FXML
 	public void onMenuItemCadastroTipoClienteAction() {
-			if (stageCadastroTipoCliente == null) {
-				stageCadastroTipoCliente = new Stage();
+		if (stageCadastroTipoCliente == null) {
+			stageCadastroTipoCliente = new Stage();
 
-			    try {
-			    	TblTipoClienteDAO dao = new TblTipoClienteDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+			try {
+				TblTipoClienteDAO dao = new TblTipoClienteDAOImpl();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+				Parent root = loader.load();
 
-			        CadastroFormController <TipoCliente> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroTipoCliente.setTitle("Cadastro Tipo Cliente");
-			        stageCadastroTipoCliente.getIcons().add(new Image("/imgs/18x18/lista.png"));
-			        stageCadastroTipoCliente.setScene(new Scene(root));
-			        stageCadastroTipoCliente.show();
-			        stageCadastroTipoCliente.setOnHidden(we -> stageCadastroTipoCliente = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
-			} else {
-				stageCadastroTipoCliente.toFront();
+				CadastroFormController<TipoCliente> controller = loader.getController();
+				controller.initData(1, dao); // passando a tabela e o id
+
+				stageCadastroTipoCliente.setTitle("Cadastro Tipo Cliente");
+				stageCadastroTipoCliente.getIcons().add(new Image("/imgs/18x18/lista.png"));
+				stageCadastroTipoCliente.setScene(new Scene(root));
+				stageCadastroTipoCliente.show();
+				stageCadastroTipoCliente.setOnHidden(we -> stageCadastroTipoCliente = null);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		} else {
+			stageCadastroTipoCliente.toFront();
+		}
 	}
-	
+
 	Stage stageCadastroIndiceEscopo = null;
-	
+
 	@FXML
 	public void onMenuItemCadastroIndiceEscopoAction() {
-			if (stageCadastroIndiceEscopo == null) {
-				stageCadastroIndiceEscopo = new Stage();
+		if (stageCadastroIndiceEscopo == null) {
+			stageCadastroIndiceEscopo = new Stage();
 
-			    try {
-			    	TblIndiceEscopoDAO dao = new TblIndiceEscopoDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+			try {
+				TblIndiceEscopoDAO dao = new TblIndiceEscopoDAOImpl();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+				Parent root = loader.load();
 
-			        CadastroFormController <IndiceEscopo> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroIndiceEscopo.setTitle("Cadastro Indice Escopo");
-			        stageCadastroIndiceEscopo.getIcons().add(new Image("/imgs/18x18/lista.png"));
-			        stageCadastroIndiceEscopo.setScene(new Scene(root));
-			        stageCadastroIndiceEscopo.show();
-			        stageCadastroIndiceEscopo.setOnHidden(we -> stageCadastroIndiceEscopo = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
-			} else {
-				stageCadastroIndiceEscopo.toFront();
+				CadastroFormController<IndiceEscopo> controller = loader.getController();
+				controller.initData(1, dao); // passando a tabela e o id
+
+				stageCadastroIndiceEscopo.setTitle("Cadastro Indice Escopo");
+				stageCadastroIndiceEscopo.getIcons().add(new Image("/imgs/18x18/lista.png"));
+				stageCadastroIndiceEscopo.setScene(new Scene(root));
+				stageCadastroIndiceEscopo.show();
+				stageCadastroIndiceEscopo.setOnHidden(we -> stageCadastroIndiceEscopo = null);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		} else {
+			stageCadastroIndiceEscopo.toFront();
+		}
 	}
-	
+
 	Stage stageCadastroContratoGeral = null;
-	
+
 	@FXML
 	public void onMenuItemCadastroContratoGeralAction() {
-			if (stageCadastroContratoGeral == null) {
-				stageCadastroContratoGeral = new Stage();
+		if (stageCadastroContratoGeral == null) {
+			stageCadastroContratoGeral = new Stage();
 
-			    try {
-			    	TblContratoGeralDAO dao = new TblContratoGeralDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+			try {
+				TblContratoGeralDAO dao = new TblContratoGeralDAOImpl();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+				Parent root = loader.load();
 
-			        CadastroFormController <ContratoGeral> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroContratoGeral.setTitle("Cadastro Contrato Geral");
-			        stageCadastroContratoGeral.getIcons().add(new Image("/imgs/18x18/lista.png"));
-			        stageCadastroContratoGeral.setScene(new Scene(root));
-			        stageCadastroContratoGeral.show();
-			        stageCadastroContratoGeral.setOnHidden(we -> stageCadastroContratoGeral = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
-			} else {
-				stageCadastroContratoGeral.toFront();
+				CadastroFormController<ContratoGeral> controller = loader.getController();
+				controller.initData(1, dao); // passando a tabela e o id
+
+				stageCadastroContratoGeral.setTitle("Cadastro Contrato Geral");
+				stageCadastroContratoGeral.getIcons().add(new Image("/imgs/18x18/lista.png"));
+				stageCadastroContratoGeral.setScene(new Scene(root));
+				stageCadastroContratoGeral.show();
+				stageCadastroContratoGeral.setOnHidden(we -> stageCadastroContratoGeral = null);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		} else {
+			stageCadastroContratoGeral.toFront();
+		}
 	}
-	
+
 	Stage stageCadastroFilialCliente = null;
-	
+
 	@FXML
 	public void onMenuItemCadastroCadastroFilialClienteAction() {
-			if (stageCadastroFilialCliente == null) {
-				stageCadastroFilialCliente = new Stage();
+		if (stageCadastroFilialCliente == null) {
+			stageCadastroFilialCliente = new Stage();
 
-			    try {
-			    	TblFilialClienteDAO dao = new TblFilialClienteDAOImpl();
-			        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
-			        Parent root = loader.load();
+			try {
+				TblFilialClienteDAO dao = new TblFilialClienteDAOImpl();
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/CadastroForm.fxml"));
+				Parent root = loader.load();
 
-			        CadastroFormController <FilialCliente> controller = loader.getController();
-			        controller.initData(1, dao); // passando a tabela e o id
-			        
-			        stageCadastroFilialCliente.setTitle("Cadastro Filial Cliente");
-			        stageCadastroFilialCliente.getIcons().add(new Image("/imgs/18x18/lista.png"));
-			        stageCadastroFilialCliente.setScene(new Scene(root));
-			        stageCadastroFilialCliente.show();
-			        stageCadastroFilialCliente.setOnHidden(we -> stageCadastroFilialCliente = null);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
-			} else {
-				stageCadastroFilialCliente.toFront();
+				CadastroFormController<FilialCliente> controller = loader.getController();
+				controller.initData(1, dao); // passando a tabela e o id
+
+				stageCadastroFilialCliente.setTitle("Cadastro Filial Cliente");
+				stageCadastroFilialCliente.getIcons().add(new Image("/imgs/18x18/lista.png"));
+				stageCadastroFilialCliente.setScene(new Scene(root));
+				stageCadastroFilialCliente.show();
+				stageCadastroFilialCliente.setOnHidden(we -> stageCadastroFilialCliente = null);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		} else {
+			stageCadastroFilialCliente.toFront();
+		}
 	}
-	
+
 	@FXML
 	public void onMenuItemPendencia() {
 
-		 try {
-			 	Stage primaryStage = new Stage();
-	            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pendencia.fxml"));
-	            AnchorPane root = loader.load();
-	            Scene scene = new Scene(root, 900, 600);
-	            primaryStage.setTitle("Editor de E-mail HTML");
-	            primaryStage.setScene(scene);
-	            primaryStage.show();
-	        } catch(Exception e) {
-	            e.printStackTrace();
-	        }
+		try {
+			Stage primaryStage = new Stage();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Pendencia.fxml"));
+			AnchorPane root = loader.load();
+			Scene scene = new Scene(root, 900, 600);
+			primaryStage.setTitle("Editor de E-mail HTML");
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	public void onMenuItemMedicaoFatAction() {
+	    try {
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/models/faturamento/medicao/MedicaoView.fxml"));
+	        SplitPane pane = loader.load();
+
+	        MedicaoController controller = loader.getController();
+
+	        // ----- Postos -----
+	        PostoVaga p1 = new PostoVaga("1.1943.0001.105", 2,
+	                "UFJF.MG PROINFRA - MOTORISTA MOP - Grupo de Escala 67 - 220:00H MENSAIS - SEG A SEX",
+	                1000.0, 1000.0);
+	        PostoVaga p2 = new PostoVaga("1.1943.0001.224", 11,
+	                "UFJF.MG PROINFRA - MOTORISTA - Grupo de Escala 67 - 220:00H MENSAIS - SEG A SEX",
+	                2000.0, 0.0);
+
+	        List<PostoVaga> postos = List.of(p1, p2);
+
+	        // ----- Colaboradores -----
+	        Colaborador c1 = new Colaborador(101, "João da Silva", "Motorista", "2025-09-01");
+	        c1.adicionarPeriodoDisponivel(new Periodo("Manhã"));
+	        c1.adicionarPeriodoDisponivel(new Periodo("Tarde"));
+
+	        Colaborador c2 = new Colaborador(102, "Maria Oliveira", "Motorista", "2025-09-02");
+	        c2.adicionarPeriodoDisponivel(new Periodo("Noite"));
+	        c2.alocarPeriodo(new Periodo("Noite")); // já marcado como alocado
+
+	        Colaborador c3 = new Colaborador(103, "Carlos Souza", "Auxiliar", "2025-09-03");
+	        c3.adicionarPeriodoDisponivel(new Periodo("Manhã"));
+
+	        List<Colaborador> colaboradores = List.of(c1, c2, c3);
+
+	        // Passa listas para o controller principal
+	        controller.setPostos(postos);
+	        controller.setColaboradores(colaboradores);
+
+	        // Exibe numa nova Stage
+	        Stage stage = new Stage();
+	        stage.setScene(new Scene(pane, 1000, 600));
+	        stage.setTitle("Medição - Postos e Colaboradores");
+	        stage.show();
+
+	    } catch (IOException e) {
+	        e.printStackTrace();
 	    }
+	}
 	
 }

@@ -18,12 +18,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
-import models.Nivel;
-import models.Setor;
-import models.Situacao;
-import models.TabelaColuna;
-import models.Usuario;
 import models.comercial.UniMedida;
+import models.sis.Nivel;
+import models.sis.Setor;
+import models.sis.Situacao;
+import models.sis.TabelaColuna;
+import models.sis.Usuario;
 
 public class TblUniMedidasDAOImpl implements TblUniMedidasDAO {
 

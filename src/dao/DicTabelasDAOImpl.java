@@ -13,8 +13,8 @@ import connection.controller.ConnectionController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
-import models.Tabela;
-import models.TabelaColuna;
+import models.sis.Tabela;
+import models.sis.TabelaColuna;
 
 public class DicTabelasDAOImpl implements DicTabelasDAO {
 

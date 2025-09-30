@@ -1,16 +1,16 @@
-package models;
+package models.sis;
 
 import java.util.Objects;
 
-public class Situacao {
+public class Nivel {
 
 	private Integer codigo;
 	private String nome;
 
-	public Situacao() {
+	public Nivel() {
 	}
 
-	public Situacao(Integer codigo, String nome) {
+	public Nivel(Integer codigo, String nome) {
 		this.codigo = codigo;
 		this.nome = nome;
 	}
@@ -44,7 +44,7 @@ public class Situacao {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Situacao other = (Situacao) obj;
+		Nivel other = (Nivel) obj;
 		return Objects.equals(codigo, other.codigo) && Objects.equals(nome, other.nome);
 	}
 

@@ -1,6 +1,6 @@
 package dao;
 
-import models.Setor;
+import models.sis.Setor;
 
 public interface TblSetoresDAO extends DAO<Setor>{
 

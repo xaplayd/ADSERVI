@@ -1,6 +1,6 @@
 package dao;
 
-import models.Usuario;
+import models.sis.Usuario;
 
 public interface TblUsuariosDAO extends DAO<Usuario>{
 

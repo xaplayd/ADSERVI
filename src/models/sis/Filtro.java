@@ -1,4 +1,4 @@
-package models;
+package models.sis;
 
 public class Filtro {
 	private String coluna;

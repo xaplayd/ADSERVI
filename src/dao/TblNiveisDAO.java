@@ -1,6 +1,6 @@
 package dao;
 
-import models.Nivel;
+import models.sis.Nivel;
 
 public interface TblNiveisDAO extends DAO<Nivel>{
 

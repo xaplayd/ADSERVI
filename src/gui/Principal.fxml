@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -44,6 +44,15 @@
                         <Menu mnemonicParsing="false" text="Pendências">
                            <items>
                               <MenuItem fx:id="cadastroTag1" mnemonicParsing="false" onAction="#onMenuItemCadastroTagAction" text="Tags">
+                                 <graphic>
+                                    <ImageView>
+                                       <image>
+                                          <Image url="@../imgs/18x18/lista.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </MenuItem>
+                              <MenuItem fx:id="medicaoFat" mnemonicParsing="false" onAction="#onMenuItemMedicaoFatAction" text="Medicao">
                                  <graphic>
                                     <ImageView>
                                        <image>

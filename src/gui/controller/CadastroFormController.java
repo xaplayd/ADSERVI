@@ -45,7 +45,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import models.TabelaColuna;
+import models.sis.TabelaColuna;
 import utils.TableColumnFormatter;
 
 public class CadastroFormController <T> implements Initializable {

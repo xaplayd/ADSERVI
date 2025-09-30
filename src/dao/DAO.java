@@ -5,7 +5,7 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
-import models.TabelaColuna;
+import models.sis.TabelaColuna;
 
 public interface DAO<T> {
 	

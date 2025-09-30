@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="models.faturamento.medicao.AlocacaoViewController"
+            prefWidth="900" prefHeight="600"
+            style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
+
+    <!-- Topo -->
+    <top>
+        <Label fx:id="lblTitulo" text="Alocações do Posto"
+               style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    </top>
+
+    <!-- Centro dividido -->
+    <center>
+        <SplitPane dividerPositions="0.5">
+            <!-- Colaboradores já alocados -->
+            <VBox spacing="10" style="-fx-padding: 10;">
+                <Label text="Colaboradores Alocados" style="-fx-font-weight: bold;"/>
+                <TableView fx:id="tblAlocados" prefHeight="500">
+                    <columns>
+                        <TableColumn fx:id="colMatriculaAlocado" text="Matrícula" prefWidth="100"/>
+                        <TableColumn fx:id="colNomeAlocado" text="Nome" prefWidth="250"/>
+                        <TableColumn fx:id="colHorasAlocado" text="Horas" prefWidth="100"/>
+                    </columns>
+                </TableView>
+                <Button fx:id="btnRemover" text="Remover Selecionado"/>
+            </VBox>
+
+            <!-- Colaboradores disponíveis -->
+            <VBox spacing="10" style="-fx-padding: 10;">
+                <Label text="Colaboradores Disponíveis" style="-fx-font-weight: bold;"/>
+                <TableView fx:id="tblDisponiveis" prefHeight="500">
+                    <columns>
+                        <TableColumn fx:id="colMatriculaDisp" text="Matrícula" prefWidth="100"/>
+                        <TableColumn fx:id="colNomeDisp" text="Nome" prefWidth="250"/>
+                    </columns>
+                </TableView>
+                <Button fx:id="btnAdicionar" text="Adicionar Selecionado"/>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <!-- Rodapé -->
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10;">
+            <Button fx:id="btnSalvar" text="Salvar" style="-fx-font-weight: bold;"/>
+            <Button fx:id="btnCancelar" text="Cancelar"/>
+        </HBox>
+    </bottom>
+</BorderPane>

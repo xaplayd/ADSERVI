@@ -18,9 +18,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
-import models.Nivel;
-import models.TabelaColuna;
 import models.comercial.FilialCliente;
+import models.sis.Nivel;
+import models.sis.TabelaColuna;
 
 public class TblFilialClienteDAOImpl implements TblFilialClienteDAO {
 

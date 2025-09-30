@@ -22,8 +22,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
-import models.TabelaColuna;
 import models.comercial.IndiceEscopo;
+import models.sis.TabelaColuna;
 
 public class TblIndiceEscopoDAOImpl implements TblIndiceEscopoDAO {
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import dao.TblUsuariosDAO;
 import dao.TblUsuariosDAOImpl;
-import models.Usuario;
+import models.sis.Usuario;
 
 public class UserService {
 

@@ -18,8 +18,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
-import models.Situacao;
-import models.TabelaColuna;
+import models.sis.Situacao;
+import models.sis.TabelaColuna;
 
 public class TblSituacaoDAOImpl implements TblSituacaoDAO {
 

@@ -18,8 +18,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
-import models.Setor;
-import models.TabelaColuna;
+import models.sis.Setor;
+import models.sis.TabelaColuna;
 
 public class TblSetoresDAOImpl implements TblSetoresDAO {
 
