@@ -18,7 +18,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
-import models.Tag;
+import models.faturamento.documentacao.Tag;
 import models.sis.Nivel;
 import models.sis.TabelaColuna;
 

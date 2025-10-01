@@ -2,6 +2,9 @@ package models.faturamento.medicao;
 
 import java.util.List;
 
+import models.faturamento.medicao.colaborador.Colaborador;
+import models.faturamento.medicao.vaga.PostoVaga;
+
 public class Medicao {
 
     private List<PostoVaga> postos;

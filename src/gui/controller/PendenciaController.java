@@ -16,7 +16,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
-import models.Tag;
+import models.faturamento.documentacao.Tag;
 import netscape.javascript.JSObject;
 import services.GMailer;
 

@@ -10,6 +10,8 @@ public class Main extends Application {
 	public void start(Stage stage) {
 		LoginController lg = new LoginController();
 		lg.novaJanela(lg);
+	
+		
 	}
 
 	public static void main(String[] args) {

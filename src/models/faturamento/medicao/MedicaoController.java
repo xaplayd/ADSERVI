@@ -7,6 +7,10 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
+import models.faturamento.medicao.colaborador.Colaborador;
+import models.faturamento.medicao.colaborador.ColaboradorListController;
+import models.faturamento.medicao.vaga.PostoVaga;
+import models.faturamento.medicao.vaga.PostoVagaListController;
 
 public class MedicaoController implements Initializable {
 

@@ -10,9 +10,9 @@
 
     <!-- Lado esquerdo: lista de postos -->
     <items>
-        <fx:include fx:id="postoVagaListView" source="PostoVagaListView.fxml"/>
+        <fx:include fx:id="postoVagaListView" source="/models/faturamento/medicao/vaga/PostoVagaListView.fxml"/>
         
         <!-- Lado direito: lista de colaboradores -->
-        <fx:include fx:id="colaboradorListView" source="ColaboradorListView.fxml"/>
+        <fx:include fx:id="colaboradorListView" source="/models/faturamento/medicao/colaborador/ColaboradorListView.fxml"/>
     </items>
 </SplitPane>

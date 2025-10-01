@@ -39,19 +39,19 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import models.Tag;
 import models.comercial.ContratoGeral;
 import models.comercial.FilialCliente;
 import models.comercial.FormatoContrato;
 import models.comercial.IndiceEscopo;
 import models.comercial.TipoCliente;
 import models.comercial.UniMedida;
-import models.faturamento.medicao.Colaborador;
+import models.faturamento.documentacao.Tag;
 import models.faturamento.medicao.Medicao;
 import models.faturamento.medicao.MedicaoController;
 import models.faturamento.medicao.Periodo;
-import models.faturamento.medicao.PostoVaga;
-import models.faturamento.medicao.PostoVagaListController;
+import models.faturamento.medicao.colaborador.Colaborador;
+import models.faturamento.medicao.vaga.PostoVaga;
+import models.faturamento.medicao.vaga.PostoVagaListController;
 import models.sis.Nivel;
 import models.sis.Setor;
 import models.sis.Situacao;
@@ -549,10 +549,10 @@ public class PrincipalController {
 	        // ----- Postos -----
 	        PostoVaga p1 = new PostoVaga("1.1943.0001.105", 2,
 	                "UFJF.MG PROINFRA - MOTORISTA MOP - Grupo de Escala 67 - 220:00H MENSAIS - SEG A SEX",
-	                1000.0, 1000.0);
+	                30.0, 31.0);
 	        PostoVaga p2 = new PostoVaga("1.1943.0001.224", 11,
 	                "UFJF.MG PROINFRA - MOTORISTA - Grupo de Escala 67 - 220:00H MENSAIS - SEG A SEX",
-	                2000.0, 0.0);
+	                30.0, 30.0);
 
 	        List<PostoVaga> postos = List.of(p1, p2);
 

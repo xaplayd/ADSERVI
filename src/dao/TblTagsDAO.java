@@ -1,6 +1,6 @@
 package dao;
 
-import models.Tag;
+import models.faturamento.documentacao.Tag;
 
 public interface TblTagsDAO extends DAO<Tag>{
 
