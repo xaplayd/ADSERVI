@@ -1,93 +1,50 @@
 package models.faturamento.medicao.alocacao;
 
-import java.util.Objects;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
+import models.faturamento.medicao.vaga.Vaga;
 import models.faturamento.medicao.colaborador.Colaborador;
-import models.faturamento.medicao.vaga.PostoVaga;
 
 public class Alocacao {
-    
-    private Integer id;                 // identificador sequencial da alocação
-    private PostoVaga postoVaga;        // referência ao posto
-    private Colaborador colaborador;    // colaborador vinculado
-    private Double horasAlocadas;       // horas/quantidade vinculada
-    private String dataAlocacao;        // data do vínculo
+    private Integer id;
+    private Vaga vaga;
+    private Colaborador colaborador;
+    private LocalDate dataInicio;
+    private LocalTime horaInicio;
+    private LocalDate dataFim;
+    private LocalTime horaFim;
 
-    public Alocacao(Integer id, PostoVaga postoVaga, Colaborador colaborador, Double horasAlocadas, String dataAlocacao) {
+    public Alocacao(Integer id, Vaga vaga, Colaborador colaborador,
+                    LocalDate dataInicio, LocalTime horaInicio,
+                    LocalDate dataFim, LocalTime horaFim) {
         this.id = id;
-        this.postoVaga = postoVaga;
+        this.vaga = vaga;
         this.colaborador = colaborador;
-        this.horasAlocadas = horasAlocadas;
-        this.dataAlocacao = dataAlocacao;
+        this.dataInicio = dataInicio;
+        this.horaInicio = horaInicio;
+        this.dataFim = dataFim;
+        this.horaFim = horaFim;
     }
 
-    public Integer getId() {
-        return id;
-    }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public Vaga getVaga() { return vaga; }
+    public void setVaga(Vaga vaga) { this.vaga = vaga; }
 
-    public PostoVaga getPostoVaga() {
-        return postoVaga;
-    }
+    public Colaborador getColaborador() { return colaborador; }
+    public void setColaborador(Colaborador colaborador) { this.colaborador = colaborador; }
 
-    public void setPostoVaga(PostoVaga postoVaga) {
-        this.postoVaga = postoVaga;
-    }
+    public LocalDate getDataInicio() { return dataInicio; }
+    public void setDataInicio(LocalDate dataInicio) { this.dataInicio = dataInicio; }
 
-    public Colaborador getColaborador() {
-        return colaborador;
-    }
+    public LocalTime getHoraInicio() { return horaInicio; }
+    public void setHoraInicio(LocalTime horaInicio) { this.horaInicio = horaInicio; }
 
-    public void setColaborador(Colaborador colaborador) {
-        this.colaborador = colaborador;
-    }
+    public LocalDate getDataFim() { return dataFim; }
+    public void setDataFim(LocalDate dataFim) { this.dataFim = dataFim; }
 
-    public Double getHorasAlocadas() {
-        return horasAlocadas;
-    }
-
-    public void setHorasAlocadas(Double horasAlocadas) {
-        this.horasAlocadas = horasAlocadas;
-    }
-
-    public String getDataAlocacao() {
-        return dataAlocacao;
-    }
-
-    public void setDataAlocacao(String dataAlocacao) {
-        this.dataAlocacao = dataAlocacao;
-    }
-
-    // Cálculo simples: impacto no executado
-    public Double calcularImpacto() {
-        return horasAlocadas != null ? horasAlocadas : 0.0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, postoVaga, colaborador, dataAlocacao);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Alocacao)) return false;
-        Alocacao other = (Alocacao) obj;
-        return Objects.equals(id, other.id)
-            && Objects.equals(postoVaga, other.postoVaga)
-            && Objects.equals(colaborador, other.colaborador)
-            && Objects.equals(dataAlocacao, other.dataAlocacao);
-    }
-
-    @Override
-    public String toString() {
-        return "Alocacao [id=" + id 
-             + ", posto=" + (postoVaga != null ? postoVaga.getPosTraTabVaga() : "-") 
-             + ", colaborador=" + (colaborador != null ? colaborador.getNome() : "-") 
-             + ", horasAlocadas=" + horasAlocadas 
-             + ", dataAlocacao=" + dataAlocacao + "]";
-    }
+    public LocalTime getHoraFim() { return horaFim; }
+    public void setHoraFim(LocalTime horaFim) { this.horaFim = horaFim; }
 }

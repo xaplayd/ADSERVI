@@ -8,11 +8,11 @@
            fx:controller="models.faturamento.medicao.MedicaoController"
            orientation="HORIZONTAL">
 
-    <!-- Lado esquerdo: lista de postos -->
     <items>
-        <fx:include fx:id="postoVagaListView" source="/models/faturamento/medicao/vaga/PostoVagaListView.fxml"/>
-        
-        <!-- Lado direito: lista de colaboradores -->
-        <fx:include fx:id="colaboradorListView" source="/models/faturamento/medicao/colaborador/ColaboradorListView.fxml"/>
+        <!-- Lista de vagas -->
+        <fx:include fx:id="vagaListView" source="/models/faturamento/medicao/vaga/VagaListView.fxml"/>
+
+        <!-- Pane vazio por enquanto -->
+        <VBox/>
     </items>
 </SplitPane>

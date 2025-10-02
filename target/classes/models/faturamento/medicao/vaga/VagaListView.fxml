@@ -5,12 +5,13 @@
 
 <ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="models.faturamento.medicao.colaborador.ColaboradorListController"
+            fx:controller="models.faturamento.medicao.vaga.VagaListController"
             fx:id="root"
-            fitToWidth="false"
+            fitToWidth="true"
             pannable="true"
             style="-fx-padding: 20;">
 
-    <!-- VBox onde os cards serão adicionados -->
-    <VBox fx:id="container" spacing="15" alignment="CENTER"/>
+    <content>
+        <VBox fx:id="container" spacing="15" alignment="CENTER"/>
+    </content>
 </ScrollPane>

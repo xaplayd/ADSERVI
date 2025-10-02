@@ -1,7 +1,6 @@
 package gui.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import dao.TblContratoGeralDAO;
 import dao.TblContratoGeralDAOImpl;
@@ -33,11 +32,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import models.comercial.ContratoGeral;
 import models.comercial.FilialCliente;
@@ -46,12 +43,7 @@ import models.comercial.IndiceEscopo;
 import models.comercial.TipoCliente;
 import models.comercial.UniMedida;
 import models.faturamento.documentacao.Tag;
-import models.faturamento.medicao.Medicao;
 import models.faturamento.medicao.MedicaoController;
-import models.faturamento.medicao.Periodo;
-import models.faturamento.medicao.colaborador.Colaborador;
-import models.faturamento.medicao.vaga.PostoVaga;
-import models.faturamento.medicao.vaga.PostoVagaListController;
 import models.sis.Nivel;
 import models.sis.Setor;
 import models.sis.Situacao;
@@ -538,51 +530,30 @@ public class PrincipalController {
 		}
 	}
 
+	Stage stageMedicaoTeste = null;
 	@FXML
 	public void onMenuItemMedicaoFatAction() {
+		if (stageMedicaoTeste == null) {
+			stageMedicaoTeste = new Stage();
+		
 	    try {
-	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/models/faturamento/medicao/MedicaoView.fxml"));
-	        SplitPane pane = loader.load();
+	    	 FXMLLoader loader = new FXMLLoader(getClass().getResource("/models/faturamento/medicao/MedicaoView.fxml"));
+	         SplitPane root = loader.load();
 
-	        MedicaoController controller = loader.getController();
+	         MedicaoController controller = loader.getController();
+	         controller.novaMedicao("1943", "01/08/2025", "31/08/2025");
 
-	        // ----- Postos -----
-	        PostoVaga p1 = new PostoVaga("1.1943.0001.105", 2,
-	                "UFJF.MG PROINFRA - MOTORISTA MOP - Grupo de Escala 67 - 220:00H MENSAIS - SEG A SEX",
-	                30.0, 31.0);
-	        PostoVaga p2 = new PostoVaga("1.1943.0001.224", 11,
-	                "UFJF.MG PROINFRA - MOTORISTA - Grupo de Escala 67 - 220:00H MENSAIS - SEG A SEX",
-	                30.0, 30.0);
-
-	        List<PostoVaga> postos = List.of(p1, p2);
-
-	        // ----- Colaboradores -----
-	        Colaborador c1 = new Colaborador(101, "João da Silva", "Motorista", "2025-09-01");
-	        c1.adicionarPeriodoDisponivel(new Periodo("Manhã"));
-	        c1.adicionarPeriodoDisponivel(new Periodo("Tarde"));
-
-	        Colaborador c2 = new Colaborador(102, "Maria Oliveira", "Motorista", "2025-09-02");
-	        c2.adicionarPeriodoDisponivel(new Periodo("Noite"));
-	        c2.alocarPeriodo(new Periodo("Noite")); // já marcado como alocado
-
-	        Colaborador c3 = new Colaborador(103, "Carlos Souza", "Auxiliar", "2025-09-03");
-	        c3.adicionarPeriodoDisponivel(new Periodo("Manhã"));
-
-	        List<Colaborador> colaboradores = List.of(c1, c2, c3);
-
-	        // Passa listas para o controller principal
-	        controller.setPostos(postos);
-	        controller.setColaboradores(colaboradores);
-
-	        // Exibe numa nova Stage
-	        Stage stage = new Stage();
-	        stage.setScene(new Scene(pane, 1000, 600));
-	        stage.setTitle("Medição - Postos e Colaboradores");
-	        stage.show();
+	         stageMedicaoTeste.setScene(new Scene(root, 1000, 600));
+	         stageMedicaoTeste.setTitle("Medição - Postos");
+	         stageMedicaoTeste.show();
+	         stageMedicaoTeste.setOnHidden(we -> stageMedicaoTeste = null);
 
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
+		} else {
+			stageMedicaoTeste.toFront();
+		}
 	}
 	
 }

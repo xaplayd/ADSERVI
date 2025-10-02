@@ -1,6 +1,7 @@
 package models.faturamento.medicao.ws;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -8,6 +9,7 @@ import javax.xml.namespace.QName;
 import config.WebServiceConfig;
 import connection.controller.WebServiceController;
 import jakarta.xml.ws.Service;
+import models.faturamento.medicao.colaborador.Colaborador;
 import util.webservices.fechamentos.ObjectFactory;
 import util.webservices.fechamentos.RubiSynccomSeniorG5RhFpDougFechamentos;
 import util.webservices.fechamentos.SynccomSeniorG5RhFpDougFechamentosColaboradoresVinculadosIn;
@@ -16,7 +18,8 @@ import util.webservices.fechamentos.SynccomSeniorG5RhFpDougFechamentosColaborado
 
 public class ColaboradoresVinculadosWS {
 
-	public void buscaColaboradores() {
+	public List<Colaborador> buscaColaboradores(String filiais, String dataInicioPeriodo, String dataFimPeriodo) {
+		List<Colaborador> coList = new ArrayList();
 		try {
 			// Habilita o dump de mensagens SOAP
 			/*System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
@@ -45,11 +48,11 @@ public class ColaboradoresVinculadosWS {
 			SynccomSeniorG5RhFpDougFechamentosColaboradoresVinculadosIn parametros = new SynccomSeniorG5RhFpDougFechamentosColaboradoresVinculadosIn();
 
 			parametros.setCodFilialCliente(
-					factory.createSynccomSeniorG5RhFpDougFechamentosColaboradoresVinculadosInCodFilialCliente("1943"));
+					factory.createSynccomSeniorG5RhFpDougFechamentosColaboradoresVinculadosInCodFilialCliente(filiais));
 			parametros.setDataInicio(
-					factory.createSynccomSeniorG5RhFpDougFechamentosColaboradoresVinculadosInDataInicio("01/08/2025"));
+					factory.createSynccomSeniorG5RhFpDougFechamentosColaboradoresVinculadosInDataInicio(dataInicioPeriodo));
 			parametros
-					.setDataFim(factory.createSynccomSeniorG5RhFpDougFechamentosColaboradoresVinculadosInDataFim("31/08/2025"));
+					.setDataFim(factory.createSynccomSeniorG5RhFpDougFechamentosColaboradoresVinculadosInDataFim(dataInicioPeriodo));
 
 			SynccomSeniorG5RhFpDougFechamentosColaboradoresVinculadosOut resposta = port.colaboradoresVinculados(credential.getLogin(), credential.getSenha(), credential.getCripto(),
 					parametros);
@@ -76,6 +79,10 @@ public class ColaboradoresVinculadosWS {
 			        System.out.println("Optante VT: " + optaVtTabEfe);
 			        System.out.println("----------------");
 			        System.out.println();
+			        
+			        Colaborador tempCo = new Colaborador(numCadTabEfe, nomFunTabEfe, posTraTabEfe, optaVtTabEfe);
+			        coList.add(tempCo);
+			        
 			    }
 			} else {
 			    System.out.println("Nenhuma colaborador retornado.");
@@ -85,5 +92,7 @@ public class ColaboradoresVinculadosWS {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	return coList;
+	
 	}
 }

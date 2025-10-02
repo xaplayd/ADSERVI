@@ -1,6 +1,9 @@
 package models.faturamento.medicao.ws;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -8,6 +11,8 @@ import javax.xml.namespace.QName;
 import config.WebServiceConfig;
 import connection.controller.WebServiceController;
 import jakarta.xml.ws.Service;
+import models.faturamento.medicao.afastamentos.Afastamento;
+import models.faturamento.medicao.colaborador.Colaborador;
 import util.webservices.fechamentos.ObjectFactory;
 import util.webservices.fechamentos.RubiSynccomSeniorG5RhFpDougFechamentos;
 import util.webservices.fechamentos.SynccomSeniorG5RhFpDougFechamentosAfastamentosIn;
@@ -16,7 +21,8 @@ import util.webservices.fechamentos.SynccomSeniorG5RhFpDougFechamentosAfastament
 
 public class AfastamentosWS {
 
-	public void buscaAfastamentos() {
+	public List<Afastamento> buscaAfastamentos(String filiais, String dataInicioPeriodo, String dataFimPeriodo) {
+		List<Afastamento> afastList = new ArrayList();
 		try {
 			// Habilita o dump de mensagens SOAP
 			/*System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
@@ -45,11 +51,11 @@ public class AfastamentosWS {
 			SynccomSeniorG5RhFpDougFechamentosAfastamentosIn parametros = new SynccomSeniorG5RhFpDougFechamentosAfastamentosIn();
 
 			parametros.setCodFilialCliente(
-					factory.createSynccomSeniorG5RhFpDougFechamentosAfastamentosInCodFilialCliente("1943"));
+					factory.createSynccomSeniorG5RhFpDougFechamentosAfastamentosInCodFilialCliente(filiais));
 			parametros.setDataInicio(
-					factory.createSynccomSeniorG5RhFpDougFechamentosAfastamentosInDataInicio("01/08/2025"));
+					factory.createSynccomSeniorG5RhFpDougFechamentosAfastamentosInDataInicio(dataInicioPeriodo));
 			parametros
-					.setDataFim(factory.createSynccomSeniorG5RhFpDougFechamentosAfastamentosInDataFim("31/08/2025"));
+					.setDataFim(factory.createSynccomSeniorG5RhFpDougFechamentosAfastamentosInDataFim(dataFimPeriodo));
 
 			SynccomSeniorG5RhFpDougFechamentosAfastamentosOut resposta = port.afastamentos(credential.getLogin(), credential.getSenha(), credential.getCripto(),
 					parametros);
@@ -83,6 +89,19 @@ public class AfastamentosWS {
 			        System.out.println("Hora Término: " + horTerTabAfast);
 			        System.out.println("----------------");
 			        System.out.println();
+			        
+			        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			        LocalDate ini = LocalDate.parse(datAfaTabAfast, formatter);
+			        LocalDate ter = null;
+			        
+			        if(datTerTabAfast != null) {
+			        	ter = LocalDate.parse(datTerTabAfast, formatter);
+			        }
+			        
+			        Afastamento tpAfast = new Afastamento(numCadTabAfast, nomFunTabAfast, sitAfaTabAfast, desSitTabAfast, ini, horAfaTabAfast,
+			        		ter, horTerTabAfast); 
+			        
+			        afastList.add(tpAfast);
 			    }
 			} else {
 			    System.out.println("Nenhum afastamento retornado.");
@@ -92,5 +111,6 @@ public class AfastamentosWS {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return afastList;
 	}
 }

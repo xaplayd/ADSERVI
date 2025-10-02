@@ -2,78 +2,80 @@ package models.faturamento.medicao.colaborador;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import models.faturamento.medicao.Periodo;
+import models.faturamento.medicao.alocacao.Alocacao;
 
 public class Colaborador {
 
     private Integer matricula;
     private String nome;
     private String posTra;
-    private String dataAlt;
+    private String optaVt;
+    private List<Alocacao> alocacoes;
 
-    private List<Periodo> periodosDisponiveis = new ArrayList<>();
-    private List<Periodo> periodosAlocados = new ArrayList<>();
-
-    public Colaborador(Integer matricula, String nome, String posTra, String dataAlt) {
+    public Colaborador(Integer matricula, String nome, String posTra, String optaVt) {
         this.matricula = matricula;
         this.nome = nome;
         this.posTra = posTra;
-        this.dataAlt = dataAlt;
+        this.optaVt = optaVt;
+        this.alocacoes = new ArrayList<>();
     }
 
     public Integer getMatricula() {
         return matricula;
     }
 
+    public void setMatricula(Integer matricula) {
+        this.matricula = matricula;
+    }
+
     public String getNome() {
         return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getPosTra() {
         return posTra;
     }
 
-    public String getDataAlt() {
-        return dataAlt;
+    public void setPosTra(String posTra) {
+        this.posTra = posTra;
     }
 
-    public List<Periodo> getPeriodosDisponiveis() {
-        return periodosDisponiveis;
+    public String getOptaVt() {
+        return optaVt;
     }
 
-    public List<Periodo> getPeriodosAlocados() {
-        return periodosAlocados;
+    public void setOptaVt(String optaVt) {
+        this.optaVt = optaVt;
     }
 
-    public void adicionarPeriodoDisponivel(Periodo p) {
-        periodosDisponiveis.add(p);
+    public List<Alocacao> getAlocacoes() {
+        return alocacoes;
     }
 
-    public void alocarPeriodo(Periodo p) {
-        if (periodosDisponiveis.remove(p)) {
-            periodosAlocados.add(p);
+    public void setAlocacoes(List<Alocacao> alocacoes) {
+        this.alocacoes = alocacoes;
+    }
+
+    public void addAlocacao(Alocacao alocacao) {
+        if (this.alocacoes == null) {
+            this.alocacoes = new ArrayList<>();
         }
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(dataAlt, matricula, nome, posTra);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof Colaborador))
-            return false;
-        Colaborador other = (Colaborador) obj;
-        return Objects.equals(matricula, other.matricula);
+        this.alocacoes.add(alocacao);
     }
 
     @Override
     public String toString() {
-        return "Colaborador [matricula=" + matricula + ", nome=" + nome + "]";
+        return "Colaborador{" +
+                "matricula=" + matricula +
+                ", nome='" + nome + '\'' +
+                ", posTra='" + posTra + '\'' +
+                ", optaVt='" + optaVt + '\'' +
+                ", alocacoes=" + (alocacoes != null ? alocacoes.size() : 0) +
+                '}';
     }
 }

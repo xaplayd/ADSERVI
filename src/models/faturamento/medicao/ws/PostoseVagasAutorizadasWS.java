@@ -1,6 +1,9 @@
 package models.faturamento.medicao.ws;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -8,16 +11,19 @@ import javax.xml.namespace.QName;
 import config.WebServiceConfig;
 import connection.controller.WebServiceController;
 import jakarta.xml.ws.Service;
+import models.faturamento.medicao.vaga.Vaga;
 import util.webservices.fechamentos.ObjectFactory;
 import util.webservices.fechamentos.RubiSynccomSeniorG5RhFpDougFechamentos;
 import util.webservices.fechamentos.SynccomSeniorG5RhFpDougFechamentosVagasAutorizadasIn;
 import util.webservices.fechamentos.SynccomSeniorG5RhFpDougFechamentosVagasAutorizadasOut;
 import util.webservices.fechamentos.SynccomSeniorG5RhFpDougFechamentosVagasAutorizadasOuttabVagas;
 
-public class VagasAutorizadasWS {
+public class PostoseVagasAutorizadasWS {
 
-	public void buscaVagas() {
+	public List<Vaga> buscaPostoseVagas(String filiais, String dataInicioPeriodo, String dataFimPeriodo) {
+		List<Vaga> vgList = new ArrayList();
 		try {
+			
 			// Habilita o dump de mensagens SOAP
 			/*System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
 			System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
@@ -45,11 +51,11 @@ public class VagasAutorizadasWS {
 			SynccomSeniorG5RhFpDougFechamentosVagasAutorizadasIn parametros = new SynccomSeniorG5RhFpDougFechamentosVagasAutorizadasIn();
 
 			parametros.setCodFilialCliente(
-					factory.createSynccomSeniorG5RhFpDougFechamentosVagasAutorizadasInCodFilialCliente("1943"));
+					factory.createSynccomSeniorG5RhFpDougFechamentosVagasAutorizadasInCodFilialCliente(filiais));
 			parametros.setDataInicio(
-					factory.createSynccomSeniorG5RhFpDougFechamentosVagasAutorizadasInDataInicio("01/08/2025"));
+					factory.createSynccomSeniorG5RhFpDougFechamentosVagasAutorizadasInDataInicio(dataInicioPeriodo));
 			parametros
-					.setDataFim(factory.createSynccomSeniorG5RhFpDougFechamentosVagasAutorizadasInDataFim("31/08/2025"));
+					.setDataFim(factory.createSynccomSeniorG5RhFpDougFechamentosVagasAutorizadasInDataFim(dataFimPeriodo));
 
 			SynccomSeniorG5RhFpDougFechamentosVagasAutorizadasOut resposta = port.vagasAutorizadas(credential.getLogin(), credential.getSenha(), credential.getCripto(),
 					parametros);
@@ -62,6 +68,8 @@ public class VagasAutorizadasWS {
 			List<SynccomSeniorG5RhFpDougFechamentosVagasAutorizadasOuttabVagas> vagas = resposta.getTabVagas();
 
 			if (vagas != null && !vagas.isEmpty()) {
+				Integer tpid = 1;
+				
 			    for (SynccomSeniorG5RhFpDougFechamentosVagasAutorizadasOuttabVagas vaga : vagas) {
 			        Integer codPlvTabVaga = vaga.getCodPlvTabVaga() != null ? vaga.getCodPlvTabVaga().getValue() : null;
 			        String datQpoTabVaga = vaga.getDatQpoTabVaga() != null ? vaga.getDatQpoTabVaga().getValue() : null;
@@ -79,6 +87,16 @@ public class VagasAutorizadasWS {
 			        System.out.println("Qtde: " + qtdQpoTabVaga);
 			        System.out.println("----------------");
 			        System.out.println();
+			        
+			        for(int x = 0; x < qtdQpoTabVaga; x++) {
+			        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			        	LocalDate inicioData = LocalDate.parse(dataInicioPeriodo, formatter);
+			        	LocalDate fimData = LocalDate.parse(dataFimPeriodo, formatter);
+			        	Double totalExecucao = 30.0;
+			        	Vaga tpVaga = new Vaga(tpid, inicioData, fimData, totalExecucao, posTraTabVaga, desPosTabVaga);
+			        	vgList.add(tpVaga);
+			        	tpid++;
+			        }
 			    }
 			} else {
 			    System.out.println("Nenhuma vaga retornada.");
@@ -88,5 +106,6 @@ public class VagasAutorizadasWS {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return vgList;
 	}
 }

@@ -2,25 +2,68 @@ package models.faturamento.medicao;
 
 import java.util.List;
 
+import models.faturamento.medicao.afastamentos.Afastamento;
 import models.faturamento.medicao.colaborador.Colaborador;
-import models.faturamento.medicao.vaga.PostoVaga;
+import models.faturamento.medicao.vaga.Vaga;
 
 public class Medicao {
+	
+	private Integer id;
+	private String filiais;
+	private String dataPeriodoInicio;
+	private String dataPeriodoFim;
 
-    private List<PostoVaga> postos;
+    private List<Vaga> vagas;
     private List<Colaborador> colaboradores;
+    private List<Afastamento> afastamentos;
 
-    public Medicao(List<PostoVaga> postos, List<Colaborador> colaboradores) {
-        this.postos = postos;
+    public Integer getId() {
+    	return id;
+    }
+    
+    public void setId(Integer id) {
+    	this.id = id;
+    }
+    
+    public String getFiliais() {
+    	return filiais;
+    }
+    
+    public void setFiliais(String filiais) {
+    	this.filiais = filiais;
+    }
+    
+    public String getDataPeriodoInicio() {
+    	return dataPeriodoInicio;
+    }
+    
+    public void setDataPeriodoInicio(String dataPeriodoInicio) {
+    	this.dataPeriodoInicio = dataPeriodoInicio;
+    }
+    
+    public String getDataPeriodoFim() {
+    	return dataPeriodoFim;
+    }
+    
+    public void setDataPeriodoFim(String dataPeriodoFim) {
+    	this.dataPeriodoFim = dataPeriodoFim;
+    }
+    
+    public Medicao(String filiais, String dataInicio, String dataFim, List<Vaga> vagas, List<Colaborador> colaboradores, List<Afastamento> afastamentos) {
+        this.filiais = filiais;
+    	this.dataPeriodoInicio = dataInicio;
+    	this.dataPeriodoFim = dataFim;
+    	this.vagas = vagas;
         this.colaboradores = colaboradores;
+        this.afastamentos = afastamentos;
     }
 
-    public List<PostoVaga> getPostos() {
-        return postos;
+    public List<Vaga> getVagas() {
+        return vagas;
     }
 
-    public void setPostos(List<PostoVaga> postos) {
-        this.postos = postos;
+    public void setVagas(List<Vaga> vagas) {
+        this.vagas = vagas;
     }
 
     public List<Colaborador> getColaboradores() {
@@ -29,5 +72,13 @@ public class Medicao {
 
     public void setColaboradores(List<Colaborador> colaboradores) {
         this.colaboradores = colaboradores;
+    }
+    
+    public List<Afastamento> getAfastamentos() {
+        return afastamentos;
+    }
+
+    public void setAfastamentos(List<Afastamento> afastamentos) {
+        this.afastamentos = afastamentos;
     }
 }
