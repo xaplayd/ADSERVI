@@ -3,6 +3,7 @@ package models.faturamento.medicao.alocacao;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import models.faturamento.medicao.colaborador.Colaborador;
+import models.faturamento.medicao.vaga.Vaga;
 
 public class AlocacaoController {
 
@@ -35,7 +37,19 @@ public class AlocacaoController {
     @FXML private TableColumn<Alocacao, LocalTime> colHoraFim;
 
     private ObservableList<Alocacao> alocacoes = FXCollections.observableArrayList();
+    
+    private List<Colaborador> colaboradores;
 
+    private Vaga vaga;
+    
+    public void setVaga(Vaga vaga) {
+        this.vaga = vaga;
+    }
+    
+    public void setColaboradores(List<Colaborador> colaboradores) {
+        this.colaboradores = colaboradores;
+    }
+    
     @FXML
     private void initialize() {
         // === Bind de colunas ===

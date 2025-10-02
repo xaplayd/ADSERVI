@@ -3,6 +3,7 @@ package models.faturamento.medicao;
 import java.util.List;
 
 import models.faturamento.medicao.afastamentos.Afastamento;
+import models.faturamento.medicao.alocacao.Alocacao;
 import models.faturamento.medicao.colaborador.Colaborador;
 import models.faturamento.medicao.vaga.Vaga;
 
@@ -16,6 +17,8 @@ public class Medicao {
     private List<Vaga> vagas;
     private List<Colaborador> colaboradores;
     private List<Afastamento> afastamentos;
+    private List<Alocacao> alocacoes;
+    //private List<Coberturas> coberturas;
 
     public Integer getId() {
     	return id;

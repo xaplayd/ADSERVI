@@ -48,7 +48,7 @@ public class VagaCardController {
 
             // pega o controller da tela de alocação
             AlocacaoController controller = loader.getController();
-            //controller.setVaga(vaga); // passa a vaga selecionada
+            controller.setVaga(vaga);
 
             Stage stage = new Stage();
             stage.setTitle("Alocações - " + vaga.getDesPosTabVaga());

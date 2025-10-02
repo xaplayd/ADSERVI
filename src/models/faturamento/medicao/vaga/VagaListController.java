@@ -24,11 +24,19 @@ public class VagaListController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
     	root.getProperties().put("controller", this);
     }
+    
+    public void initData(List<Vaga> vagas) {
+    	this.vagas = vagas;
+    	setVagasCard();
+    }
+    
+    private List<Vaga> vagas;
+    
 
-    public void setVagas(List<Vaga> vagas) {
+    public void setVagasCard() {
         container.getChildren().clear();
 
-        for (Vaga vaga : vagas) {
+        for (Vaga vaga : this.vagas) {
             try {
                 FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/models/faturamento/medicao/vaga/VagaCard.fxml"));

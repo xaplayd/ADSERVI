@@ -13,6 +13,8 @@
         <fx:include fx:id="vagaListView" source="/models/faturamento/medicao/vaga/VagaListView.fxml"/>
 
         <!-- Pane vazio por enquanto -->
-        <VBox/>
+        <VBox>
+            <!-- conteúdo futuro -->
+        </VBox>
     </items>
 </SplitPane>
