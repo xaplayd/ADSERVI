@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import models.faturamento.medicao.afastamentos.Afastamento;
-import models.faturamento.medicao.alocacao.AlocacaoController;
+import models.faturamento.medicao.alocacao.AlocacaoListController;
 import models.faturamento.medicao.colaborador.Colaborador;
 import models.faturamento.medicao.colaborador.ColaboradorListController;
 import models.faturamento.medicao.vaga.Vaga;
@@ -16,20 +16,26 @@ import models.faturamento.medicao.ws.ColaboradoresVinculadosWS;
 import models.faturamento.medicao.ws.PostoseVagasAutorizadasWS;
 
 public class MedicaoController {
-
+	
+	private Medicao md;
+    private VagaListController vagaListController;
+    
     @FXML
     private ScrollPane vagaListView;
-    private VagaListController vagaListController;
-    private ColaboradorListController colabListController = new ColaboradorListController();
-    private AlocacaoController alocController;
+
     
+    private void geraListaVagas() {
+    	vagaListController = (VagaListController) 
+                vagaListView.getProperties().get("controller");
+    }
+        
     
     @FXML
     private SplitPane root;
 
     public void novaMedicao(String filiais, String dataInicio, String dataFim) {
-    	vagaListController = (VagaListController) 
-                vagaListView.getProperties().get("controller");
+    	geraListaVagas();
+
     	
         PostoseVagasAutorizadasWS tpvg = new PostoseVagasAutorizadasWS();
         List<Vaga> vagas = tpvg.buscaPostoseVagas(filiais, dataInicio, dataFim);
@@ -37,11 +43,10 @@ public class MedicaoController {
         List<Colaborador> colaboradores = tpcv.buscaColaboradores(filiais, dataInicio, dataFim);
         AfastamentosWS afst = new AfastamentosWS();
         List<Afastamento> afastamentos = afst.buscaAfastamentos(filiais, dataInicio, dataFim);
-        Medicao md = new Medicao(filiais, dataInicio, dataFim, vagas, colaboradores, afastamentos);
+        md = new Medicao(filiais, dataInicio, dataFim, vagas, colaboradores, afastamentos);
 
         
-        vagaListController.initData(md.getVagas());
-        colabListController.initData(md.getColaboradores());
+        vagaListController.initData(md);
      
     }
 

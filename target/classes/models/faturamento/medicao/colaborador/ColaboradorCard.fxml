@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxWidth="Infinity" spacing="8"
+      style="-fx-background-color: #ffffff;
+             -fx-background-radius: 10;
+             -fx-border-radius: 10;
+             -fx-border-color: #aaa;
+             -fx-padding: 12;
+             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3,0,0,1);"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="models.faturamento.medicao.colaborador.ColaboradorCardController">
+
+    <Label fx:id="lblMatricula" style="-fx-font-weight: bold;"/>
+    <Label fx:id="lblNome"/>
+    <Label fx:id="lblFuncao"/>
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button fx:id="btnAlocar" text="Alocar"/>
+    </HBox>
+</VBox>

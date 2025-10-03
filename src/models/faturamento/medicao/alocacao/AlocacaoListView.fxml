@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="models.faturamento.medicao.alocacao.AlocacaoListController"
+            fx:id="root"
+            fitToWidth="true"
+            pannable="true"
+            style="-fx-padding: 20;">
+
+    <content>
+        <!-- VBox raiz que agrupa o container e o botão -->
+        <VBox spacing="20">
+            
+            <!-- onde vão os cards -->
+            <VBox fx:id="container" spacing="15" alignment="CENTER"/>
+
+            <!-- botão alinhado à direita -->
+            <HBox alignment="BOTTOM_RIGHT">
+                <Button fx:id="btnAdicionar" onAction="#onAdicionar">
+                    <graphic>
+                        <ImageView>
+                            <image>
+                                <Image url="@../../../../imgs/18x18/adicionar.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+
+        </VBox>
+    </content>
+</ScrollPane>

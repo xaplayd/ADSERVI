@@ -11,8 +11,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import models.faturamento.medicao.Medicao;
 
 public class VagaListController implements Initializable {
+	
+	Medicao md;
 
     @FXML
     private ScrollPane root;
@@ -25,25 +28,22 @@ public class VagaListController implements Initializable {
     	root.getProperties().put("controller", this);
     }
     
-    public void initData(List<Vaga> vagas) {
-    	this.vagas = vagas;
-    	setVagasCard();
+    public void initData(Medicao md) {
+    	this.md = md;
+    	setVagasCard(md.getVagas());
     }
-    
-    private List<Vaga> vagas;
-    
 
-    public void setVagasCard() {
+    public void setVagasCard(List<Vaga> vagas) {
         container.getChildren().clear();
 
-        for (Vaga vaga : this.vagas) {
+        for (Vaga vaga : vagas) {
             try {
                 FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/models/faturamento/medicao/vaga/VagaCard.fxml"));
                 Node cardNode = loader.load();
 
                 VagaCardController controller = loader.getController();
-                controller.setVaga(vaga);
+                controller.setVaga(md, vaga);
 
                 container.getChildren().add(cardNode);
             } catch (IOException e) {

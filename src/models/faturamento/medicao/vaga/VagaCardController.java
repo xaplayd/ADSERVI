@@ -6,9 +6,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import models.faturamento.medicao.Medicao;
 import models.faturamento.medicao.alocacao.AlocacaoController;
+import models.faturamento.medicao.alocacao.AlocacaoListController;
 
 public class VagaCardController {
+	
+	Medicao md;
+	
+	AlocacaoController alocController = new AlocacaoController();
 
     @FXML
     private Label lblVaga;
@@ -30,7 +36,8 @@ public class VagaCardController {
 
     private Vaga vaga;
 
-    public void setVaga(Vaga vaga) {
+    public void setVaga(Medicao md, Vaga vaga) {
+    	this.md = md;
         this.vaga = vaga;
         lblVaga.setText("Posto: " + vaga.getDesPosTabVaga());
         lblPosTra.setText("Cod.: " + vaga.getPosTraTabVaga());
@@ -38,7 +45,8 @@ public class VagaCardController {
         lblExecutado.setText("Executado: " + vaga.getExecutado());
         lblAExecutar.setText("A Executar: " + (vaga.getTotalExecucao() - vaga.getExecutado()));
     }
-
+    
+    
     @FXML
     private void onAlterar() {
         System.out.println("Alterar card: " + vaga.getId());
@@ -47,8 +55,8 @@ public class VagaCardController {
             Scene scene = new Scene(loader.load());
 
             // pega o controller da tela de alocação
-            AlocacaoController controller = loader.getController();
-            controller.setVaga(vaga);
+            alocController = loader.getController();
+            alocController.listaAlocacoes(md);
 
             Stage stage = new Stage();
             stage.setTitle("Alocações - " + vaga.getDesPosTabVaga());

@@ -1,33 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="models.faturamento.medicao.alocacao.AlocacaoController">
+<SplitPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="models.faturamento.medicao.alocacao.AlocacaoController"
+           orientation="HORIZONTAL">
 
-    <center>
-        <VBox spacing="10" alignment="CENTER">
-            <Label text="Alocações" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-            
-            <TableView fx:id="tblAlocacoes" prefHeight="300" prefWidth="800">
-                <columns>
-                    <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
-                    <TableColumn fx:id="colVaga" text="Vaga" prefWidth="150"/>
-                    <TableColumn fx:id="colMatriculaColab" text="Matrícula" prefWidth="100"/>
-                    <TableColumn fx:id="colNomeColab" text="Colaborador" prefWidth="150"/>
-                    <TableColumn fx:id="colDataInicio" text="Data Início" prefWidth="100"/>
-                    <TableColumn fx:id="colHoraInicio" text="Hora Início" prefWidth="100"/>
-                    <TableColumn fx:id="colDataFim" text="Data Fim" prefWidth="100"/>
-                    <TableColumn fx:id="colHoraFim" text="Hora Fim" prefWidth="100"/>
-                </columns>
-            </TableView>
+    <items>
+        <!-- Lista de vagas -->
+        <fx:include fx:id="alocacaoListView" source="/models/faturamento/medicao/alocacao/AlocacaoListView.fxml"/>
 
-            <HBox spacing="10" alignment="CENTER">
-                <Button fx:id="btnAlocar" text="Alocar" onAction="#onAlocar"/>
-                <Button fx:id="btnRemover" text="Remover" onAction="#onRemover"/>
-            </HBox>
+        <!-- Pane vazio por enquanto -->
+        <VBox>
+            <!-- conteúdo futuro -->
         </VBox>
-    </center>
-</BorderPane>
+    </items>
+</SplitPane>
